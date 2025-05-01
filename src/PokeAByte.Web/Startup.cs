@@ -1,6 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Reflection;
+using System.Text.Json.Serialization;
 using Hellang.Middleware.ProblemDetails;
 using Hellang.Middleware.ProblemDetails.Mvc;
+using Microsoft.AspNetCore.StaticFiles.Infrastructure;
+using Microsoft.Extensions.FileProviders;
 using PokeAByte.Application;
 using PokeAByte.Application.Mappers;
 using PokeAByte.Domain.Interfaces;
@@ -122,6 +125,22 @@ public static class Startup
         app.UseProblemDetails();
         app.UseRouting();
         app.UseStaticFiles();
+
+        var provider = new ManifestEmbeddedFileProvider(Assembly.GetEntryAssembly()!);
+        app.UseSpaStaticFiles(new StaticFileOptions
+        {
+            FileProvider = provider,
+            RequestPath = "",
+        });
+        app.UseSpa(configuration =>
+        {
+            configuration.Options.DefaultPageStaticFileOptions = new StaticFileOptions(new SharedOptions
+            {
+                FileProvider = provider,
+            });
+            configuration.Options.DefaultPage = "/index.html";
+        });
+
 
         if (BuildEnvironment.IsDebug)
         {
