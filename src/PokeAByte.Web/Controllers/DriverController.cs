@@ -9,7 +9,7 @@ public record UpdateMemoryModel(uint Address, byte[] Bytes);
 [Produces("application/json")]
 [Consumes("application/json")]
 [Route("driver")]
-public class DriverController(IPokeAByteDriver pokeAByteDriver) : Controller
+public class DriverController(IStaticMemoryDriver pokeAByteDriver) : Controller
 {
     private readonly IPokeAByteDriver _driver = pokeAByteDriver;
 

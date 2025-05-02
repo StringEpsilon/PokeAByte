@@ -67,21 +67,15 @@ public static class Startup
             mapperArchiveManager.GenerateArchivedList();
             return mapperArchiveManager;
         });
-        services.AddSingleton<IGithubRestApi, GithubRestApi>();
-        services.AddSingleton<PokeAByteInstance>();
+        services.AddSingleton<IGithubRestApi, GithubRestApi>();        
         services.AddSingleton<ScriptConsole>();
         services.AddSingleton<IBizhawkMemoryMapDriver, BizhawkMemoryMapDriver>();
         services.AddSingleton<IRetroArchUdpPollingDriver, RetroArchUdpDriver>();
         services.AddSingleton<IStaticMemoryDriver, StaticMemoryDriver>();
         services.AddSingleton<DriverService>();
         services.AddSingleton<IClientNotifier, WebSocketClientNotifier>();
-
         services.AddSingleton<MapperClientService>();
-        //PokeAByte Services
-        //For some reason, the Driver controller requires special DI despite not needing it 
-        //in the original implementation? Just add them to the DI
         services.AddSingleton<IPokeAByteInstance, PokeAByteInstance>();
-        services.AddSingleton<IPokeAByteDriver, StaticMemoryDriver>();
     }
 
     public static void ConfigureApp(this WebApplication app)
