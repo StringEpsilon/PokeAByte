@@ -9,6 +9,8 @@
         <AssemblyVersion>0.8.2</AssemblyVersion>
         <FileVersion>0.8.2</FileVersion>
 		<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+		<PublishSingleFile>true</PublishSingleFile>
+		<SelfContained>true</SelfContained>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -29,9 +31,9 @@
 		<!-- Write the stamp file, so incremental builds work -->
 		<Touch Files="../Frontend/node_modules/.install-stamp" AlwaysCreate="true" />
 	</Target>
-	<Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild">
+	<!-- <Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild">
 		<Exec Command="npm run build" WorkingDirectory="../Frontend"/>
-	</Target>
+	</Target> -->
 	<ItemGroup>
 	  <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="9.0.3" />
 	  <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="9.0.3" />

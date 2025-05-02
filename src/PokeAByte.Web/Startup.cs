@@ -76,35 +76,12 @@ public static class Startup
         services.AddSingleton<DriverService>();
         services.AddSingleton<IClientNotifier, WebSocketClientNotifier>();
 
-        services.AddSingleton<MapperSettingsService>();
+        services.AddSingleton<MapperClientService>();
         //PokeAByte Services
-        services.AddSingleton(x =>
-        {
-            var mapperFs = x.GetRequiredService<IMapperFilesystemProvider>();
-            var logger = x.GetRequiredService<ILogger<MapperClientService>>();
-            var driverService = x.GetRequiredService<DriverService>();
-            return new MapperClientService(mapperFs,
-                logger,
-                CreateClient(x),
-                driverService
-            );
-        });
         //For some reason, the Driver controller requires special DI despite not needing it 
         //in the original implementation? Just add them to the DI
         services.AddSingleton<IPokeAByteInstance, PokeAByteInstance>();
         services.AddSingleton<IPokeAByteDriver, StaticMemoryDriver>();
-    }
-
-    private static MapperClient CreateClient(IServiceProvider services)
-    {
-        var logger = services.GetRequiredService<ILogger<MapperClient>>();
-        var instance = services.GetRequiredService<PokeAByteInstance>();
-        var appSettings = services.GetRequiredService<AppSettings>();
-        var bizhawk = services.GetRequiredService<IBizhawkMemoryMapDriver>();
-        var retro = services.GetRequiredService<IRetroArchUdpPollingDriver>();
-        var staticMem = services.GetRequiredService<IStaticMemoryDriver>();
-        var mapperSettings = services.GetRequiredService<MapperSettingsService>();
-        return new MapperClient(logger, instance, appSettings, bizhawk, retro, staticMem, mapperSettings);
     }
 
     public static void ConfigureApp(this WebApplication app)
@@ -142,13 +119,8 @@ public static class Startup
         });
 
 
-        if (BuildEnvironment.IsDebug)
+        if (!BuildEnvironment.IsDebug)
         {
-            //app.MapGet("/gh_index", () => Results.Redirect("index.html", false));
-        }
-        else
-        {
-            //app.MapGet("/gh_index", () => Results.File(ApiHelper.EmbededResources.index_html, contentType: "text/html"));
             app.MapGet("/favicon.ico", () => Results.File(ApiHelper.EmbededResources.favicon_ico, contentType: "image/x-icon"));
             app.MapGet("/site.css", () => Results.File(ApiHelper.EmbededResources.site_css, contentType: "text/css"));
             app.MapGet("/dist/gameHookMapperClient.js", () => Results.File(ApiHelper.EmbededResources.dist_gameHookMapperClient_js, contentType: "application/javascript"));
