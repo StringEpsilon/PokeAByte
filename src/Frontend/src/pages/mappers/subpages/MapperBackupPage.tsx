@@ -55,24 +55,36 @@ export function MapperBackupPage() {
 		<article>
 			<span>{selectedMappers.length} / {availableMappers.length} Mappers Selected</span>
 			<div className="margin-top">
-				<button className="border-green" disabled={!selectedMappers.length} onClick={handleBackupSelected}>
+				<button className="border-green margin-right" disabled={!selectedMappers.length} onClick={handleBackupSelected}>
 					BACKUP SELECTED
 				</button>
-				<button className="margin-left border-green" disabled={!availableMappers.length} onClick={handleBackupAll}>
+				<button className="margin-right border-green" disabled={!availableMappers.length} onClick={handleBackupAll}>
 					BACKUP ALL
 				</button>
-				<button className="margin-left border-purple" onClick={filesClient.openMapperFolder}>
+				<button className="border-purple" onClick={filesClient.openMapperFolder}>
 					OPEN MAPPER FOLDER
 				</button>
 			</div>
 			<div className="margin-top">
-				<button role="button" className="border-red" disabled={selectedMappers.length === 0} onClick={handleArchiveSelected}>
+				<button 
+					role="button"
+					className="border-red margin-right" 
+					disabled={selectedMappers.length === 0} 
+					onClick={handleArchiveSelected}
+				>
 					ARCHIVE SELECTED
 				</button>
-				<button className="margin-left border-red" disabled={availableMappers.length === 0} onClick={handleArchiveAll}>
+				<button 
+					className="margin-right border-red" 
+					disabled={availableMappers.length === 0} 
+					onClick={handleArchiveAll}
+				>
 					ARCHIVE ALL
 				</button>
-				<button className="margin-left border-blue" onClick={filesClient.openMapperArchiveFolder}>
+				<button 
+					className="border-blue" 
+					onClick={filesClient.openMapperArchiveFolder}
+				>
 					OPEN ARCHIVE FOLDER
 				</button>
 			</div>

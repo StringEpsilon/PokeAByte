@@ -57,16 +57,16 @@ export function MapperUpdatePage() {
 				{selectedMappers.length} / {availableMappers.length} Mappers Selected
 			</span>
 			<div className="margin-top">
-				<button className="border-green" disabled={!selectedMappers.length} onClick={handleUpdate}>
+				<button className="border-green margin-right" disabled={!selectedMappers.length} onClick={handleUpdate}>
 					UPDATE SELECTED
 				</button>
-				<button className="border-green margin-left" disabled={!availableMappers.length} onClick={handleUpdateAll}>
+				<button className="border-green margin-right" disabled={!availableMappers.length} onClick={handleUpdateAll}>
 					UPDATE ALL
 				</button>
-				<button className="border-blue margin-left">
+				<button className="border-blue margin-right">
 					CHECK FOR MAPPERS
 				</button>
-				<button className="border-purple margin-left" onClick={filesClient.openMapperFolder}>
+				<button className="border-purple" onClick={filesClient.openMapperFolder}>
 					OPEN MAPPER FOLDER
 				</button>
 			</div>

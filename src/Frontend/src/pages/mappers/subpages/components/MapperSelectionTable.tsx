@@ -62,17 +62,17 @@ export function MapperSelectionTable(props: MapperSelectionTableProps) {
 	return (
 		<>
 			<span>
-				<label htmlFor="mapper-filter">Filter:</label>
+				<label htmlFor="mapper-filter margin-right">Filter:</label>
 				<input 
 					id="mapper-filter"
 					type="text" 
-					className="margin-left"
+					className="margin-right"
 					placeholder="" 
 					onChange={(event) => setFilter(event.target.value)} 
 				/>
 			</span>
 			{props.onUpdateList &&
-				<button type="button"  className="margin-left border-blue">RELOAD MAPPER LIST</button>
+				<button type="button"  className="border-blue">RELOAD MAPPER LIST</button>
 			}
 			<table className="striped">
 				<thead>

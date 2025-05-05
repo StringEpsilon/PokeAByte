@@ -36,3 +36,6 @@
 .margin-left {
 	margin-left: var(--margin-1);
 }
+.margin-right {
+	margin-right: var(--margin-1);
+}

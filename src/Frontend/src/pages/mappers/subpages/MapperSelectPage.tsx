@@ -55,11 +55,11 @@ export function MapperSelection(props: MapperSelectProps) {
 				options={mapperData?.map((x: AvailableMapper) => ({ value: x.id, display: x.displayName })) || []}
 			/>
 			<div className="margin-top">
-				<button className="border-green" onClick={onLoadMapper}>
+				<button className="border-green margin-right" onClick={onLoadMapper}>
 					Load Mapper
 				</button>
 				<button
-					className="margin-left border-purple"
+					className="border-purple"
 					onClick={() => Store.client.files.openMapperFolder()}>
 					Open Mapper Folder
 				</button>

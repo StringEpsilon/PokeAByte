@@ -32,10 +32,10 @@ export function PropertyEditor() {
 	return (
 		<div className="layout-box margin-top">
 			<span className="row">
-				<strong className="small">
+				<strong className="small margin-right">
 					Properties for {mapper?.gameName}
 				</strong>
-				<button type="button" className="margin-left border-red" onClick={Store.client.unloadMapper}>
+				<button type="button" className="border-red" onClick={Store.client.unloadMapper}>
 					UNLOAD MAPPER
 				</button>
 			</span>

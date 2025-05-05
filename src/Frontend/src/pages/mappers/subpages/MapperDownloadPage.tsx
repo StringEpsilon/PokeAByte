@@ -43,14 +43,14 @@ export function MapperDownloadPage() {
 				{selectedMappers.length} / {availableMappers.length} Mappers Selected
 			</span>
 			<div className="margin-top">
-				<button className="border-green" disabled={!selectedMappers.length} onClick={handleDownload}>
+				<button className="border-green margin-right" disabled={!selectedMappers.length} onClick={handleDownload}>
 					DOWNLOAD SELECTED
 				</button>
-				<button className="margin-left border-green" disabled={!availableMappers.length} onClick={handleDownloadAll}>
+				<button className="border-green margin-right" disabled={!availableMappers.length} onClick={handleDownloadAll}>
 					DOWNLOAD ALL
 				</button>
-				<button className="border-blue margin-left ">CHECK FOR MAPPERS</button>
-				<button className="margin-left border-purple" onClick={filesClient.openMapperFolder}>
+				<button className="border-blue margin-right">CHECK FOR MAPPERS</button>
+				<button className="border-purple" onClick={filesClient.openMapperFolder}>
 					OPEN MAPPER FOLDER
 				</button>
 			</div>

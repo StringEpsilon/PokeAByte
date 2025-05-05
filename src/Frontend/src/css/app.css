@@ -120,7 +120,7 @@ nav.tab {
 		clip-path: polygon(0 12px, 12px 1%, 100% 0, 100% 100%, 0 100%);
 		color: var(--font-color-main);
 		border: 2px solid var(--color-border-0);
-		background-color: var(--color-border-0);
+		background-color: var(--color-border-0) !important;
 		padding: 6px 12px 6px 12px;
 		margin-bottom: -2px;
 		align-content: center;
