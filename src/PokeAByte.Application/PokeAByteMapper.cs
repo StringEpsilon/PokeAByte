@@ -23,7 +23,7 @@ namespace PokeAByte.Application
         public MetadataSection Metadata { get; }
         public MemorySection Memory { get; }
         public Dictionary<string, IPokeAByteProperty> Properties { get; private set; }
-        public Dictionary<string, ReferenceItems> References { get; private set;}
+        public Dictionary<string, ReferenceItems> References { get; private set; }
         public IPlatformOptions PlatformOptions { get; private set; }
 
         public IPokeAByteProperty[] GetAllProperties() => Properties.Values.ToArray();

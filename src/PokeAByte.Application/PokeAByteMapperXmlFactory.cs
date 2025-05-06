@@ -218,10 +218,10 @@ namespace PokeAByte.Application
                 _ => throw new Exception($"Unknown game platform {metaData.GamePlatform}.")
             };
             return new PokeAByteMapper(
-                metaData, 
-                platformOptions, 
-                GetMemory(doc), 
-                GetProperties(doc, instance, platformOptions.EndianType), 
+                metaData,
+                platformOptions,
+                GetMemory(doc),
+                GetProperties(doc, instance, platformOptions.EndianType),
                 GetGlossary(doc)
             );
         }

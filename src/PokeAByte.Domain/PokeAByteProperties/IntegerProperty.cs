@@ -1,5 +1,4 @@
-﻿using System.Buffers.Binary;
-using PokeAByte.Domain.Interfaces;
+﻿using PokeAByte.Domain.Interfaces;
 
 namespace PokeAByte.Domain.PokeAByteProperties;
 
@@ -21,12 +20,13 @@ public class IntegerProperty : PokeAByteProperty
     {
         if (data.Length == 1) //  With one byte, we can just cast.
         {
-            return (int)data[0]; 
+            return (int)data[0];
         }
         // With less than 4 bytes, we have to pad the value before using the bitconverter:
         Span<byte> padded = stackalloc byte[4];
         data.AsSpan().CopyTo(padded);
-        if (_endian == EndianTypes.LittleEndian) {
+        if (_endian == EndianTypes.LittleEndian)
+        {
             padded.Slice(0, data.Length).Reverse();
         }
         return BitConverter.ToInt32(padded);

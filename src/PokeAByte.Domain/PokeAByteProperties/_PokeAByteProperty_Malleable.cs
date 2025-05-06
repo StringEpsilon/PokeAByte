@@ -65,19 +65,21 @@ namespace PokeAByte.Domain.PokeAByteProperties
 
                 _addressString = value;
                 _hasAddressParameter = false;
-                _addressExpression = !string.IsNullOrEmpty(value) 
+                _addressExpression = !string.IsNullOrEmpty(value)
                     ? new Expression(value)
                     : null;
                 try
                 {
-                    if (_addressExpression!=null) {
+                    if (_addressExpression != null)
+                    {
                         _addressExpression.EvaluateParameter += OnParamEvaluation;
                     }
                     IsMemoryAddressSolved = AddressMath.TrySolve(_addressExpression, Instance.Variables, out var solvedAddress);
-                    if (_addressExpression!=null) {
+                    if (_addressExpression != null)
+                    {
                         _addressExpression.EvaluateParameter -= OnParamEvaluation;
                     }
-                    
+
                     if (IsMemoryAddressSolved == false)
                     {
                         _address = null;
@@ -131,10 +133,11 @@ namespace PokeAByte.Domain.PokeAByteProperties
             get => _bits;
             set
             {
-                if (value != _bits) {
+                if (value != _bits)
+                {
                     _bits = value;
-                    _bitIndexes = value != null 
-                        ? PropertyLogic.ParseBits(value) 
+                    _bitIndexes = value != null
+                        ? PropertyLogic.ParseBits(value)
                         : null;
                     FieldsChanged.Add("bits");
                 }

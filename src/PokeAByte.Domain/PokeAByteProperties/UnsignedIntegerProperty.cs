@@ -24,8 +24,7 @@ public class UnsignedIntegerProperty : PokeAByteProperty, IPokeAByteProperty
         {
             return (uint)data[0];
         }
-        // With less than 4 bytes, we have to pad the value before using the bitconverter:
-        if (data.Length >= 4) 
+        if (data.Length >= 4)
         {
             return BitConverter.ToUInt32(data.ReverseBytesIfLE(_endian), 0);
         }
