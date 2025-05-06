@@ -22,7 +22,6 @@ namespace PokeAByte.Application
         public bool Initalized { get; private set; }
         public IPokeAByteDriver? Driver { get; private set; }
         public IPokeAByteMapper? Mapper { get; private set; }
-        public IPlatformOptions? PlatformOptions { get; private set; }
         public IMemoryManager MemoryContainerManager { get; private set; }
         public Dictionary<string, object?> State { get; private set; }
         public Dictionary<string, object?> Variables { get; private set; }
@@ -77,7 +76,6 @@ namespace PokeAByte.Application
             Driver?.Disconnect();
             Driver = null;
             Mapper = null;
-            PlatformOptions = null;
             BlocksToRead = null;
 
             JavascriptModuleInstance = null;
@@ -111,18 +109,6 @@ namespace PokeAByte.Application
                 // Get the file path from the filesystem provider.
                 var mapperContent = await MapperFilesystemProvider.LoadContentAsync(mapperId);
                 Mapper = PokeAByteMapperXmlFactory.LoadMapperFromFile(this, mapperContent.Xml);
-
-                PlatformOptions = Mapper.Metadata.GamePlatform switch
-                {
-                    "NES" => new NES_PlatformOptions(),
-                    "SNES" => new SNES_PlatformOptions(),
-                    "GB" => new GB_PlatformOptions(),
-                    "GBC" => new GBC_PlatformOptions(),
-                    "GBA" => new GBA_PlatformOptions(),
-                    "PSX" => new PSX_PlatformOptions(),
-                    "NDS" => new NDS_PlatformOptions(),
-                    _ => throw new Exception($"Unknown game platform {Mapper.Metadata.GamePlatform}.")
-                };
 
                 var engineOptions = new Options
                 {
@@ -163,7 +149,7 @@ namespace PokeAByte.Application
                 {
                     _logger.LogInformation("Using default driver memory read ranges.");
 
-                    BlocksToRead = PlatformOptions.Ranges.ToList();
+                    BlocksToRead = Mapper.PlatformOptions.Ranges.ToList();
                 }
 
                 // Read once
@@ -220,7 +206,6 @@ namespace PokeAByte.Application
         private async Task Read()
         {
             if (Driver == null) throw new Exception("Driver is null.");
-            if (PlatformOptions == null) throw new Exception("Platform options are null.");
             if (Mapper == null) throw new Exception("Mapper is null.");
             if (BlocksToRead == null) throw new Exception("BlocksToRead is null.");
 

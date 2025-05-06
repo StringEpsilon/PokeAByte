@@ -55,8 +55,6 @@ public class StringProperty : PokeAByteProperty, IPokeAByteProperty
 
     protected override object? ToValue(byte[] data)
     {
-        if (Instance == null) throw new Exception("Instance is NULL.");
-        if (Instance.PlatformOptions == null) throw new Exception("Instance.PlatformOptions is NULL.");
         if (ComputedReference == null) { throw new Exception("ReferenceObject is NULL."); }
 
         string?[] results = Array.Empty<string>();
@@ -66,7 +64,7 @@ public class StringProperty : PokeAByteProperty, IPokeAByteProperty
             // For strings that have characters mapper to more than a single byte.
             results = data.Chunk(Size.Value).Select(b =>
             {
-                var value = b.ReverseBytesIfBE(Instance.PlatformOptions.EndianType).get_ulong_be();
+                var value = b.ReverseBytesIfBE(_endian).get_ulong_be();
 
                 var referenceItem = ComputedReference.Values.SingleOrDefault(x => x.Key == value);
                 return referenceItem?.Value?.ToString() ?? null;

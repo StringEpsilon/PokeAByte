@@ -21,6 +21,7 @@
         public string? AfterReadValueFunction { get; set; }
 
         public string? BeforeWriteValueFunction { get; set; }
+        public EndianTypes EndianType { get; set; }
     }
 
     public interface IPokeAByteProperty

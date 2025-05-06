@@ -11,6 +11,9 @@ namespace PokeAByte.Domain.PokeAByteProperties
         private int? _length { get; set; }
         private int? _size { get; set; }
         private string? _bits { get; set; }
+
+        private int[]? _bitIndexes;
+
         private string? _reference { get; set; }
         private string? _description { get; set; }
         private object? _value { get; set; }
@@ -128,12 +131,17 @@ namespace PokeAByte.Domain.PokeAByteProperties
             get => _bits;
             set
             {
-                if (_bits == value) return;
-
-                FieldsChanged.Add("bits");
-                _bits = value;
+                if (value != _bits) {
+                    _bits = value;
+                    _bitIndexes = value != null 
+                        ? PropertyLogic.ParseBits(value) 
+                        : null;
+                    FieldsChanged.Add("bits");
+                }
             }
         }
+
+        internal int[]? BitIndexes => _bitIndexes;
 
         public string? Reference
         {

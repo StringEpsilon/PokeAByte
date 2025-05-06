@@ -26,6 +26,7 @@ namespace PokeAByte.Domain.Interfaces
         MemorySection Memory { get; }
         Dictionary<string, IPokeAByteProperty> Properties { get; }
         Dictionary<string, ReferenceItems> References { get; }
+        public IPlatformOptions PlatformOptions { get; }
 
         /// <summary>
         /// Copies all properties under the source path into the appopriate desitnation path properties. <br/>

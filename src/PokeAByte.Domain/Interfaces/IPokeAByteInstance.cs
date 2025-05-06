@@ -9,7 +9,6 @@
         List<IClientNotifier> ClientNotifiers { get; }
         IPokeAByteDriver? Driver { get; }
         IPokeAByteMapper? Mapper { get; }
-        IPlatformOptions? PlatformOptions { get; }
         Task ResetState();
         Task Load(IPokeAByteDriver driver, string mapperId);
 

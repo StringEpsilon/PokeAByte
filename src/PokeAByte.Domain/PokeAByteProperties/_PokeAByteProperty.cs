@@ -9,12 +9,14 @@ namespace PokeAByte.Domain.PokeAByteProperties
         private readonly string _originalAddressString;
         private Expression? _addressExpression;
         private bool _hasAddressParameter;
+        protected EndianTypes _endian; 
         
         public PokeAByteProperty(IPokeAByteInstance instance, PropertyAttributes attributes)
         {
             Instance = instance;
             Path = attributes.Path;
             Type = attributes.Type;
+            _endian = attributes.EndianType;
 
             MemoryContainer = attributes.MemoryContainer;
             AddressString = attributes.Address;
@@ -72,12 +74,9 @@ namespace PokeAByte.Domain.PokeAByteProperties
         //Not sure why FromValue and ToValue are protected? I would like to be able to convert
         //values to bytes without having to handle or copy/paste for each different property type,
         //so I am going to expose it
-        public byte[] BytesFromValue(string value) 
-            => FromValue(value);
-        public object? ObjectFromBytes(byte[] bytes)
-            => ToValue(bytes);
-        public byte[] BytesFromFullValue()
-            => FromValue(FullValue?.ToString() ?? "");
+        public byte[] BytesFromValue(string value) => FromValue(value);
+        public object? ObjectFromBytes(byte[] bytes) => ToValue(bytes);
+        public byte[] BytesFromFullValue() => FromValue(FullValue?.ToString() ?? "");
         public HashSet<string> FieldsChanged { get; } = [];
 
         public void ProcessLoop(IMemoryManager memoryManager, bool reloadAddresses)
@@ -255,47 +254,8 @@ namespace PokeAByte.Domain.PokeAByteProperties
 
         public byte[] BytesFromBits(byte[] bytes)
         {
-            if (string.IsNullOrEmpty(Bits)) return bytes;
-            int[] indexes;
-            ReadOnlySpan<char> bitsSpan = Bits.AsSpan();
-            if (bitsSpan.Contains('-'))
-            {
-                var dashIndex = bitsSpan.IndexOf('-');
-                var part1 = bitsSpan.Slice(0, dashIndex);
-                var part2 = bitsSpan.Slice(dashIndex + 1);
-
-                if (int.TryParse(part1, out int start) && int.TryParse(part2, out int end))
-                {
-                    indexes = Enumerable.Range(start, end - start + 1).ToArray();
-                }
-                else
-                {
-                    throw new ArgumentException($"Invalid format for attribute Bits ({Bits}).");
-                }
-            }
-            else if (bitsSpan.Contains(','))
-            {
-                indexes = new int[bitsSpan.Count(',') + 1];
-                int x = 0;
-                foreach (var range in bitsSpan.Split(','))
-                {
-                    indexes[x++] = int.TryParse(bitsSpan[range], out int number)
-                        ? number
-                        : throw new ArgumentException($"Invalid format for attribute Bits ({Bits}).");
-                }
-            }
-            else
-            {
-                if (int.TryParse(bitsSpan, out int index))
-                {
-                    indexes = [index];
-                }
-                else
-                {
-                    throw new ArgumentException($"Invalid format for attribute Bits ({Bits}) for path {Path}.");
-                }
-            }
-
+            if (BitIndexes == null) return bytes;
+            int[] indexes = this.BitIndexes;
             var i = 0;
             var inputBits = new BitArray(bytes);
             var outputBits = new BitArray(bytes.Length * 8);
@@ -305,11 +265,10 @@ namespace PokeAByte.Domain.PokeAByteProperties
                 outputBits[i] = inputBits[x];
                 i += 1;
             }
-
             outputBits.CopyTo(bytes, 0);
-
             return bytes;
         }
+
         public object? CalculateObjectValue(byte[] bytes)
         {
             var value = ToValue(bytes);
@@ -334,6 +293,7 @@ namespace PokeAByte.Domain.PokeAByteProperties
 
             return value;
         }
+
         public async Task WriteValue(string value, bool? freeze)
         {
             if (Bytes == null)
@@ -354,56 +314,21 @@ namespace PokeAByte.Domain.PokeAByteProperties
                 bytes = FromValue(value);
             }
 
-            if (string.IsNullOrEmpty(Bits) == false)
+            if (BitIndexes != null)
             {
-                int[] indexes;
-
-                if (Bits.Contains('-'))
-                {
-                    var parts = Bits.Split('-');
-
-                    if (int.TryParse(parts[0], out int start) && int.TryParse(parts[1], out int end))
-                    {
-                        indexes = Enumerable.Range(start, end - start + 1).ToArray();
-                    }
-                    else
-                    {
-                        throw new ArgumentException($"Invalid format for attribute Bits ({Bits}) for path {Path}.");
-                    }
-                }
-                else if (Bits.Contains(','))
-                {
-                    indexes = Bits.Split(',')
-                                   .Select(x => int.TryParse(x, out int num) ? num : throw new ArgumentException($"Invalid format for attribute Bits ({Bits}) for path {Path}."))
-                                   .ToArray();
-                }
-                else
-                {
-                    if (int.TryParse(Bits, out int index))
-                    {
-                        indexes = [index];
-                    }
-                    else
-                    {
-                        throw new ArgumentException($"Invalid format for attribute Bits ({Bits}) for path {Path}.");
-                    }
-                }
-
                 var inputBits = new BitArray(bytes);
                 var outputBits = new BitArray(Bytes);
 
-                for (var i = 0; i < indexes.Length; i++)
+                for (var i = 0; i < BitIndexes.Length; i++)
                 {
-                    outputBits[indexes[i]] = inputBits[i];
+                    outputBits[BitIndexes[i]] = inputBits[i];
                 }
-
                 outputBits.CopyTo(bytes, 0);
             }
 
             if (Instance.GetModuleFunctionResult(BeforeWriteValueFunction, this) == false)
             {
                 // They want to do it themselves entirely in Javascript.
-
                 return;
             }
 
