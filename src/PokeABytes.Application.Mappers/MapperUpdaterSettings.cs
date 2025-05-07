@@ -8,12 +8,16 @@ public record MapperUpdaterSettings
 {
     [JsonPropertyName("always_ignore_updates")]
     public bool AlwaysIgnoreUpdates { get; set; }
+    
     [JsonPropertyName("ignore_updates_until")]
     public DateTimeOffset? IgnoreUpdatesUntil { get; set; }
+
     [JsonPropertyName("mapper_download_base_url")]
     public string? MapperDownloadBaseUrl { get; set; }
+
     [JsonPropertyName("archive_limit")]
     public int ArchiveLimit { get; set; } = 10;
+
     [JsonPropertyName("requires_update")]
     public bool RequiresUpdate { get; set; } = false;
 
@@ -43,13 +47,14 @@ public record MapperUpdaterSettings
             return JsonSerializer
                 .Deserialize<MapperUpdaterSettings>(jsonData) ?? new MapperUpdaterSettings();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             logger.LogWarning($"Failed to parse {MapperEnvironment.MapperUpdateSettingsFile}. " +
                               $"Mapper update settings failed to load.");
             return new MapperUpdaterSettings();
         }
     }
+
     public void SaveChanges(ILogger logger)
     {
         var jsonData = JsonSerializer.Serialize(this);

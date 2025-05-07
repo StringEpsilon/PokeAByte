@@ -4,6 +4,7 @@ using PokeAByte.Domain.Interfaces;
 using PokeAByte.Domain.Models;
 using PokeAByte.Domain.Models.Mappers;
 using PokeAByte.Domain.Models.Properties;
+using PokeAByte.Web.Services.Drivers;
 
 namespace PokeAByte.Web.Controllers;
 
@@ -31,24 +32,18 @@ public class MapperController : ControllerBase
 {
 
     public IPokeAByteInstance Instance { get; }
+
+    private readonly DriverService _driverService;
     private readonly AppSettings _appSettings;
-    public readonly IBizhawkMemoryMapDriver _bizhawkMemoryMapDriver;
-    public readonly IRetroArchUdpPollingDriver _retroArchUdpPollingDriver;
-    public readonly IStaticMemoryDriver _staticMemoryDriver;
 
     public MapperController(
         IPokeAByteInstance pokeAByteInstance,
         AppSettings appSettings,
-        IBizhawkMemoryMapDriver bizhawkMemoryMapDriver,
-        IRetroArchUdpPollingDriver retroArchUdpPollingDriver,
-        IStaticMemoryDriver nullDriver)
+        DriverService driverService)
     {
         Instance = pokeAByteInstance;
-
+        _driverService = driverService;
         _appSettings = appSettings;
-        _bizhawkMemoryMapDriver = bizhawkMemoryMapDriver;
-        _retroArchUdpPollingDriver = retroArchUdpPollingDriver;
-        _staticMemoryDriver = nullDriver;
     }
 
     [HttpGet]
@@ -76,23 +71,19 @@ public class MapperController : ControllerBase
     [HttpPut]
     public async Task<ActionResult> ChangeMapper(MapperReplaceModel model)
     {
-        if (model.Driver == "bizhawk")
-        {
-            await Instance.Load(_bizhawkMemoryMapDriver, model.Id);
+        switch (model.Driver) {
+            case DriverModels.Bizhawk:
+                await Instance.Load(await _driverService.GetBizhawkDriver(), model.Id);
+                break;
+            case DriverModels.RetroArch:
+                await Instance.Load(await _driverService.GetRetroArchDriver(), model.Id);
+                break;
+            case DriverModels.StaticMemory:
+                await Instance.Load(_driverService.StaticMemory, model.Id);
+                break;
+            default: 
+                return ApiHelper.BadRequestResult("A valid driver was not supplied.");
         }
-        else if (model.Driver == "retroarch")
-        {
-            await Instance.Load(_retroArchUdpPollingDriver, model.Id);
-        }
-        else if (model.Driver == "staticMemory")
-        {
-            await Instance.Load(_staticMemoryDriver, model.Id);
-        }
-        else
-        {
-            return ApiHelper.BadRequestResult("A valid driver was not supplied.");
-        }
-
         return Ok();
     }
 

@@ -2,7 +2,6 @@
 using PokeAByte.Domain.Models;
 using PokeAByte.Domain.Models.Mappers;
 using PokeAByte.Domain.Models.Properties;
-using PokeAByte.Web.Controllers;
 using PokeAByte.Web.Services.Drivers;
 
 namespace PokeAByte.Web.Services.Mapper;
@@ -27,9 +26,7 @@ public class MapperClientService(
         get => instance.Initalized && instance.Mapper != null;
     }
 
-    public async Task<Result> ChangeMapper(string mapperId,
-        Action<int>? driverTestActionHandler,
-        Action<int>? mapperTestActionHandler)
+    public async Task<Result> ChangeMapper(string mapperId)
     {
         _currentAttempt = 0;
         var connected = false;
@@ -37,12 +34,13 @@ public class MapperClientService(
         {
             try
             {
-                var driverResult = await driverService.TestDrivers(driverTestActionHandler);
-                if (string.IsNullOrWhiteSpace(driverResult))
-                    return Result.Failure(Error.FailedToLoadMapper,
-                        "No driver could connect to an emulator. Check your emulator settings.");
-                LoadedDriver = driverResult;
-                var result = await ReplaceMapper(mapperId);
+                var driver = await driverService.TestDrivers();
+                if (driver == null)
+                    return Result.Failure(
+                        Error.FailedToLoadMapper,
+                        "No driver could connect to an emulator. Check your emulator settings."
+                    );
+                var result = await ReplaceMapper(mapperId, driver);
                 connected = result.IsSuccess;
             }
             catch (Exception e)
@@ -51,19 +49,17 @@ public class MapperClientService(
                 connected = false;
             }
             _currentAttempt += 1;
-            mapperTestActionHandler?.Invoke(_currentAttempt);
             await Task.Delay(MaxWaitMs);
         }
         return connected ? Result.Success() : Result.Failure(Error.FailedToLoadMapper, "Max attempts reached.");
     }
 
-    private async Task<Result> ReplaceMapper(string mapperId)
+    private async Task<Result> ReplaceMapper(string mapperId, IPokeAByteDriver driver)
     {
         await instance.ResetState();
-        var mapper = new MapperReplaceModel(mapperId, LoadedDriver);
         try
         {
-            var result = await LoadMapper(mapper);
+            var result = await LoadMapper(mapperId, driver);
             return result
                 ? Result.Success()
                 : Result.Failure(Error.FailedToLoadMapper, "Please see logs for more info.");
@@ -162,25 +158,25 @@ public class MapperClientService(
         await instance.ResetState();
     }
 
-    private async Task<bool> LoadMapper(MapperReplaceModel mapper)
+    private async Task<bool> LoadMapper(string mapperId, IPokeAByteDriver driver)
     {
         if (!instance.Initalized || instance.Mapper == null)
         {
             logger.LogDebug("Poke-A-Byte instance has not been initialized!");
         }
         logger.LogDebug("Replacing mapper.");
-        switch (mapper.Driver)
+        switch (driver)
         {
-            case DriverModels.Bizhawk:
-                await instance.Load(driverService.Bizhawk, mapper.Id);
+            case IBizhawkMemoryMapDriver:
+                await instance.Load(driver, mapperId);
                 logger.LogDebug("Bizhawk driver loaded.");
                 break;
-            case DriverModels.RetroArch:
-                await instance.Load(driverService.RetroArch, mapper.Id);
+            case IRetroArchUdpPollingDriver:
+                await instance.Load(driver, mapperId);
                 logger.LogDebug("Retroarch driver loaded.");
                 break;
-            case DriverModels.StaticMemory:
-                await instance.Load(driverService.StaticMemory, mapper.Id);
+            case IStaticMemoryDriver:
+                await instance.Load(driver, mapperId);
                 logger.LogDebug("Static memory driver loaded.");
                 break;
             default:

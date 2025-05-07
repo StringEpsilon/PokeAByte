@@ -46,10 +46,7 @@ public class MapperServiceController : ControllerBase
     {
         try
         {
-            var mapperResult = await _mapperClientService.ChangeMapper(
-                mapperId,
-                null,
-                null);
+            var mapperResult = await _mapperClientService.ChangeMapper(mapperId);
             if (mapperResult.IsSuccess)
             {
                 return Ok();
