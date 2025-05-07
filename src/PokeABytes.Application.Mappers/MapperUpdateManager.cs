@@ -17,7 +17,6 @@ public class MapperUpdateManager : IMapperUpdateManager
 
     public MapperUpdateManager(ILogger<MapperUpdateManager> logger,
         AppSettings appSettings,
-        IHttpClientFactory httpClientFactory,
         MapperUpdaterSettings mapperUpdaterSettingsManager,
         IGithubRestApi githubRestApi,
         IMapperArchiveManager mapperArchiveManager)

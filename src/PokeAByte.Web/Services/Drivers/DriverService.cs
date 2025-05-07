@@ -6,7 +6,16 @@ using PokeAByte.Infrastructure.Drivers.UdpPolling;
 
 namespace PokeAByte.Web.Services.Drivers;
 
-public class DriverService
+public interface IDriverService
+{
+    IStaticMemoryDriver StaticMemory { get; }
+
+    Task<IBizhawkMemoryMapDriver> GetBizhawkDriver();
+    Task<IRetroArchUdpPollingDriver> GetRetroArchDriver();
+    Task<IPokeAByteDriver?> TestDrivers();
+}
+
+public class DriverService : IDriverService
 {
     public static readonly int MaxAttempts = 25;
     private const int MaxPauseMs = 50;
@@ -26,15 +35,15 @@ public class DriverService
     }
 
     public IStaticMemoryDriver StaticMemory => _staticMemory;
-    
-    public async Task<IBizhawkMemoryMapDriver> GetBizhawkDriver() 
+
+    public async Task<IBizhawkMemoryMapDriver> GetBizhawkDriver()
     {
-        var driver =  new BizhawkMemoryMapDriver(_appSettings);
+        var driver = new BizhawkMemoryMapDriver(_appSettings);
         await driver.EstablishConnection();
         return driver;
     }
 
-    public async Task<IRetroArchUdpPollingDriver> GetRetroArchDriver() 
+    public async Task<IRetroArchUdpPollingDriver> GetRetroArchDriver()
     {
         var driver = new RetroArchUdpDriver(_driverLogger, _appSettings);
         await driver.EstablishConnection();

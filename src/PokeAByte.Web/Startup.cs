@@ -61,10 +61,10 @@ public static class Startup
         services.AddSingleton<IGithubRestApi, GithubRestApi>();
         services.AddSingleton<ScriptConsole>();
         services.AddSingleton<IStaticMemoryDriver, StaticMemoryDriver>();
-        services.AddSingleton<DriverService>();
         services.AddSingleton<IClientNotifier, WebSocketClientNotifier>();
+        services.AddSingleton<IInstanceService, InstanceService>();
+        services.AddSingleton<IDriverService, DriverService>();
         services.AddSingleton<MapperClientService>();
-        services.AddSingleton<IPokeAByteInstance, PokeAByteInstance>();
     }
 
     public static void ConfigureApp(this WebApplication app)

@@ -9,9 +9,10 @@ namespace PokeAByte.Web.Services.Mapper;
 public class MapperClientService(
     IMapperFilesystemProvider mapperFs,
     ILogger<MapperClientService> logger,
-    IPokeAByteInstance instance,
+    IInstanceService instanceService,
+    IMapperFilesystemProvider mapperFilesystemProvider,
     AppSettings appSettings,
-    DriverService driverService
+    IDriverService driverService
 )
 {
     private int _currentAttempt = 0;
@@ -21,10 +22,7 @@ public class MapperClientService(
     //Todo: change this in settings
     public string LoadedDriver { get; set; } = DriverModels.Bizhawk;
 
-    public bool IsCurrentlyConnected
-    {
-        get => instance.Initalized && instance.Mapper != null;
-    }
+    public bool IsCurrentlyConnected => instanceService.Instance != null;
 
     public async Task<Result> ChangeMapper(string mapperId)
     {
@@ -56,7 +54,7 @@ public class MapperClientService(
 
     private async Task<Result> ReplaceMapper(string mapperId, IPokeAByteDriver driver)
     {
-        await instance.ResetState();
+        await instanceService.StopProcessing();
         try
         {
             var result = await LoadMapper(mapperId, driver);
@@ -83,7 +81,8 @@ public class MapperClientService(
 
     public Result<List<GlossaryItemModel>> GetGlossaryByReferenceKey(string key)
     {
-        if (instance.Initalized == false || instance.Mapper == null)
+        var instance = instanceService.Instance;
+        if (instance == null)
         {
             return Result.Failure<List<GlossaryItemModel>>(Error.NoGlossaryItemsFound);
         }
@@ -101,7 +100,8 @@ public class MapperClientService(
 
     public Result<MapperMetaModel> GetMetaData()
     {
-        if (instance.Initalized == false || instance.Mapper == null)
+        var instance = instanceService.Instance;
+        if (instance == null)
         {
             return Result.Failure<MapperMetaModel>(Error.MapperNotLoaded);
         }
@@ -123,7 +123,8 @@ public class MapperClientService(
         {
             return Result.Failure(Error.StringIsNullOrEmpty);
         }
-        if (!instance.Initalized || instance.Mapper is null)
+        var instance = instanceService.Instance;
+        if (instance == null)
         {
             return Result.Failure<MapperMetaModel>(Error.MapperNotLoaded);
         }
@@ -150,17 +151,21 @@ public class MapperClientService(
 
     public async Task UnloadMapper()
     {
-        if (!instance.Initalized || instance.Mapper == null)
-        {
-            return;
-        }
-
-        await instance.ResetState();
+        await instanceService.StopProcessing();
     }
 
     private async Task<bool> LoadMapper(string mapperId, IPokeAByteDriver driver)
     {
-        if (!instance.Initalized || instance.Mapper == null)
+        // Load the mapper file.
+        if (string.IsNullOrEmpty(mapperId))
+        {
+            throw new ArgumentException("ID was NULL or empty.", nameof(mapperId));
+        }
+
+        // Get the file path from the filesystem provider.
+        var mapperContent = await mapperFilesystemProvider.LoadContentAsync(mapperId);
+        var instance = instanceService.Instance;
+        if (instance == null)
         {
             logger.LogDebug("Poke-A-Byte instance has not been initialized!");
         }
@@ -168,21 +173,21 @@ public class MapperClientService(
         switch (driver)
         {
             case IBizhawkMemoryMapDriver:
-                await instance.Load(driver, mapperId);
+                await instanceService.LoadMapper(mapperContent, driver);
                 logger.LogDebug("Bizhawk driver loaded.");
                 break;
             case IRetroArchUdpPollingDriver:
-                await instance.Load(driver, mapperId);
+                await instanceService.LoadMapper(mapperContent, driver);
                 logger.LogDebug("Retroarch driver loaded.");
                 break;
             case IStaticMemoryDriver:
-                await instance.Load(driver, mapperId);
+                await instanceService.LoadMapper(mapperContent, driver);
                 logger.LogDebug("Static memory driver loaded.");
                 break;
             default:
                 logger.LogError("A valid driver was not supplied.");
                 break;
         }
-        return instance.Initalized && instance.Mapper != null;
+        return instanceService.Instance != null;
     }
 }

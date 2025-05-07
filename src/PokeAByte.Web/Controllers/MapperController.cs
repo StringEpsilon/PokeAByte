@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using PokeAByte.Application.Mappers;
 using PokeAByte.Domain;
 using PokeAByte.Domain.Interfaces;
 using PokeAByte.Domain.Models;
 using PokeAByte.Domain.Models.Mappers;
 using PokeAByte.Domain.Models.Properties;
 using PokeAByte.Web.Services.Drivers;
+using PokeAByte.Web.Services.Mapper;
 
 namespace PokeAByte.Web.Controllers;
 
@@ -30,39 +32,40 @@ static class MapperHelper
 [Route("mapper")]
 public class MapperController : ControllerBase
 {
-
-    public IPokeAByteInstance Instance { get; }
-
-    private readonly DriverService _driverService;
+    private readonly IDriverService _driverService;
     private readonly AppSettings _appSettings;
+    private readonly IMapperFilesystemProvider _mapperFilesystemProvider;
+    private readonly IInstanceService _instanceService;
 
     public MapperController(
-        IPokeAByteInstance pokeAByteInstance,
         AppSettings appSettings,
-        DriverService driverService)
+        IDriverService driverService,
+        IMapperFilesystemProvider mapperFilesystemProvider,
+        IInstanceService instanceService)
     {
-        Instance = pokeAByteInstance;
         _driverService = driverService;
         _appSettings = appSettings;
+        _mapperFilesystemProvider = mapperFilesystemProvider;
+        _instanceService = instanceService;
     }
 
     [HttpGet]
     public ActionResult<MapperModel> GetMapper()
     {
-        if (Instance.Initalized == false || Instance.Mapper == null)
+        if (_instanceService.Instance == null)
             return ApiHelper.MapperNotLoaded();
 
         var model = new MapperModel()
         {
             Meta = new MapperMetaModel()
             {
-                Id = Instance.Mapper.Metadata.Id,
-                GameName = Instance.Mapper.Metadata.GameName,
-                GamePlatform = Instance.Mapper.Metadata.GamePlatform,
+                Id = _instanceService.Instance.Mapper.Metadata.Id,
+                GameName = _instanceService.Instance.Mapper.Metadata.GameName,
+                GamePlatform = _instanceService.Instance.Mapper.Metadata.GamePlatform,
                 MapperReleaseVersion = _appSettings.MAPPER_VERSION
             },
-            Properties = Instance.Mapper.Properties.Values,
-            Glossary = Instance.Mapper.References.Values.MapToDictionaryGlossaryItemModel()
+            Properties = _instanceService.Instance.Mapper.Properties.Values,
+            Glossary = _instanceService.Instance.Mapper.References.Values.MapToDictionaryGlossaryItemModel()
         };
 
         return Ok(model);
@@ -71,15 +74,16 @@ public class MapperController : ControllerBase
     [HttpPut]
     public async Task<ActionResult> ChangeMapper(MapperReplaceModel model)
     {
+        var mapperContent = await _mapperFilesystemProvider.LoadContentAsync(model.Id);
         switch (model.Driver) {
             case DriverModels.Bizhawk:
-                await Instance.Load(await _driverService.GetBizhawkDriver(), model.Id);
+                await _instanceService.LoadMapper(mapperContent, await _driverService.GetBizhawkDriver());
                 break;
             case DriverModels.RetroArch:
-                await Instance.Load(await _driverService.GetRetroArchDriver(), model.Id);
+                await _instanceService.LoadMapper(mapperContent, await _driverService.GetRetroArchDriver());
                 break;
             case DriverModels.StaticMemory:
-                await Instance.Load(_driverService.StaticMemory, model.Id);
+                await _instanceService.LoadMapper(mapperContent, _driverService.StaticMemory);
                 break;
             default: 
                 return ApiHelper.BadRequestResult("A valid driver was not supplied.");
@@ -90,10 +94,11 @@ public class MapperController : ControllerBase
     [HttpGet("meta")]
     public ActionResult<MapperMetaModel> GetMeta()
     {
-        if (Instance.Initalized == false || Instance.Mapper == null)
+        var instance = _instanceService.Instance;
+        if (instance == null)
             return ApiHelper.MapperNotLoaded();
 
-        var meta = Instance.Mapper.Metadata;
+        var meta = instance.Mapper.Metadata;
         var model = new MapperMetaModel
         {
             Id = meta.Id,
@@ -109,12 +114,13 @@ public class MapperController : ControllerBase
     [Produces("text/plain")]
     public ActionResult GetValueAsync(string path)
     {
-        if (Instance.Initalized == false || Instance.Mapper == null)
+        var instance = _instanceService.Instance;
+        if (instance == null)
             return ApiHelper.MapperNotLoaded();
 
         path = path.StripEndingRoute().FromRouteToPath();
 
-        var prop = Instance.Mapper.Properties[path];
+        var prop = instance.Mapper.Properties[path];
 
         if (prop == null)
         {
@@ -132,21 +138,22 @@ public class MapperController : ControllerBase
     [HttpGet("properties")]
     public ActionResult<IEnumerable<IPokeAByteProperty>> GetProperties()
     {
-        if (Instance.Initalized == false || Instance.Mapper == null)
+        var instance = _instanceService.Instance;
+        if (instance == null)
             return ApiHelper.MapperNotLoaded();
 
-        return Ok(Instance.Mapper.Properties.Values);
+        return Ok(instance.Mapper.Properties.Values);
     }
 
     [HttpGet("properties/{**path}/")]
     public ActionResult<IPokeAByteProperty?> GetProperty(string path)
     {
-        if (Instance.Initalized == false || Instance.Mapper == null)
+        var instance = _instanceService.Instance;
+        if (instance == null)
             return ApiHelper.MapperNotLoaded();
-
         path = path.StripEndingRoute().FromRouteToPath();
 
-        var prop = Instance.Mapper.Properties[path];
+        var prop = instance.Mapper.Properties[path];
 
         if (prop == null)
         {
@@ -159,14 +166,13 @@ public class MapperController : ControllerBase
     [HttpPost("set-property-value")]
     public async Task<ActionResult> UpdatePropertyValueAsync(UpdatePropertyValueModel model)
     {
-        Console.WriteLine(Instance.Initalized);
-        Console.WriteLine(Instance.Mapper != null);
-        if (Instance.Initalized == false || Instance.Mapper == null)
+        var instance = _instanceService.Instance;
+        if (instance == null)
             return ApiHelper.MapperNotLoaded();
 
         var path = model.Path.StripEndingRoute().FromRouteToPath();
 
-        var prop = Instance.Mapper.Properties[path];
+        var prop = instance.Mapper.Properties[path];
 
         if (prop == null)
         {
@@ -186,7 +192,8 @@ public class MapperController : ControllerBase
     [HttpPost("set-properties-by-bits")]
     public async Task<ActionResult> UpdatePropertyByBitsAsync(List<UpdatePropertyValueModel> model)
     {
-        if (Instance.Initalized == false || Instance.Mapper == null)
+        var instance = _instanceService.Instance;
+        if (instance == null)
             return ApiHelper.MapperNotLoaded();
 
         if (model.Count == 0)
@@ -202,7 +209,7 @@ public class MapperController : ControllerBase
                 //Since we are already checking if the value is null, we shouldn't need to worry
                 //about it being string.Empty. I just want to stop the compiler from complaining 
                 return new KeyValuePair<IPokeAByteProperty, string>
-                    (Instance.Mapper.Properties[path], x.Value?.ToString() ?? string.Empty);
+                    (instance.Mapper.Properties[path], x.Value?.ToString() ?? string.Empty);
             })
             .ToDictionary();
         //Make sure the addresses are the same
@@ -241,13 +248,14 @@ public class MapperController : ControllerBase
     [HttpPost("set-property-bytes")]
     public async Task<ActionResult> UpdatePropertyBytesAsync(UpdatePropertyBytesModel model)
     {
-        if (Instance.Initalized == false || Instance.Mapper == null)
+        var instance = _instanceService.Instance;
+        if (instance == null)
             return ApiHelper.MapperNotLoaded();
 
         var path = model.Path.StripEndingRoute().FromRouteToPath();
         var actualBytes = Array.ConvertAll(model.Bytes, x => (byte)x);
 
-        var prop = Instance.Mapper.Properties[path];
+        var prop = instance.Mapper.Properties[path];
 
         if (prop == null)
         {
@@ -267,12 +275,13 @@ public class MapperController : ControllerBase
     [HttpPost("set-property-frozen")]
     public async Task<ActionResult> FreezePropertyAsync(UpdatePropertyFreezeModel model)
     {
-        if (Instance.Initalized == false || Instance.Mapper == null)
+        var instance = _instanceService.Instance;
+        if (instance == null)
             return ApiHelper.MapperNotLoaded();
 
         var path = model.Path.StripEndingRoute().FromRouteToPath();
 
-        var prop = Instance.Mapper.Properties[path];
+        var prop = instance.Mapper.Properties[path];
 
         if (prop == null)
         {
@@ -299,21 +308,23 @@ public class MapperController : ControllerBase
     [HttpGet("glossary")]
     public ActionResult<Dictionary<string, Dictionary<string, GlossaryItemModel>>> GetGlossary()
     {
-        if (Instance.Initalized == false || Instance.Mapper == null)
+        var instance = _instanceService.Instance;
+        if (instance == null)
             return ApiHelper.MapperNotLoaded();
 
-        return Ok(Instance.Mapper.References.Values.MapToDictionaryGlossaryItemModel());
+        return Ok(instance.Mapper.References.Values.MapToDictionaryGlossaryItemModel());
     }
 
     [HttpGet("glossary/{key}")]
     public ActionResult<IEnumerable<GlossaryItemModel>> GetGlossaryPage(string key)
     {
-        if (Instance.Initalized == false || Instance.Mapper == null)
+        var instance = _instanceService.Instance;
+        if (instance == null)
             return ApiHelper.MapperNotLoaded();
 
         key = key.StripEndingRoute();
 
-        var glossaryItem = Instance.Mapper.References[key];
+        var glossaryItem = instance.Mapper.References[key];
         if (glossaryItem == null)
         {
             return NotFound();
