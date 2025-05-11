@@ -10,13 +10,24 @@ using BizHawk.Emulation.Common;
 
 namespace PokeAByte.Protocol.BizHawk;
 
+internal struct DomainReadInstruction {
+    internal string Domain;
+    internal long RelativeStart;
+    internal long RelativeEnd;
+
+    /// <summary>
+    /// Position of the block in the MFF (first byte).
+    /// </summary>
+    internal uint TransferPosition; 
+}
+
 [ExternalTool("Emulator Data Protocol Server")]
 public sealed class EDPSForm : Form, IExternalToolForm, IDisposable
 {
     public ApiContainer? APIs { get; set; }
 
     [RequiredService]
-    public IMemoryDomains? MemoryDomains { get; set; }
+    public IMemoryDomains MemoryDomains { get; set; } = null!;
 
     private readonly Label MainLabel = new()
     {
@@ -36,7 +47,8 @@ public sealed class EDPSForm : Form, IExternalToolForm, IDisposable
     private EmulatorProtocolServer? _udpServer;
     private ReadBlock[]? _blocks;
     private MemoryMappedViewAccessor? _dataAccessor;
-    private byte[] _dataBuffer = new byte[0];
+    private byte[] _writeBuffer = new byte[0];
+    private DomainReadInstruction[]? _readInstructions;
 
     public EDPSForm()
     {
@@ -75,6 +87,8 @@ public sealed class EDPSForm : Form, IExternalToolForm, IDisposable
         _udpServer = null;
         _dataAccessor?.Dispose();
         _dataAccessor = null;
+        _blocks = [];
+        _readInstructions = null;
         if (File.Exists("/dev/shm/EDPS_MemoryData.bin"))
         {
             File.Delete("/dev/shm/EDPS_MemoryData.bin");
@@ -123,7 +137,7 @@ public sealed class EDPSForm : Form, IExternalToolForm, IDisposable
             throw new InvalidDataException("Setup instruction came with invalid block sizes. ");
         }
         _dataAccessor = this.GetMMFAccessor(totalSize);
-        _dataBuffer = new byte[totalSize];
+        _writeBuffer = new byte[totalSize];
         MainLabel.Text = $"Providing memory data ({totalSize} bytes) to client...";
     }
 
@@ -170,28 +184,40 @@ public sealed class EDPSForm : Form, IExternalToolForm, IDisposable
         {
             return;
         }
+        if (_readInstructions == null) {
+            _readInstructions = new DomainReadInstruction[_blocks.Length];
+            for (int i = 0; i < _blocks.Length; i++)
+            {
+                var block = _blocks[i];
+                var entry = _platform.Domains.First(x => x.Start <= block.GameAddress && x.End >= block.GameAddress + block.Length);
+                var address = block.GameAddress - entry.Start;
+                _readInstructions[i] = new DomainReadInstruction {
+                    Domain = entry.DomainId,
+                    TransferPosition = block.Position,
+                    RelativeStart = address,
+                    RelativeEnd = address + block.Length,
+                };
+            }
+        }
 
-        foreach (var block in _blocks)
+        foreach (var instruction in _readInstructions)
         {
             try
             {
-                var entry = _platform.Domains
-                    .First(x => x.Start <= block.GameAddress && x.End >= block.GameAddress + block.Length);
-                var memoryDomain = MemoryDomains?[entry.DomainId] ?? throw new Exception($"Memory domain not found.");
-                var address = block.GameAddress - entry.Start;
-                APIs.Memory.ReadByteRange(address, block.Length, entry.DomainId).ToArray().CopyTo(_dataBuffer, block.Position);
+                var domain = MemoryDomains[instruction.Domain];
+                if (domain != null) {
+                    int blockPosition = (int)instruction.TransferPosition;
+                    for(long i = instruction.RelativeStart; i <= instruction.RelativeEnd; i++) {
+                        _writeBuffer[blockPosition++] = domain.PeekByte(i);
+                    }
+                }
             }
             catch (Exception ex)
             {
-                MainLabel.Text = $"Error reading {block.GameAddress:x2}: {ex.Message}";
+                MainLabel.Text = $"Error reading {instruction.RelativeStart:x2} in '{instruction.Domain}': {ex.Message}";
             }
         }
-        _dataAccessor.WriteArray(
-            0,
-            _dataBuffer,
-            0,
-            _dataBuffer.Length
-        );
+        _dataAccessor.WriteArray(0, _writeBuffer, 0, _writeBuffer.Length);
     }
 
     public void UpdateValues(ToolFormUpdateType type)
