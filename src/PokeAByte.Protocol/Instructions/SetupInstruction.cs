@@ -16,7 +16,8 @@ public struct SetupInstruction
     [MarshalAs(UnmanagedType.ByValArray, SizeConst = 128)]
     public ReadBlock[] Data;
 
-    public SetupInstruction(ReadBlock[] data) {
+    public SetupInstruction(ReadBlock[] data)
+    {
         BlockCount = data.Length;
         Data = new ReadBlock[128];
         data.CopyTo(Data, 0);
@@ -62,11 +63,13 @@ public struct SetupInstruction
 }
 
 [StructLayout(LayoutKind.Explicit)]
-public struct PingInstruction {
+public struct PingInstruction
+{
     [FieldOffset(0)]
     public Metadata Metadata = new Metadata(Instructions.PING, 0x00);
 
-    public PingInstruction() {
+    public PingInstruction()
+    {
     }
 
     public byte[] GetByteArray()

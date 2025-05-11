@@ -47,7 +47,6 @@ public class PokeAProtocolDriver : IPokeAByteDriver
                     position += _readBlocks[i].Length;
                 }
                 fileSize += _readBlocks[i].Length;
-                Console.WriteLine($"Filesize: {fileSize}");
             }
             try {
                 if (fileSize == 0) {
