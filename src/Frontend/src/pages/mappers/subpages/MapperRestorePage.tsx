@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import { Button } from "../../../components/Button";
 import { useAPI } from "../../../hooks/useAPI";
 import { Store } from "../../../utility/propertyStore";
 import { ArchivedMapper, ArchivedMappers } from "pokeaclient";
-
 
 export function MapperRestorePage() {
 	const filesClient = Store.client.files;
@@ -31,50 +29,59 @@ export function MapperRestorePage() {
 	}
 
 	return (
-		<div className="padding-top">
-			<h5 className="small ">
-				{archives.length} Archives/Backups and {archives.reduce((c, x) => c + x.Mappers.length, 0)} files found
-			</h5>
-			<div className="row wrap">
-				<Button color="blue" onClick={filesClient.openMapperFolder}>OPEN MAPPER FOLDER</Button>
-				<Button color="blue" onClick={filesClient.openMapperFolder}>OPEN ARCHIVE/BACKUP FOLDER</Button>
+		<div>
+			<div>
+				<strong>
+					{archives.length} Archives/Backups and {archives.reduce((c, x) => c + x.Mappers.length, 0)} files found
+				</strong>
 			</div>
-			{archivedMappersApi.result && archives.map((archive, index) => {
-				return (
-					<li key={index} className="row padding surface-container-high">
-						<span className={"material-icons blue-text"}> catching_pokemon </span>
-						<span>
-							{archive.Path}
-						</span>
-						<span >
-							({archive.Mappers.length} files)
-						</span>
-						<span className="max"></span>
-						<Button color="success" onClick={() => setRestoreModal(true)}>
-							Restore
-						</Button>
-						<ConfirmationModal
-							display={restoreModal}
-							title="Warning"
-							confirmLabel="RESTORE!"
-							text="Restoring a set of mappers will archive any current copies of those mappers."
-							onCancel={() => setRestoreModal(false)}
-							onConfirm={() => restoreArchive(archive.Mappers)}
-						/>
-						<Button color="error" onClick={() => setDeleteModal(true)}>
-							Delete
-						</Button>
-						<ConfirmationModal
-							display={deleteModal}
-							title="Warning"
-							confirmLabel="DELETE!"
-							text="Deleting a set of archived mappers cannot be undone. Proceed with caution."
-							onCancel={() => setDeleteModal(false)}
-							onConfirm={() => deleteArchive(archive.Mappers)}
-						/>
-					</li>
-				);
-			})}
+			<div className="row margin-top">
+				<button className="border-blue margin-right" type="button" onClick={filesClient.openMapperFolder}>
+					OPEN MAPPER FOLDER
+				</button>
+				<button className="border-blue" type="button" onClick={filesClient.openMapperFolder}>
+					OPEN ARCHIVE/BACKUP FOLDER
+				</button>
+			</div>
+			<br />
+			<ul className="mapper-archives">
+				{archivedMappersApi.result && archives.map((archive, index) => {
+					return (
+						<li key={index} className="margin-top">
+							<div>
+								<span className={"material-icons blue-text"}> catching_pokemon </span>
+								<span className="margin-right">
+									{archive.Path} ({archive.Mappers.length} files)
+								</span>
+								<span>
+									<button type="button" className="border-green margin-right" onClick={() => setRestoreModal(true)}>
+										Restore
+									</button>
+									<button type="button" className="border-red" onClick={() => setDeleteModal(true)}>
+										Delete
+									</button>
+								</span>
+							</div>
+							<ConfirmationModal
+								display={restoreModal}
+								title="Warning"
+								confirmLabel="RESTORE!"
+								text="Restoring a set of mappers will archive any current copies of those mappers."
+								onCancel={() => setRestoreModal(false)}
+								onConfirm={() => restoreArchive(archive.Mappers)}
+							/>
+							<ConfirmationModal
+								display={deleteModal}
+								title="Warning"
+								confirmLabel="DELETE!"
+								text="Deleting a set of archived mappers cannot be undone. Proceed with caution."
+								onCancel={() => setDeleteModal(false)}
+								onConfirm={() => deleteArchive(archive.Mappers)}
+							/>
+						</li>
+					);
+				})}
+			</ul>
 		</div>
 	);
 }
