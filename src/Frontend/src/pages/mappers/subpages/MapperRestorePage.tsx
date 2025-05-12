@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAPI } from "../../../hooks/useAPI";
 import { Store } from "../../../utility/propertyStore";
 import { ArchivedMapper, ArchivedMappers } from "pokeaclient";
@@ -48,19 +48,34 @@ export function MapperRestorePage() {
 				{archivedMappersApi.result && archives.map((archive, index) => {
 					return (
 						<li key={index} className="margin-top">
+							<details>
+								<summary>
+									<span className={"material-icons"}> catching_pokemon </span>
+									<span>
+										{archive.Path} ({archive.Mappers.length} files)
+									</span>
+									<span>
+										<button type="button" className="border-green margin-right" onClick={() => setRestoreModal(true)}>
+											Restore
+										</button>
+										<button type="button" className="border-red" onClick={() => setDeleteModal(true)}>
+											Delete
+										</button>
+									</span>
+								</summary>
+								<div>
+									<ul>
+										{archive.Mappers.map(archivedMapper => 
+											<li key={archivedMapper.fullPath}>
+												{archivedMapper.pathDisplayName}/{archivedMapper.mapper.display_name}
+												&nbsp;
+												<i>({archivedMapper.mapper.date_created})</i>
+											</li>
+										)}
+									</ul>
+								</div>
+							</details>
 							<div>
-								<span className={"material-icons blue-text"}> catching_pokemon </span>
-								<span className="margin-right">
-									{archive.Path} ({archive.Mappers.length} files)
-								</span>
-								<span>
-									<button type="button" className="border-green margin-right" onClick={() => setRestoreModal(true)}>
-										Restore
-									</button>
-									<button type="button" className="border-red" onClick={() => setDeleteModal(true)}>
-										Delete
-									</button>
-								</span>
 							</div>
 							<ConfirmationModal
 								display={restoreModal}
@@ -96,25 +111,29 @@ type ModalProps = {
 }
 
 function ConfirmationModal(props: ModalProps) {
+	const dialogRef = useRef<HTMLDialogElement>(null);
+	useEffect(() => {
+		if (!!dialogRef.current && props.display) {
+			dialogRef.current.showModal();
+		}
+	}, [!!dialogRef.current, props.display]);
 	if (!props.display) {
 		return null;
 	}
 	return (
-		<>
-			<div className="overlay  active"></div>
-			<dialog className="modal active no-round">
-				{props.title && <h5>{props.title}</h5>}
-				<div>{props.text}</div>
-				<nav className="right-align no-space">
-					<button className="transparent no-round link" onClick={props.onCancel}>
-						CANCEL
-					</button>
-					<button className="transparent no-round link inverse-link" onClick={props.onConfirm}>
-						{props.confirmLabel}
-					</button>
-				</nav>
-			</dialog>
-		</>
+		<dialog ref={dialogRef} onToggle={(e) => e.newState === "closed" && props.onCancel()}>
+			{props.title && <h2>{props.title}</h2>}
+			<p>{props.text}</p>
+			<div>
+				<button className="margin-right" onClick={props.onCancel}>
+					CANCEL
+				</button>
+				<button className="" onClick={props.onConfirm}>
+					{props.confirmLabel}
+				</button>
+			</div>
+		</dialog>
+
 	)
 }
 
