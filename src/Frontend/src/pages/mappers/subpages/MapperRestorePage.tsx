@@ -48,19 +48,34 @@ export function MapperRestorePage() {
 				{archivedMappersApi.result && archives.map((archive, index) => {
 					return (
 						<li key={index} className="margin-top">
+							<details>
+								<summary>
+									<span className={"material-icons"}> catching_pokemon </span>
+									<span>
+										{archive.Path} ({archive.Mappers.length} files)
+									</span>
+									<span>
+										<button type="button" className="border-green margin-right" onClick={() => setRestoreModal(true)}>
+											Restore
+										</button>
+										<button type="button" className="border-red" onClick={() => setDeleteModal(true)}>
+											Delete
+										</button>
+									</span>
+								</summary>
+								<div>
+									<ul>
+										{archive.Mappers.map(archivedMapper => 
+											<li key={archivedMapper.fullPath}>
+												{archivedMapper.pathDisplayName}/{archivedMapper.mapper.display_name}
+												&nbsp;
+												<i>({archivedMapper.mapper.date_created})</i>
+											</li>
+										)}
+									</ul>
+								</div>
+							</details>
 							<div>
-								<span className={"material-icons blue-text"}> catching_pokemon </span>
-								<span className="margin-right">
-									{archive.Path} ({archive.Mappers.length} files)
-								</span>
-								<span>
-									<button type="button" className="border-green margin-right" onClick={() => setRestoreModal(true)}>
-										Restore
-									</button>
-									<button type="button" className="border-red" onClick={() => setDeleteModal(true)}>
-										Delete
-									</button>
-								</span>
 							</div>
 							<ConfirmationModal
 								display={restoreModal}
