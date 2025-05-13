@@ -9,7 +9,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\PokeAByte.Application\PokeAByte.Application.csproj" />
     </ItemGroup>
 
 </Project>
