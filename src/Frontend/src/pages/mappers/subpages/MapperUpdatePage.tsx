@@ -1,66 +1,57 @@
 import { Store } from "../../../utility/propertyStore"
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { LoadProgress } from "../../../components/LoadProgress";
 import { MapperSelectionTable } from "./components/MapperSelectionTable";
 import { useAPI } from "../../../hooks/useAPI";
 import { MapperUpdate } from "pokeaclient";
+import { MapperFilesContext } from "../../../Contexts/availableMapperContext";
 
 export function MapperUpdatePage() {
 	const filesClient = Store.client.files;
-	const [availableMappers, setAvailableMappers] = React.useState<MapperUpdate[]>([]);
-	const [selectedMappers, setSelectedMappers] = React.useState<string[]>([]);
-	const updateMappers = useAPI(filesClient.getMapperUpdatesAsync);
-	const downloadMappers = useAPI(filesClient.downloadMapperUpdatesAsync, () => updateMappers.call);
-
-	useEffect(
-		() => updateMappers.call(),
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[]
-	);
-
+	const mapperFileContext = useContext(MapperFilesContext);
+	const [availableUpdates, setAvailableUpdates] = React.useState<MapperUpdate[]>([]);
+	const [selectedUpdates, sectSelectedUpdates] = React.useState<string[]>([]);
+	const downloadMappers = useAPI(filesClient.downloadMapperUpdatesAsync, mapperFileContext.refresh);
+	
 	useEffect(() => {
-		if (updateMappers.wasCalled && updateMappers.isLoading === false && updateMappers.result) {
-			if (updateMappers.result) {
-				setAvailableMappers(
-					updateMappers.result
-						.filter(mapper => !!mapper.currentVersion)
-						.filter(mapper => !!mapper.latestVersion)
-				);
-			}
-			setSelectedMappers([]);
-		}
-	}, [updateMappers.wasCalled, updateMappers.isLoading, updateMappers.result])
+		setAvailableUpdates(
+			mapperFileContext.updates
+				.filter(mapper => !!mapper.currentVersion)
+				.filter(mapper => !!mapper.latestVersion)
+		);
+		sectSelectedUpdates([]);		
+	}, [mapperFileContext.updates])
 
 	useEffect(() => {
 		if (downloadMappers.wasCalled && !downloadMappers.isLoading) {
-			setSelectedMappers([]);
+			sectSelectedUpdates([]);
 			downloadMappers.reset();
 		}
 	}, [downloadMappers, downloadMappers.wasCalled, downloadMappers.isLoading])
 
 	const handleUpdate = () => {
-		const mappers = availableMappers.filter(x => selectedMappers.includes(x.latestVersion.path));
+		const mappers = availableUpdates.filter(x => selectedUpdates.includes(x.latestVersion.path));
 		downloadMappers.call(mappers);
 	}
 
 	const handleUpdateAll = () => {
-		downloadMappers.call(availableMappers);
+		downloadMappers.call(availableUpdates);
 	}
 
-	if (downloadMappers.isLoading || updateMappers.isLoading) {
+	if (downloadMappers.isLoading || mapperFileContext.isLoading) {
 		return <LoadProgress label="Downloading mapper(s)" />
 	}
 
 	return (
 		<article>
 			<span>
-				{selectedMappers.length} / {availableMappers.length} Mappers Selected
+				{selectedUpdates.length} / {availableUpdates.length} Mappers Selected
 			</span>
 			<div className="margin-top">
-				<button className="border-green margin-right" disabled={!selectedMappers.length} onClick={handleUpdate}>
+				<button className="border-green margin-right" disabled={!selectedUpdates.length} onClick={handleUpdate}>
 					UPDATE SELECTED
 				</button>
-				<button className="border-green margin-right" disabled={!availableMappers.length} onClick={handleUpdateAll}>
+				<button className="border-green margin-right" disabled={!availableUpdates.length} onClick={handleUpdateAll}>
 					UPDATE ALL
 				</button>
 				<button className="border-blue margin-right">
@@ -71,9 +62,9 @@ export function MapperUpdatePage() {
 				</button>
 			</div>
 			<MapperSelectionTable
-				availableMappers={availableMappers}
-				selectedMappers={selectedMappers}
-				onMapperSelection={setSelectedMappers}
+				availableMappers={availableUpdates}
+				selectedMappers={selectedUpdates}
+				onMapperSelection={sectSelectedUpdates}
 			/>
 		</article>
 	);

@@ -1,31 +1,25 @@
 import { Store } from "../../../utility/propertyStore"
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { LoadProgress } from "../../../components/LoadProgress";
 import { MapperSelectionTable } from "./components/MapperSelectionTable";
 import { useAPI } from "../../../hooks/useAPI";
 import { archiveMappers } from "../../../utility/fetch";
 import { MapperUpdate } from "pokeaclient";
+import { MapperFilesContext } from "../../../Contexts/availableMapperContext";
 
 export function MapperBackupPage() {
 	const filesClient = Store.client.files;
+	const mapperFileContext = useContext(MapperFilesContext);
 	const [availableMappers, setAvailableMappers] = React.useState<MapperUpdate[]>([]);
 	const [selectedMappers, setSelectedMappers] = React.useState<string[]>([]);
-	const loadMappers = useAPI(filesClient.getMapperUpdatesAsync);
-	const archiveMappersApi = useAPI(archiveMappers, loadMappers.call);
-	const backupApi = useAPI(archiveMappers, loadMappers.call);
+	const archiveMappersApi = useAPI(archiveMappers, mapperFileContext.refresh);
+	const backupApi = useAPI(archiveMappers, mapperFileContext.refresh);
 	// Load available mappers:
-	useEffect(
-		() => loadMappers.call(),
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[]
-	);
 
 	// Process loaded mappers:
 	useEffect(() => {
-		if (loadMappers.isLoading === false && loadMappers.result) {
-			setAvailableMappers(loadMappers.result?.filter(mapper => !!mapper.currentVersion) ?? []);
-		}
-	}, [loadMappers.isLoading, loadMappers.result])
+		setAvailableMappers(mapperFileContext.updates.filter(mapper => !!mapper.currentVersion) ?? []);
+	}, [mapperFileContext.updates])
 
 	const handleArchiveSelected = () => {
 		const mappers = availableMappers
@@ -48,8 +42,8 @@ export function MapperBackupPage() {
 		backupApi.call(availableMappers.map(x => x.currentVersion));
 	}
 
-	if (loadMappers.isLoading) {
-		return <LoadProgress label="Downloading mapper(s)" />
+	if (mapperFileContext.isLoading) {
+		return <LoadProgress label="Processing mapper(s)" />
 	}
 	return (
 		<article>
@@ -95,7 +89,7 @@ export function MapperBackupPage() {
 					availableMappers={availableMappers}
 					selectedMappers={selectedMappers}
 					onMapperSelection={setSelectedMappers}
-					onUpdateList={() => loadMappers.call}
+					onUpdateList={() => mapperFileContext.refresh()}
 				/>
 			}
 			</div>

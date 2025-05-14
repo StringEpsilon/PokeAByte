@@ -15,7 +15,7 @@ export function PropertyEditor() {
 	const isConnected = useSyncExternalStore(Store.subscribeConnected, Store.isConnected);
 	useEffect(() => {
 		if (!mapper && isConnected) {
-			setLocation("../mappers/");
+			setLocation("/mappers/");
 		}
 	}, [mapper, isConnected, setLocation])
 

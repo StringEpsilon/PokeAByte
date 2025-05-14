@@ -44,15 +44,12 @@ export function SelectInput<Value>(props: SelectInputProps<Value, SelectOption<V
 	const handleBlur = () => {
 		window.requestAnimationFrame(() => {
 			if (divRef.current?.contains(document.activeElement)) {
-				console.log("inner");
 				return;
 			}
-			console.log("outer");
 			setIsOpen(false);
 		});
 	}
 	const handleKeyDown = (event: React.KeyboardEvent) => {
-		console.log(event.key);
 		switch (event.key) {
 			case "Escape": 
 				setIsOpen(false);

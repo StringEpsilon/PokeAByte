@@ -1,24 +1,25 @@
 import { Store } from "../../../utility/propertyStore"
 import { SelectInput } from "../../../components/SelectInput";
 import { Toasts } from "../../../notifications/ToastStore";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useAPI } from "../../../hooks/useAPI";
 import { LoadProgress } from "../../../components/LoadProgress";
 import { useLocation } from "wouter";
 import { AvailableMapper, Mapper } from "pokeaclient";
+import { MapperFilesContext } from "../../../Contexts/availableMapperContext";
 
 type MapperSelectProps = {
-	mapper: Mapper | null,
-	mapperData: AvailableMapper[]
+	mapper: Mapper | null
 }
 
 export function MapperSelection(props: MapperSelectProps) {
-	const { mapper, mapperData } = props;
+	const mapperFileContext = useContext(MapperFilesContext);
+	const { mapper } = props;
 	const [, setLocation] = useLocation();
 	const currentName = mapper?.gameName?.split(" ").slice(1).join(" ").toLocaleLowerCase();
 	const changeMapper = useAPI(Store.client.changeMapper);
 	const [currentMapper, setCurrentMapper] = useState(
-		mapperData?.find(x =>
+		mapperFileContext.availableMappers?.find(x =>
 			x.displayName.toLowerCase().endsWith(currentName ?? "")
 		)?.id || null
 	);
@@ -52,7 +53,7 @@ export function MapperSelection(props: MapperSelectProps) {
 				id="mapper-select"
 				onSelection={setCurrentMapper}
 				value={currentMapper ?? null}
-				options={mapperData?.map((x: AvailableMapper) => ({ value: x.id, display: x.displayName })) || []}
+				options={mapperFileContext.availableMappers.map((x: AvailableMapper) => ({ value: x.id, display: x.displayName })) || []}
 			/>
 			<div className="margin-top">
 				<button className="border-green margin-right" onClick={onLoadMapper}>

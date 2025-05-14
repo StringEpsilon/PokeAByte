@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { MapperUpdate } from "pokeaclient";
+import { MapperUpdate, MapperVersion } from "pokeaclient";
 
 type MapperSelectionTableProps = {
 	onMapperSelection: React.Dispatch<React.SetStateAction<string[]>>,
@@ -10,11 +10,13 @@ type MapperSelectionTableProps = {
 
 export function MapperSelectionTable(props: MapperSelectionTableProps) {
 	const { onMapperSelection, availableMappers, selectedMappers } = props;
-	const [mappers, setMappers] = useState(availableMappers);
+	const [allMappers, setAllMappers] = useState<MapperVersion[]>([]);
+	const [mappers, setMappers] = useState<MapperVersion[]>([]);
 	const [filter, setFilter] = useState("");
 	useEffect(
 		() => {
-			setMappers(availableMappers)
+			setMappers(availableMappers.map(x => x.currentVersion ?? x.latestVersion).filter(x => !!x))
+			setAllMappers(availableMappers.map(x => x.currentVersion ?? x.latestVersion).filter(x => !!x))
 		},
 		[availableMappers]
 	);
@@ -22,12 +24,12 @@ export function MapperSelectionTable(props: MapperSelectionTableProps) {
 	useEffect(
 		() => {
 			if (!filter) {
-				setMappers(availableMappers);
+				setMappers(allMappers);
 			} else {
 				const filterLower = filter.toLowerCase();
-				const filteredMappers = availableMappers
-					.filter(x => x.latestVersion.display_name.toLowerCase().includes(filterLower))
-				onMapperSelection(selectedMappers.filter(path => filteredMappers.some(filtered => filtered.latestVersion.path === path)));
+				const filteredMappers = allMappers
+					.filter(x => x.display_name.toLowerCase().includes(filterLower))
+				onMapperSelection(selectedMappers.filter(path => filteredMappers.some(filtered => filtered.path === path)));
 				setMappers(filteredMappers);
 			}
 		},
@@ -36,7 +38,7 @@ export function MapperSelectionTable(props: MapperSelectionTableProps) {
 
 	const selectAll = (checked: boolean) => {
 		if (checked) {
-			onMapperSelection(mappers.map(x => x.latestVersion.path));
+			onMapperSelection(mappers.map(x => x.path));
 		} else {
 			onMapperSelection([]);
 		}
@@ -94,13 +96,13 @@ export function MapperSelectionTable(props: MapperSelectionTableProps) {
 									<input
 										type="checkbox"
 										onChange={() => { }}
-										checked={selectedMappers.includes(mapper.latestVersion.path)}
-										onClick={() => select(mapper.latestVersion.path)}
+										checked={selectedMappers.includes(mapper.path)}
+										onClick={() => select(mapper.path)}
 										aria-label="Select mapper"
 									/>
 								</td>
 								<td>
-									{mapper.latestVersion.path}
+									{mapper.path}
 								</td>
 							</tr>
 						)
