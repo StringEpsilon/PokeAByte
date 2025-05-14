@@ -35,7 +35,6 @@ export class ToastStore {
 	}
 
 	remove = (id: number) => {
-		console.log(this.remove);
 		this._toasts = this._toasts.filter(x => x.id !== id);
 		this._notifySubscribers();
 	}
