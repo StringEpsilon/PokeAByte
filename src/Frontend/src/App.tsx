@@ -1,7 +1,8 @@
-
-import { useSyncExternalStore } from "react";
-import "material-icons/iconfont/material-icons.scss";
+import "material-icons/iconfont/filled.css";
+import "@fontsource/roboto";
+import "@fontsource/roboto-mono"; 
 import "./css/app.css"
+import { useSyncExternalStore } from "react";
 import { ToastContainer } from "./notifications/ToastContainer.tsx";
 import { Store } from "./utility/propertyStore.ts";
 import { MainView } from "./layout/MainView.tsx";
