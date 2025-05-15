@@ -120,7 +120,7 @@ public record GithubApiSettings : IGithubApiSettings
 
     public void SaveChanges()
     {
-        var jsonData = JsonSerializer.Serialize(this);
+        var jsonData = JsonSerializer.Serialize(this, GithubApiSettingsContext.Default.GithubApiSettings);
         if (string.IsNullOrWhiteSpace(jsonData))
         {
             _logger?.LogError("Failed to save changes to the Github Api settings file.");
