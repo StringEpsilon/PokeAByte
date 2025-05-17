@@ -3,7 +3,7 @@ import React, { useContext, useEffect } from "react";
 import { LoadProgress } from "../../../components/LoadProgress";
 import { MapperSelectionTable } from "./components/MapperSelectionTable";
 import { useAPI } from "../../../hooks/useAPI";
-import { archiveMappers } from "../../../utility/fetch";
+import { archiveMappers, backupMappers } from "../../../utility/fetch";
 import { MapperUpdate } from "pokeaclient";
 import { MapperFilesContext } from "../../../Contexts/availableMapperContext";
 
@@ -13,7 +13,7 @@ export function MapperBackupPage() {
 	const [availableMappers, setAvailableMappers] = React.useState<MapperUpdate[]>([]);
 	const [selectedMappers, setSelectedMappers] = React.useState<string[]>([]);
 	const archiveMappersApi = useAPI(archiveMappers, mapperFileContext.refresh);
-	const backupApi = useAPI(archiveMappers, mapperFileContext.refresh);
+	const backupApi = useAPI(backupMappers, mapperFileContext.refresh);
 	// Load available mappers:
 
 	// Process loaded mappers:
