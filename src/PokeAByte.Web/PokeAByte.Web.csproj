@@ -13,6 +13,7 @@
 		<SelfContained>true</SelfContained>
 		<PublishTrimmed>true</PublishTrimmed>
 		<EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+		<DeterministicSourcePaths>true</DeterministicSourcePaths>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
