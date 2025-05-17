@@ -13,10 +13,6 @@
 	--margin-1: 0.5rem;
 	--margin-2: 1rem;
 
-	/** Base colors */
-	--clr-dark-a0: #000000;
-	--clr-light-a0: #ffffff;
-
 	/** Theme primary colors */
 	--text-primary: #ffffff;
 
@@ -24,9 +20,6 @@
 	--color-surface-0: #121212;
 	--color-surface-1: #282828;
 	--color-surface-2: #3f3f3f;
-	--color-surface-3: #575757;
-	--color-surface-4: #717171;
-	--color-surface-5: #8b8b8b;
 
 	--color-border-0: #575757;
 	--color-border-1: #676767;
@@ -36,13 +29,12 @@
 	--color-tone-1: #393939;
 	--color-tone-2: #4f4f4f;
 	--color-tone-3: #666666;
-	--color-tone-4: #7d7d7d;
 	--color-tone-5: #969696;
 
 	--color-highlight: #026ec1;
 	--color-green: #2ea043;
 	--color-red: #f85149;
-	--color-purple: rgb(119, 107, 231);
+	--color-purple: #776be7;
 
 	--default-font: "roboto";
 	--monospace-font: "roboto mono";
@@ -87,10 +79,6 @@ header {
 			align-items: center;
 			margin-right: var(--margin-0);
 			padding: var(--margin-0) var(--margin-1);
-
-			&[disabled] {
-				color: var(--color-tone-0);
-			}
 		}
 	}
 
@@ -119,9 +107,10 @@ header {
 nav.tab {
 	button {
 		position: relative;
-		clip-path: polygon(0 12px, 12px 1%, 100% 0, 100% 100%, 0 100%);
+		clip-path: polygon(0 13px, 13px 0, 100% 0, 100% 100%, 0 100%);
 		color: var(--font-color-main);
-		border: 2px solid var(--color-border-0);
+		border-color: var(--color-border-0);
+		border-style: solid;
 		background-color: var(--color-border-0) !important;
 		padding: 6px 12px 6px 12px;
 		margin-bottom: -2px;
@@ -129,10 +118,8 @@ nav.tab {
 
 		&.active {
 			border-bottom: 1px solid var(--color-surface-1);
-		}
 
-		&[disabled] {
-			color: #969696;
+			padding-bottom: 7px;
 		}
 
 		&::before {
@@ -143,12 +130,13 @@ nav.tab {
 			top: 0;
 			left: 0;
 			z-index: -1;
-			clip-path: polygon(0 12px, 12px 1%, 100% 0, 100% 100%, 0 100%);
+			clip-path: polygon(0 12px, 12px 0, 100% 0, 100% 100%, 0 100%);
 			background-color: var(--color-surface-1);
 		}
 
 		&[disabled]::before {
-			background-color: black;
+			/* background-color: var(--color-tone-1); */
+			background-color: var(--color-surface-0);
 		}
 
 		&>.material-icons {
