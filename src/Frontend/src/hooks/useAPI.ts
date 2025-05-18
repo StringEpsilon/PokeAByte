@@ -1,6 +1,5 @@
 import React from "react";
 
-
 export function useAPI<T extends (...args: any[]) => Promise<any>>(
 	api: T,
 	chain?: () => void,

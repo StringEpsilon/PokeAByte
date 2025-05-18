@@ -1,4 +1,4 @@
-.toast-container {
+.notifications {
 	bottom: var(--margin-2);
 	left: var(--margin-2);
 	position: fixed;

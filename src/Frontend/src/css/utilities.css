@@ -17,14 +17,14 @@
 }
 
 .border-red {
-	border-color: var(--color-red);
+	border-color: var(--color-red) !important;
 }
 
 .border-blue {
 	border-color: var(--color-highlight) !important;
 }
 .border-green {
-	border-color: var(--color-green);
+	border-color: var(--color-green) !important;
 }
 .border-purple {
 	border-color: var(--color-purple);

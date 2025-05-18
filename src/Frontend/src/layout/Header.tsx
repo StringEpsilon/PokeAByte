@@ -1,14 +1,16 @@
 import { useLocation } from "wouter";
 import { HeaderNavigation } from "./HeaderNavigation";
-import { Mapper } from "pokeaclient";
+import { Store } from "../utility/propertyStore";
+import { useSyncExternalStore } from "react";
 
-export function Header(props: { mapper: Mapper | null }) {
+export function Header() {
+	const mapper = useSyncExternalStore(Store.subscribeMapper, Store.getMapper);
 	const [, setLocation] = useLocation();
 	const onPowerButtonClick = () => {
 		setLocation("");
 	};
 
-	const textHighlightClass = props.mapper ? "text-green" : "text-red";
+	const textHighlightClass = mapper ? "text-green" : "text-red";
 	return (
 		<header className="layout-box">
 			<div>
@@ -18,13 +20,13 @@ export function Header(props: { mapper: Mapper | null }) {
 				<button
 					type="button"
 					onClick={onPowerButtonClick}
-					title={props.mapper ? "Status: Connected" : "Status: Disconnected"}
+					title={mapper ? "Status: Connected" : "Status: Disconnected"}
 				>
 					<i className={`material-icons ${textHighlightClass}`}> power_settings_new </i>
 				</button>
 			</div>
 			<nav className="tab">
-				<HeaderNavigation mapper={props.mapper} />
+				<HeaderNavigation mapper={mapper} />
 			</nav>
 		</header>
 	);

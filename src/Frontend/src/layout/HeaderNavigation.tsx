@@ -12,7 +12,7 @@ export function HeaderNavigation({ mapper }: { mapper: Mapper | null }) {
 				type="button"
 				className={classNames({ "active": location === "/" || location.startsWith("/mapper") })}
 			>
-				<i className="material-icons"> catching_pokemon </i>
+				<i className="material-icons" aria-hidden="true"> catching_pokemon </i>
 				MAPPERS
 			</button>
 			<button
@@ -22,7 +22,7 @@ export function HeaderNavigation({ mapper }: { mapper: Mapper | null }) {
 				disabled={!mapper}
 				className={classNames({ "active": location === "/properties/" })}
 			>
-				<i className="material-icons"> api </i>
+				<i className="material-icons" aria-hidden="true"> api </i>
 				PROPERTIES
 			</button>
 			<button
@@ -31,7 +31,7 @@ export function HeaderNavigation({ mapper }: { mapper: Mapper | null }) {
 				onClick={() => setLocation("/settings/")}
 				className={classNames({ "active": location.startsWith("/settings") })}
 			>
-				<i className="material-icons">api</i>
+				<i className="material-icons" aria-hidden="true">api</i>
 				SETTINGS
 			</button>
 		</>

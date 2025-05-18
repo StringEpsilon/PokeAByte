@@ -11,7 +11,7 @@ interface SelectInputProps<V, T extends SelectOption<V>> {
 	onSelection: (value: V) => void,
 }
 
-function matchDisplayvalue<T>(search: string) {
+function matchDisplayValue<T>(search: string) {
 	return (option: SelectOption<T>) => {
 		if (!search) {
 			return true;
@@ -75,7 +75,7 @@ export function SelectInput<Value>(props: SelectInputProps<Value, SelectOption<V
 				onChange={(e) => setSearchValue(e.target.value)}
 			/>
 			<menu role="combobox">
-				{props.options.filter(matchDisplayvalue(searchValue)).map((x, index) =>
+				{props.options.filter(matchDisplayValue(searchValue)).map((x, index) =>
 					<button role="button" key={index} onClick={() => handleSelection(x.value)}>
 						{x.display}
 					</button>

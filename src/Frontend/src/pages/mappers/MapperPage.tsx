@@ -13,7 +13,7 @@ export default function MapperPage() {
 	return (
 		<MapperFilesContextProvider>
 			<article className="layout-box">
-				<button className="border-red" disabled={!mapper} onClick={Store.client.unloadMapper}>
+				<button className={!!mapper ? "border-red" : ""} disabled={!mapper} onClick={Store.client.unloadMapper}>
 					{mapper
 						? `Unload '${mapper?.gameName}'`
 						: "No mapper loaded"
