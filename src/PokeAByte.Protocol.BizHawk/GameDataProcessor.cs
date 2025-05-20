@@ -4,6 +4,7 @@ using System.IO.MemoryMappedFiles;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using PokeAByte.Protocol.BizHawk.PlatformData;
 
@@ -20,6 +21,8 @@ internal class GameDataProcessor : IDisposable
     private DomainReadInstruction[] _readInstructions;
     private int _frameSkip;
     private int _skippedFrames;
+    private byte[] DataBuffer { get; } = new byte[4 * 1024 * 1024];
+
 
     internal GameDataProcessor(
         IMemoryDomains memoryDomains,
@@ -47,7 +50,7 @@ internal class GameDataProcessor : IDisposable
                 Domain = entry.DomainId,
                 TransferPosition = readBlock.Position,
                 RelativeStart = address,
-                RelativeEnd = address + readBlock.Length,
+                RelativeEnd = address + readBlock.Length - 1,
             };
         }
         for (int i = 0; i < setup.BlockCount; i++)
@@ -94,7 +97,7 @@ internal class GameDataProcessor : IDisposable
 
     public void Update()
     {
-        if (_skippedFrames >= _frameSkip)
+        if (_skippedFrames > _frameSkip)
         {
             _skippedFrames = 0;
         }
@@ -110,11 +113,9 @@ internal class GameDataProcessor : IDisposable
                 var domain = _memoryDomains[instruction.Domain];
                 if (domain != null)
                 {
-                    int blockPosition = (int)instruction.TransferPosition;
-                    for (long i = instruction.RelativeStart; i <= instruction.RelativeEnd; i++)
-                    {
-                        _writeBuffer[blockPosition++] = domain.PeekByte(i);
-                    }
+                    var length = instruction.RelativeEnd - instruction.RelativeStart;
+                    domain.BulkPeekByte(instruction.RelativeStart.RangeToExclusive(instruction.RelativeEnd), DataBuffer);
+                    Buffer.BlockCopy(DataBuffer, 0, _writeBuffer, (int)instruction.TransferPosition, (int)length);
                 }
             }
             catch (Exception ex)
