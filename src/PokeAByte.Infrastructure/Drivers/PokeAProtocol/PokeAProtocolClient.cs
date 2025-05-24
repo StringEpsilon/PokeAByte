@@ -46,29 +46,37 @@ public class PokeAProtocolClient : IDisposable
         try
         {
             var instruction = new SetupInstruction(blocks, frameSkip);
-            _client.Send(instruction.GetByteArray());
+            await _client.SendAsync(instruction.GetByteArray());
             var response = await _client.ReceiveAsync();
             if (response.Buffer[4] == Instructions.SETUP)
             {
                 using MemoryMappedFile mmfData = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                    ? MemoryMappedFile.OpenExisting("EDPS_MemoryData.bin", MemoryMappedFileRights.Read)
-                    : MemoryMappedFile.CreateFromFile("/dev/shm/EDPS_MemoryData.bin", FileMode.Open, null, fileSize, MemoryMappedFileAccess.Read);
-                _memoryAccessor = mmfData.CreateViewAccessor(0, fileSize, MemoryMappedFileAccess.Read);
+                    ? MemoryMappedFile.OpenExisting(
+                        SharedConstants.MemoryMappedFileName,
+                        MemoryMappedFileRights.Read
+                    )
+                    : MemoryMappedFile.CreateFromFile(
+                        $"/dev/shm/{SharedConstants.MemoryMappedFileName}aa",
+                        FileMode.Open,
+                        null,
+                        fileSize,
+                        MemoryMappedFileAccess.Read
+                    );
+                _memoryAccessor = mmfData.CreateViewAccessor(0, fileSize, MemoryMappedFileAccess.Read);  
                 return;
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw new VisibleException("Poke-A-Protocol communication timed out");
-            throw;
-        }
+            throw new VisibleException($"Poke-A-Protocol communication timed out. Inner exception: {ex.Message}");
+        }     
     }
 
     public void Read(ulong position, BlockData block, int timeoutMs = 64)
     {
         if (_memoryAccessor == null)
         {
-            throw new VisibleException("Poke-A-Protocol communication timed out");
+            throw new VisibleException("Poke-A-Protocol communication timed out. Memory mapped file was null.");
         }
         try
         {

@@ -60,7 +60,7 @@ public class PokeAProtocolDriver : IPokeAByteDriver
             {
                 if (fileSize == 0)
                 {
-                    throw new Exception("asdjad");
+                    throw new Exception("Invalid filesize for the MMF. Can not connect to EDPS.");
                 }
                 await _client.Setup(_readBlocks, fileSize, _frameSkip);
             }

@@ -34,6 +34,7 @@ public sealed class EDPSForm : Form, IExternalToolForm, IDisposable
         base.Text = "Emulator Data Protocol Server";
         ShowInTaskbar = false;
 
+        FormClosed += (object sender, FormClosedEventArgs args) => Cleanup();
         ClientSize = new(300, 60);
         SuspendLayout();
 
