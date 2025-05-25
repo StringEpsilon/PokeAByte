@@ -32,7 +32,7 @@ public sealed class PokeAByteIntegrationForm : Form, IExternalToolForm, IDisposa
     private MemoryMappedViewAccessor? Data_Accessor;
 
     private byte[] DataBuffer { get; } = new byte[SharedPlatformConstants.BIZHAWK_DATA_PACKET_SIZE];
-    public bool IsActive => true;
+    public bool IsActive { get; private set; } = true;
     public bool IsLoaded => true;
 
     private string System = string.Empty;
@@ -59,7 +59,8 @@ public sealed class PokeAByteIntegrationForm : Form, IExternalToolForm, IDisposa
         _namedPipeServer.StartServer("BizHawk_Named_Pipe");
         Closing += (sender, args) =>
         {
-            _namedPipeServer.Dispose();
+            IsActive = false;
+            _namedPipeServer?.Dispose();
             _namedPipeServer = null;
         };
     }
