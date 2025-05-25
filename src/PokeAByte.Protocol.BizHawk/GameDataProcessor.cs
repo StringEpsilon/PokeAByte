@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using PokeAByte.Protocol.BizHawk.PlatformData;
-using System.Diagnostics.CodeAnalysis;
 
 namespace PokeAByte.Protocol.BizHawk;
 
@@ -116,10 +115,12 @@ internal class GameDataProcessor : IDisposable
             _skippedFrames++;
             return;
         }
-        foreach (var instruction in _readInstructions)
+        DomainReadInstruction instruction = _readInstructions[0];
+        try
         {
-            try
+            for (int i = 0; i < _readInstructions.Length; i++)
             {
+                instruction = _readInstructions[i];
                 var domain = _memoryDomains[instruction.Domain];
                 if (domain != null)
                 {
@@ -128,10 +129,10 @@ internal class GameDataProcessor : IDisposable
                     Buffer.BlockCopy(DataBuffer, 0, _writeBuffer, (int)instruction.TransferPosition, (int)length);
                 }
             }
-            catch (Exception ex)
-            {
-                _mainLabel.Text = $"Error reading {instruction.RelativeStart:x2} in '{instruction.Domain}': {ex.Message}";
-            }
+        }
+        catch (Exception ex)
+        {
+            _mainLabel.Text = $"Error reading {instruction.RelativeStart:x2} in '{instruction.Domain}': {ex.Message}";
         }
         _dataAccessor.WriteArray(0, _writeBuffer, 0, _writeBuffer.Length);
     }

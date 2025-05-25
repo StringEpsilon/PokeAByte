@@ -56,7 +56,7 @@ public class PokeAProtocolClient : IDisposable
                         MemoryMappedFileRights.Read
                     )
                     : MemoryMappedFile.CreateFromFile(
-                        $"/dev/shm/{SharedConstants.MemoryMappedFileName}aa",
+                        $"/dev/shm/{SharedConstants.MemoryMappedFileName}",
                         FileMode.Open,
                         null,
                         fileSize,
