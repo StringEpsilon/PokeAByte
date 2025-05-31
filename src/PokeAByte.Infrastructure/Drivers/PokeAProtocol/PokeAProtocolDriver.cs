@@ -72,7 +72,7 @@ public class PokeAProtocolDriver : IPokeAByteDriver
         }
         for (int i = 0; i < blocks.Length; i++)
         {
-            var position = _readBlocks.Where(x => x.GameAddress == blocks[i].Start).First().Position;
+            var position = _readBlocks[i].Position;
             _client.Read(position, blocks[i]);
         }
     }

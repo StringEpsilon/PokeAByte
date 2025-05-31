@@ -47,7 +47,9 @@ public class PokeAProtocolClient : IDisposable
         {
             var instruction = new SetupInstruction(blocks, frameSkip);
             await _client.SendAsync(instruction.GetByteArray());
-            var response = await _client.ReceiveAsync();
+            using var tokenSource = new CancellationTokenSource();
+            tokenSource.CancelAfter(timeoutMs);
+            var response = await _client.ReceiveAsync(tokenSource.Token);
             if (response.Buffer[4] == Instructions.SETUP)
             {
                 using MemoryMappedFile mmfData = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
