@@ -51,7 +51,7 @@ export function MapperSelection(props: MapperSelectProps) {
 			<SelectInput
 				size={35}
 				id="mapper-select"
-				onSelection={setCurrentMapper}
+				onSelection={(option) => setCurrentMapper(option.value)}
 				value={currentMapper ?? null}
 				options={mapperFileContext.availableMappers.map((x: AvailableMapper) => ({ value: x.id, display: x.displayName })) || []}
 			/>

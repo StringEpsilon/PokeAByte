@@ -4,7 +4,7 @@ import { SaveValueButton } from "./SaveValueButton";
 import { FreezeValueButton } from "./FreezeValueButton";
 import { useGameProperty } from "../hooks/useGameProperty";
 import { Toasts } from "../../../notifications/ToastStore";
-import { SelectInput } from "../../../components/SelectInput";
+import { SelectInput, SelectOption } from "../../../components/SelectInput";
 import { useGamePropertyField } from "../hooks/useGamePropertyField";
 import { GamePropertyType } from "pokeaclient";
 
@@ -115,6 +115,15 @@ export function PropertyInputSelect({ path }: { path: string }) {
 		.map(x => ({ value: x.key, display: x.value }));
 
 	const value = glossaryItems.find(x => x.value === property!.value)?.key;
+	const handleSelection = (option: SelectOption<number>) => {
+		if (path) {
+			Store.client.updatePropertyValue(path, option.display)
+				.then(() => {
+					Toasts.push(`Saved successful`, "task_alt", "success");
+				});
+		}
+	};
+
 	return (
 		<>
 			<SelectInput
@@ -122,7 +131,7 @@ export function PropertyInputSelect({ path }: { path: string }) {
 				id={`${property!.path}-input`}
 				value={value}
 				options={options}
-				onSelection={(e) => console.log(e)}
+				onSelection={handleSelection}
 			/>
 		</>
 	)

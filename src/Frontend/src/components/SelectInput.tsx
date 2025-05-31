@@ -1,6 +1,6 @@
 import React from "react";
 
-type SelectOption<V> = { value: V, display: string }
+export type SelectOption<V> = { value: V, display: string }
 
 interface SelectInputProps<V, T extends SelectOption<V>> {
 	id: string,
@@ -8,7 +8,7 @@ interface SelectInputProps<V, T extends SelectOption<V>> {
 	value?: V,
 	options: T[],
 	size?: number,
-	onSelection: (value: V) => void,
+	onSelection: (value: SelectOption<V>) => void,
 }
 
 function matchDisplayValue<T>(search: string) {
@@ -33,7 +33,7 @@ export function SelectInput<Value>(props: SelectInputProps<Value, SelectOption<V
 	const [searchValue, setSearchValue] = React.useState<string>("");
 	const valueDisplay = findDisplayByValue(props.options, props.value);
 
-	const handleSelection = (option: Value) => {
+	const handleSelection = (option: SelectOption<Value>) => {
 		props.onSelection(option);
 		setIsOpen(false);
 		setSearchValue("");
@@ -76,7 +76,7 @@ export function SelectInput<Value>(props: SelectInputProps<Value, SelectOption<V
 			/>
 			<menu role="combobox">
 				{props.options.filter(matchDisplayValue(searchValue)).map((x, index) =>
-					<button role="button" key={index} onClick={() => handleSelection(x.value)}>
+					<button role="button" key={index} onClick={() => handleSelection(x)}>
 						{x.display}
 					</button>
 				)}
