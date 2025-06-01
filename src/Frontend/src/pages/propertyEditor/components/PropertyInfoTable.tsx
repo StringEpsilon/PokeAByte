@@ -8,6 +8,7 @@ export function PropertyInfoTable({ path }: { path: string }) {
 	const length = useGamePropertyField(path, "length");
 	const size = useGamePropertyField(path, "size");
 	const reference = useGamePropertyField(path, "reference");
+	const memoryContainer = useGamePropertyField(path, "memoryContainer");
 
 	return (
 		<table className="stripes small-round surface small-space">
@@ -40,6 +41,13 @@ export function PropertyInfoTable({ path }: { path: string }) {
 						<CopyValueIcon onClick={() => clipboardCopy(address?.toString())} />
 					</td>
 					<td>{address}</td>
+				</tr>
+				<tr>
+					<th>memoryContainer</th>
+					<td className="no-padding">
+						<CopyValueIcon onClick={() => clipboardCopy(memoryContainer)} />
+					</td>
+					<td>{memoryContainer}</td>
 				</tr>
 				<tr>
 					<th>Reference</th>
