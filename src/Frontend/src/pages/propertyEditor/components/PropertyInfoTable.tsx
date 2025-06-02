@@ -4,7 +4,7 @@ import { CopyValueIcon } from "./CopyValueIcon";
 
 export function PropertyInfoTable({ path }: { path: string }) {
 	const type = useGamePropertyField(path, "type");
-	const address = useGamePropertyField(path, "address");
+	const address = useGamePropertyField(path, "address")?.toString(16);
 	const length = useGamePropertyField(path, "length");
 	const size = useGamePropertyField(path, "size");
 	const reference = useGamePropertyField(path, "reference");
@@ -38,16 +38,16 @@ export function PropertyInfoTable({ path }: { path: string }) {
 				<tr>
 					<th>Address</th>
 					<td className="no-padding">
-						<CopyValueIcon onClick={() => clipboardCopy(address?.toString())} />
+						<CopyValueIcon onClick={() => clipboardCopy(address ? `0x${address}`: "")} />
 					</td>
-					<td>{address}</td>
+					<td>{address ? `0x${address}` : "-"}</td>
 				</tr>
 				<tr>
 					<th>memoryContainer</th>
 					<td className="no-padding">
 						<CopyValueIcon onClick={() => clipboardCopy(memoryContainer)} />
 					</td>
-					<td>{memoryContainer}</td>
+					<td>{memoryContainer ?? "default"}</td>
 				</tr>
 				<tr>
 					<th>Reference</th>
