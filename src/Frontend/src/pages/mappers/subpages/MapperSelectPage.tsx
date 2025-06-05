@@ -14,20 +14,23 @@ type MapperSelectProps = {
 
 export function MapperSelection(props: MapperSelectProps) {
 	const mapperFileContext = useContext(MapperFilesContext);
-	const { mapper } = props;
+	const mapper = props.mapper;
+
+	// @ts-ignore
+	const fileId = mapper?.fileId;
 	const [, setLocation] = useLocation();
-	const currentName = mapper?.gameName?.split(" ").slice(1).join(" ").toLocaleLowerCase();
 	const changeMapper = useAPI(Store.client.changeMapper);
-	const [currentMapper, setCurrentMapper] = useState(
-		mapperFileContext.availableMappers?.find(x =>
-			x.displayName.toLowerCase().endsWith(currentName ?? "")
-		)?.id || null
-	);
+	const [currentMapper, setCurrentMapper] = useState<string|null>(null);
 	const onLoadMapper = () => {
 		if (currentMapper) {
 			changeMapper.call(currentMapper);
 		}
 	}
+
+	useEffect(() => {
+		setCurrentMapper(mapperFileContext.availableMappers?.find(x => x.id === fileId)?.id ?? null);
+	}, [mapper,mapperFileContext.availableMappers])
+
 	useEffect(() => {
 		if (changeMapper.wasCalled) {
 			if (!changeMapper.isLoading && changeMapper.result) {
@@ -42,6 +45,7 @@ export function MapperSelection(props: MapperSelectProps) {
 	if (changeMapper.isLoading) {
 		return <LoadProgress label="Loading mapper" />
 	}
+	
 	return (
 		<div>
 			<span>
@@ -52,7 +56,7 @@ export function MapperSelection(props: MapperSelectProps) {
 				size={35}
 				id="mapper-select"
 				onSelection={(option) => setCurrentMapper(option.value)}
-				value={currentMapper ?? null}
+				value={currentMapper}
 				options={mapperFileContext.availableMappers.map((x: AvailableMapper) => ({ value: x.id, display: x.displayName })) || []}
 			/>
 			<div className="margin-top">

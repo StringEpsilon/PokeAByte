@@ -1,6 +1,6 @@
 import React, { SyntheticEvent } from "react";
 import { Store } from "../../../utility/propertyStore";
-import { PropertyInput } from "./PropertyInput";
+import { PropertyValue } from "./PropertyValue";
 import { unique } from "../utils/unique";
 
 function getPropertyOpenState(mapperId: string | undefined, path: string): boolean {
@@ -39,7 +39,7 @@ export function PropertyTree({ path, level = 1 }: { path: string, level?: number
 		setIsOpen(event.currentTarget.open);
 	}
 	if (properties[path]) {
-		return <PropertyInput path={path} />
+		return <PropertyValue path={path} />
 	}
 	const immediateChildren = Object.keys(properties)
 		.filter(x => x.startsWith(path + "."))

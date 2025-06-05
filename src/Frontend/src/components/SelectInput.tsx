@@ -7,6 +7,7 @@ interface SelectInputProps<V, T extends SelectOption<V>> {
 	label?: string,
 	value?: V,
 	options: T[],
+	isReadonly?: boolean,
 	size?: number,
 	onSelection: (value: SelectOption<V>) => void,
 }
@@ -39,7 +40,7 @@ export function SelectInput<Value>(props: SelectInputProps<Value, SelectOption<V
 		setSearchValue("");
 	}
 	const handleOnFocus = () => {
-		setIsOpen(true);
+		setIsOpen(!props.isReadonly);
 	}
 	const handleBlur = () => {
 		window.requestAnimationFrame(() => {
@@ -73,6 +74,7 @@ export function SelectInput<Value>(props: SelectInputProps<Value, SelectOption<V
 				onFocus={handleOnFocus}
 				onBlur={handleBlur}
 				onChange={(e) => setSearchValue(e.target.value)}
+				readOnly={props.isReadonly}
 			/>
 			<menu role="combobox">
 				{props.options.filter(matchDisplayValue(searchValue)).map((x, index) =>

@@ -1,11 +1,13 @@
 import React from "react";
-import { getPropertyFieldValue, PropertyInputField } from "./PropertyInputField";
+import { PropertyEdit } from "./PropertyEdit";
 import { CopyValueIcon } from "./CopyValueIcon";
 import { Store } from "../../../utility/propertyStore";
 import { PropertyInfoTable } from "./PropertyInfoTable";
 import { clipboardCopy } from "../utils/clipboardCopy";
+import { getPropertyFieldValue } from "./PropertyTextbox";
 
-export function PropertyInput({ path }: { path: string }) {
+
+export function PropertyValue({ path }: { path: string }) {
 	const [tableOpen, setTableOpen] = React.useState(false);
 
 	const handleCopyClick = () => {
@@ -23,7 +25,7 @@ export function PropertyInput({ path }: { path: string }) {
 			<div>
 				<div>
 					<CopyValueIcon onClick={handleCopyClick} />
-					<PropertyInputField path={path} />
+					<PropertyEdit path={path} />
 				</div>
 				{tableOpen &&
 					<PropertyInfoTable path={path} />
