@@ -16,7 +16,7 @@ export function MapperSelection(props: MapperSelectProps) {
 	const mapperFileContext = useContext(MapperFilesContext);
 	const mapper = props.mapper;
 
-	// @ts-ignore
+	// @ts-expect-error The upstream type definition is incomplete, accessing fileId works just fine.
 	const fileId = mapper?.fileId;
 	const [, setLocation] = useLocation();
 	const changeMapper = useAPI(Store.client.changeMapper);
@@ -29,7 +29,7 @@ export function MapperSelection(props: MapperSelectProps) {
 
 	useEffect(() => {
 		setCurrentMapper(mapperFileContext.availableMappers?.find(x => x.id === fileId)?.id ?? null);
-	}, [mapper,mapperFileContext.availableMappers])
+	}, [fileId, mapper,mapperFileContext.availableMappers])
 
 	useEffect(() => {
 		if (changeMapper.wasCalled) {

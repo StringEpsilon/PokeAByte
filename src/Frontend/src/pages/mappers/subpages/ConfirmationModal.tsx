@@ -10,11 +10,12 @@ type ModalProps = {
 };
 export function ConfirmationModal(props: ModalProps) {
 	const dialogRef = useRef<HTMLDialogElement>(null);
+	const hasCurrentDialog = !!dialogRef.current;
 	useEffect(() => {
 		if (!!dialogRef.current && props.display) {
 			dialogRef.current.showModal();
 		}
-	}, [!!dialogRef.current, props.display]);
+	}, [hasCurrentDialog, props.display]);
 	if (!props.display) {
 		return null;
 	}

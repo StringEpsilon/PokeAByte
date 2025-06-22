@@ -38,7 +38,8 @@ export function MapperFilesContextProvider(props: { children: React.ReactNode}) 
 	});
 	useEffect(() => {
 		refresh();
-	}, [])
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []) // We only want to run the effect once on mount. 
 
 	return (
 		<MapperFilesContext.Provider value={state} >

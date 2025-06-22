@@ -18,7 +18,7 @@ export function MapperSelectionTable(props: MapperSelectionTableProps) {
 			setMappers(availableMappers.map(x => x.currentVersion ?? x.latestVersion).filter(x => !!x))
 			setAllMappers(availableMappers.map(x => x.currentVersion ?? x.latestVersion).filter(x => !!x))
 		},
-		[availableMappers]
+		[availableMappers, setMappers, setAllMappers]
 	);
 
 	useEffect(
@@ -33,7 +33,7 @@ export function MapperSelectionTable(props: MapperSelectionTableProps) {
 				setMappers(filteredMappers);
 			}
 		},
-		[filter]
+		[filter, allMappers, onMapperSelection, selectedMappers]
 	)
 
 	const selectAll = (checked: boolean) => {
