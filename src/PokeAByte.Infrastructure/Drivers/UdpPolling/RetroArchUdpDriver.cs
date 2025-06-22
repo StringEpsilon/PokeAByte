@@ -28,7 +28,7 @@ public class RetroArchUdpDriver : IPokeAByteDriver, IRetroArchUdpPollingDriver
     }
 
     // MTU minus some overhead, divided by 3 because we get 3 characters per byte requested:		
-    private static uint _maxChunkSize = (uint)Math.Floor((GetLoopbackMtu() - 64) / 3d);
+    private static uint _maxChunkSize = (uint)Math.Floor((GetLoopbackMtu() - 128) / 3d);
 
     private CancellationTokenSource? _connectionCts;
     public string ProperName { get; } = "RetroArch";
