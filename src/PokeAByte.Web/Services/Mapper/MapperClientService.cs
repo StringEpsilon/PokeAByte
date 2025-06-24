@@ -53,7 +53,7 @@ public class MapperClientService(
 
     private async Task<Result> ReplaceMapper(string mapperId, IPokeAByteDriver driver)
     {
-        await instanceService.StopProcessing();
+        await UnloadMapper();
         try
         {
             var result = await LoadMapper(mapperId, driver);
