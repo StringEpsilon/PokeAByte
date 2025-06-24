@@ -55,16 +55,24 @@ public class PokeAByteInstance : IPokeAByteInstance
 
         // Get the file path from the filesystem provider.
         Mapper = PokeAByteMapperXmlFactory.LoadMapperFromFile(mapperContent.Xml, mapperContent.FileId);
+        MemoryAddressBlock[]? blocksToRead = Mapper.PlatformOptions.Ranges;
         // Calculate the blocks to read from the mapper memory addresses.
-        var blocksToRead = Mapper.Memory.ReadRanges.Select(x => new MemoryAddressBlock($"Range {x.Start}", x.Start, x.End)).ToArray();
-        if (blocksToRead.Any())
+        if (Driver is not IBizhawkMemoryMapDriver)
         {
-            _logger.LogInformation($"Using {blocksToRead.Count()} memory read ranges from mapper.");
+            Mapper.Memory.ReadRanges.Select(x => new MemoryAddressBlock($"Range {x.Start}", x.Start, x.End)).ToArray();
+            if (blocksToRead.Any())
+            {
+                _logger.LogInformation($"Using {blocksToRead.Count()} memory read ranges from mapper.");
+            }
+            else
+            {
+                _logger.LogInformation("Using default driver memory read ranges.");
+                blocksToRead = Mapper.PlatformOptions.Ranges;
+            }
         }
         else
         {
-            _logger.LogInformation("Using default driver memory read ranges.");
-            blocksToRead = Mapper.PlatformOptions.Ranges;
+            _logger.LogInformation("Bizhawk integration tool does not support custom read ranges. Using defaults.");
         }
         var lastBlock = blocksToRead.OrderByDescending(x => x.EndingAddress).First();
         MemoryContainerManager = new MemoryManager(lastBlock.EndingAddress);
