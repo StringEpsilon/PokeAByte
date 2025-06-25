@@ -28,8 +28,10 @@ export function MapperSelectionTable(props: MapperSelectionTableProps) {
 			} else {
 				const filterLower = filter.toLowerCase();
 				const filteredMappers = allMappers
-					.filter(x => x.display_name.toLowerCase().includes(filterLower))
-				onMapperSelection(selectedMappers.filter(path => filteredMappers.some(filtered => filtered.path === path)));
+					.filter(
+						x => x.display_name.toLowerCase().includes(filterLower)
+						|| x.path.toLowerCase().includes(filterLower)
+					);
 				setMappers(filteredMappers);
 			}
 		},

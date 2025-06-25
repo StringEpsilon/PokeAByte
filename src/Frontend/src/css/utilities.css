@@ -27,7 +27,7 @@
 	border-color: var(--color-green) !important;
 }
 .border-purple {
-	border-color: var(--color-purple);
+	border-color: var(--color-purple) !important;
 }
 
 .margin-top {
