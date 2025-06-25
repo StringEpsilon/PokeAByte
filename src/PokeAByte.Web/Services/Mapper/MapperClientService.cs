@@ -160,31 +160,15 @@ public class MapperClientService(
             logger.LogDebug("Poke-A-Byte instance has not been initialized!");
         }
         logger.LogDebug("Replacing mapper.");
-        switch (driver)
+
+        if (driver is IPokeAByteDriver)
         {
-            case IBizhawkMemoryMapDriver:
-                await instanceService.LoadMapper(mapperContent, driver);
-                logger.LogDebug("Bizhawk driver loaded.");
-                break;
-            case IRetroArchUdpPollingDriver:
-                await instanceService.LoadMapper(mapperContent, driver);
-                logger.LogDebug("Retroarch driver loaded.");
-                break;
-            case IStaticMemoryDriver:
-                await instanceService.LoadMapper(mapperContent, driver);
-                logger.LogDebug("Static memory driver loaded.");
-                break;
-            default:
-                if (driver is IPokeAByteDriver)
-                {
-                    await instanceService.LoadMapper(mapperContent, driver);
-                    logger.LogInformation($"Driver '{driver.ProperName}' loaded.");
-                }
-                else
-                {
-                    logger.LogError("A valid driver was not supplied.");
-                }
-                break;
+            await instanceService.LoadMapper(mapperContent, driver);
+            logger.LogInformation($"'{driver.ProperName}' driver loaded.");
+        }
+        else
+        {
+            logger.LogError("A valid driver was not supplied.");
         }
         return instanceService.Instance != null;
     }
