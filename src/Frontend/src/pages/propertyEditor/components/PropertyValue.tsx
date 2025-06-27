@@ -26,6 +26,7 @@ export function PropertyValue({ path }: { path: string }) {
 				<div>
 					<CopyValueIcon onClick={handleCopyClick} />
 					<PropertyEdit path={path} />
+					<span class="margin-left color-darker">0x1337</span>
 				</div>
 				{tableOpen &&
 					<PropertyInfoTable path={path} />

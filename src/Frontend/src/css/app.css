@@ -38,8 +38,8 @@
 
 	--default-font: "roboto";
 	--monospace-font: "roboto mono";
-	--font-size-0: 1rem;
-	--font-size-1: 1.5rem;
+	--font-size-0: 0.9rem;
+	--font-size-1: 1.4rem;
 }
 
 body {
@@ -118,7 +118,6 @@ nav.tab {
 
 		&.active {
 			border-bottom: 1px solid var(--color-surface-1);
-
 			padding-bottom: 7px;
 		}
 
@@ -223,7 +222,6 @@ a {
 
 	>div:nth-child(2) {
 		flex-grow: 1;
-		/* display: flex; */
 		gap: var(--margin-0);
 		flex-direction: column;
 
@@ -264,11 +262,13 @@ a {
 
 	label,
 	input {
+		text-align: end;
 		font-family: var(--monospace-font);
 	}
 
 	button,
 	input {
+		text-align: end;
 		font-size: var(--font-size-0);
 		padding: var(--margin-0);
 	}

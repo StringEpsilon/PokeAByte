@@ -20,7 +20,7 @@ export function MapperRestorePage() {
 				</strong>
 			</div>
 			<div className="row margin-top">
-				<button className="border-blue margin-right" type="button" onClick={filesClient.openMapperFolder}>
+				<button className="border-purple margin-right" type="button" onClick={filesClient.openMapperFolder}>
 					OPEN MAPPER FOLDER
 				</button>
 				<button className="border-blue" type="button" onClick={filesClient.openMapperFolder}>

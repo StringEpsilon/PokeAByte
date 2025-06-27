@@ -8,6 +8,10 @@
 	padding: 0;
 }
 
+.color-darker {
+	color: var(--color-tone-3);	
+}
+
 .text-red {
 	color: var(--color-red);
 }

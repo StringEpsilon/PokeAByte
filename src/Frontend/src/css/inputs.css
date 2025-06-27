@@ -34,6 +34,10 @@ input[type="checkbox"] {
 	width: 2rem;
 	display: grid;
 	place-content: center;
+	background-color: var(--color-red) !important;
+	&:checked {
+		background-color: var(--color-green) !important;
+	}
 	&:not([role="switch"])  {
 		&:checked:before {
 			content: "";
@@ -47,14 +51,13 @@ input[type="checkbox"] {
 		width: 4rem;
 		&:before {
 			content: "";
-			height: 1rem;
+			height: 1.4rem;
 			width: 1rem;
 			transition: 120ms transform ease-in-out;
-			background-color: var(--color-red);
+			background-color: white;
 			transform: translateX(+100%);
 		}
 		&:checked:before {
-			background-color: var(--color-green);
 			transform: translateX(-100%);
 		}
 	}

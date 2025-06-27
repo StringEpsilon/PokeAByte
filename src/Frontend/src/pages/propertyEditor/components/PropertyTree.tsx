@@ -57,11 +57,17 @@ export function PropertyTree({ path, level = 1 }: { path: string, level?: number
 		.map(x => x.name)
 		.filter(unique);
 
+	let pathSements = path.split(".");
+	let lastPathItem = pathSements[pathSements.length-1];
+
+
 	return (
 		<li>
 			<details open={isOpen} onToggle={onToggleOpen}>
 				<summary className="folder" >
-					<strong>{path}</strong> {immediateChildren.length} Entries
+					<i className="material-icons"> {isOpen? "folder" : "folder_open"} </i>
+					<span class="margin-left">{lastPathItem}</span> 
+					<span class="margin-left color-darker">{immediateChildren.length} Entries</span>
 				</summary>
 				<ul>
 					{isOpen &&

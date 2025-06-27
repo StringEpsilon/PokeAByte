@@ -5,6 +5,7 @@ import { CopyValueIcon } from "./CopyValueIcon";
 export function PropertyInfoTable({ path }: { path: string }) {
 	const type = useGamePropertyField(path, "type");
 	const address = useGamePropertyField(path, "address")?.toString(16);
+	const bits = useGamePropertyField(path, "bits");
 	const length = useGamePropertyField(path, "length");
 	const size = useGamePropertyField(path, "size");
 	const reference = useGamePropertyField(path, "reference");
@@ -23,11 +24,13 @@ export function PropertyInfoTable({ path }: { path: string }) {
 					<td></td>
 					<td>{length}</td>
 				</tr>
-				<tr>
-					<th>Size</th>
-					<td></td>
-					<td>{size}</td>
-				</tr>
+				{!!size &&
+					<tr>
+						<th>Size</th>
+						<td></td>
+						<td>{size}</td>
+					</tr>
+				}
 				<tr>
 					<th>Path</th>
 					<td className="no-padding">
@@ -35,13 +38,24 @@ export function PropertyInfoTable({ path }: { path: string }) {
 					</td>
 					<td>{path}</td>
 				</tr>
-				<tr>
-					<th>Address</th>
-					<td className="no-padding">
-						<CopyValueIcon onClick={() => clipboardCopy(address ? `0x${address}`: "")} />
-					</td>
-					<td>{address ? `0x${address}` : "-"}</td>
-				</tr>
+				{!!address &&
+					<tr>
+						<th>Address</th>
+						<td className="no-padding">
+							<CopyValueIcon onClick={() => clipboardCopy(address ? `0x${address.toUpperCase()}`: "")} />
+						</td>
+						<td>{address ? `0x${address.toUpperCase()}` : "-"}</td>
+					</tr>
+				}
+				{!!bits &&
+					<tr>
+						<th>Bits</th>
+						<td className="no-padding">
+							<CopyValueIcon onClick={() => clipboardCopy(address ? `0x${address.toUpperCase()}`: "")} />
+						</td>
+						<td>{bits}</td>
+					</tr>
+				}
 				<tr>
 					<th>memoryContainer</th>
 					<td className="no-padding">
@@ -49,13 +63,15 @@ export function PropertyInfoTable({ path }: { path: string }) {
 					</td>
 					<td>{memoryContainer ?? "default"}</td>
 				</tr>
-				<tr>
-					<th>Reference</th>
-					<td className="no-padding">
-						<CopyValueIcon onClick={() => clipboardCopy(reference)} />
-					</td>
-					<td>{reference}</td>
-				</tr>
+				{!!reference &&
+					<tr>
+						<th>Reference</th>
+						<td className="no-padding">
+							<CopyValueIcon onClick={() => clipboardCopy(reference)} />
+						</td>
+						<td>{reference}</td>
+					</tr>
+				}
 				<PropertyByteRow path={path} />
 			</tbody>
 		</table>
@@ -71,15 +87,17 @@ export function PropertyByteRow({ path }: { path: string }) {
 				<CopyValueIcon onClick={() => clipboardCopy(bytes?.join(""))} />
 			</td>
 			<td className="property-bytes">
+				<span>0x&nbsp;</span>
 				{bytes?.map((byte, i) => {
+					var value = byte.toString(16).toUpperCase().padStart(2, "0");
 					return (
 						<input
 							key={i}
 							type="text"
-							size={1}
+							size={2}
 							maxLength={2}
 							className="no-padding"
-							value={byte.toString(16)}
+							value={value}
 							onInput={() => { }}
 						/>
 					);
