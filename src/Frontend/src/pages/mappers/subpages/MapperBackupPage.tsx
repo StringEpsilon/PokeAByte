@@ -1,5 +1,5 @@
 import { Store } from "../../../utility/propertyStore"
-import React, { useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "preact/hooks";
 import { LoadProgress } from "../../../components/LoadProgress";
 import { MapperSelectionTable } from "./components/MapperSelectionTable";
 import { useAPI } from "../../../hooks/useAPI";
@@ -10,8 +10,8 @@ import { MapperFilesContext } from "../../../Contexts/availableMapperContext";
 export function MapperBackupPage() {
 	const filesClient = Store.client.files;
 	const mapperFileContext = useContext(MapperFilesContext);
-	const [availableMappers, setAvailableMappers] = React.useState<MapperUpdate[]>([]);
-	const [selectedMappers, setSelectedMappers] = React.useState<string[]>([]);
+	const [availableMappers, setAvailableMappers] = useState<MapperUpdate[]>([]);
+	const [selectedMappers, setSelectedMappers] = useState<string[]>([]);
 	const archiveMappersApi = useAPI(archiveMappers, mapperFileContext.refresh);
 	const backupApi = useAPI(backupMappers, mapperFileContext.refresh);
 	// Load available mappers:

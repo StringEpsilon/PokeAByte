@@ -1,5 +1,5 @@
 import { Store } from "../../../utility/propertyStore"
-import React, { useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "preact/hooks";
 import { LoadProgress } from "../../../components/LoadProgress";
 import { MapperSelectionTable } from "./components/MapperSelectionTable";
 import { useAPI } from "../../../hooks/useAPI";
@@ -9,8 +9,8 @@ import { MapperFilesContext } from "../../../Contexts/availableMapperContext";
 export function MapperDownloadPage() {
 	const filesClient = Store.client.files;
 	const mapperFileContext = useContext(MapperFilesContext);
-	const [downloads, setDownloads] = React.useState<MapperUpdate[]>([]);
-	const [selectedDownloads, setSelectedDownloads] = React.useState<string[]>([]);
+	const [downloads, setDownloads] = useState<MapperUpdate[]>([]);
+	const [selectedDownloads, setSelectedDownloads] = useState<string[]>([]);
 	const downloadMappers = useAPI(filesClient.downloadMapperUpdatesAsync, mapperFileContext.refresh);
 
 	useEffect(() => {

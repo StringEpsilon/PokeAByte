@@ -1,4 +1,5 @@
-import React, { SyntheticEvent } from "react";
+import type { JSX } from "preact";
+import { useState } from "preact/hooks";
 import { Store } from "../../../utility/propertyStore";
 import { PropertyValue } from "./PropertyValue";
 import { unique } from "../utils/unique";
@@ -33,8 +34,8 @@ export function PropertyTree({ path, level = 1 }: { path: string, level?: number
 	const properties = Store.getAllProperties();
 	const mapperId = Store.getMapper()?.id;
 
-	const [isOpen, setIsOpen] = React.useState(getPropertyOpenState(mapperId, path));
-	const onToggleOpen = (event: SyntheticEvent<HTMLDetailsElement, Event>) => {
+	const [isOpen, setIsOpen] = useState(getPropertyOpenState(mapperId, path));
+	const onToggleOpen = (event: JSX.TargetedToggleEvent<HTMLDetailsElement>) => {
 		savePropertyOpenState(mapperId, path, event.currentTarget.open);
 		setIsOpen(event.currentTarget.open);
 	}

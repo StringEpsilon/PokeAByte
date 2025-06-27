@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext } from "preact/hooks";
 import { useAPI } from "../../../hooks/useAPI";
 import { Store } from "../../../utility/propertyStore";
 import { ArchivedMapper, ArchivedMappers } from "pokeaclient";

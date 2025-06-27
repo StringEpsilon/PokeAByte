@@ -43,7 +43,7 @@ export function PropertyTextbox(props: PropertyTextboxProps) {
 							props.save();
 						}
 					}}
-					onChange={(e) => update(e.currentTarget.checked)}
+					onInput={(e) => update(e.currentTarget.checked)}
 					readOnly={props.isReadonly}
 					disabled={props.isReadonly} />
 			</label>
@@ -61,8 +61,9 @@ export function PropertyTextbox(props: PropertyTextboxProps) {
 					props.save();
 				}
 			}}
-			onChange={(e) => props.setValue(e.currentTarget.value)}
+			onInput={(e) => props.setValue(e.currentTarget.value)}
 			readOnly={props.isReadonly}
-			disabled={props.isReadonly} />
+			disabled={props.isReadonly} 
+		/>
 	);
 }

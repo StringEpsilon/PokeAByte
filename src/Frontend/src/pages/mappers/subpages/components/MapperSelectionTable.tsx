@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { MapperUpdate, MapperVersion } from "pokeaclient";
+import { useEffect, useState } from "preact/hooks";
 
 type MapperSelectionTableProps = {
 	onMapperSelection: React.Dispatch<React.SetStateAction<string[]>>,
@@ -72,7 +72,7 @@ export function MapperSelectionTable(props: MapperSelectionTableProps) {
 					type="text" 
 					className="margin-right"
 					placeholder="" 
-					onChange={(event) => setFilter(event.target.value)} 
+					onInput={(event) => setFilter(event.currentTarget.value)} 
 				/>
 			</span>
 			{props.onUpdateList &&
@@ -83,7 +83,11 @@ export function MapperSelectionTable(props: MapperSelectionTableProps) {
 					<tr  >
 						<th className="min">
 							<label className="checkbox">
-								<input type="checkbox" checked={selectedMappers.length == mappers.length} onChange={(e) => selectAll(e.target.checked)} />
+								<input 
+									type="checkbox" 
+									checked={selectedMappers.length == mappers.length} 
+									onInput={(e) => selectAll(e.currentTarget.checked)} 
+								/>
 								<span />
 							</label>
 						</th>
@@ -97,7 +101,7 @@ export function MapperSelectionTable(props: MapperSelectionTableProps) {
 								<td >
 									<input
 										type="checkbox"
-										onChange={() => { }}
+										onInput={() => { }}
 										checked={selectedMappers.includes(mapper.path)}
 										onClick={() => select(mapper.path)}
 										aria-label="Select mapper"

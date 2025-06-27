@@ -1,4 +1,5 @@
-﻿import { useState, useSyncExternalStore } from "react";
+﻿import { useSyncExternalStore } from "preact/compat";
+import { useState } from "preact/hooks";
 import { Store } from "../../utility/propertyStore";
 import { MapperSelection } from "./subpages/MapperSelectPage";
 import { MapperDownloadPage } from "./subpages/MapperDownloadPage";

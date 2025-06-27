@@ -1,14 +1,14 @@
-import React from "react";
 import { PropertyEdit } from "./PropertyEdit";
 import { CopyValueIcon } from "./CopyValueIcon";
 import { Store } from "../../../utility/propertyStore";
 import { PropertyInfoTable } from "./PropertyInfoTable";
 import { clipboardCopy } from "../utils/clipboardCopy";
 import { getPropertyFieldValue } from "./PropertyTextbox";
+import { useState } from "preact/hooks";
 
 
 export function PropertyValue({ path }: { path: string }) {
-	const [tableOpen, setTableOpen] = React.useState(false);
+	const [tableOpen, setTableOpen] = useState(false);
 
 	const handleCopyClick = () => {
 		const currentPropValue = Store.getProperty(path);

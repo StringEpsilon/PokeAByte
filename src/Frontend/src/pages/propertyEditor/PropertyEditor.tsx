@@ -1,7 +1,8 @@
 import { Store } from "../../utility/propertyStore";
 import { PropertyTree } from "./components/PropertyTree";
 import { unique } from "./utils/unique";
-import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useState } from "preact/hooks";
+import { useSyncExternalStore } from "preact/compat";
 import { useLocation } from "wouter";
 
 

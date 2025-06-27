@@ -1,4 +1,5 @@
-import { useRef, useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "preact/compat";
+import { useRef } from "preact/hooks";
 import { ToastNotification, Toasts } from "./ToastStore";
 import { Toast } from "./Toast";
 

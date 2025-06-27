@@ -1,4 +1,4 @@
-import React from "react";
+import { useRef, useState } from "preact/hooks";
 
 export type SelectOption<V> = { value: V, display: string }
 
@@ -29,9 +29,9 @@ function findDisplayByValue<V, T extends SelectOption<V>>(options: T[], value?: 
 }
 
 export function SelectInput<Value>(props: SelectInputProps<Value, SelectOption<Value>>) {
-	const divRef = React.useRef<HTMLDivElement>(null);
-	const [isOpen, setIsOpen] = React.useState<boolean>(false);
-	const [searchValue, setSearchValue] = React.useState<string>("");
+	const divRef = useRef<HTMLDivElement>(null);
+	const [isOpen, setIsOpen] = useState<boolean>(false);
+	const [searchValue, setSearchValue] = useState<string>("");
 	const valueDisplay = findDisplayByValue(props.options, props.value);
 
 	const handleSelection = (option: SelectOption<Value>) => {
@@ -50,7 +50,7 @@ export function SelectInput<Value>(props: SelectInputProps<Value, SelectOption<V
 			setIsOpen(false);
 		});
 	}
-	const handleKeyDown = (event: React.KeyboardEvent) => {
+	const handleKeyDown = (event: KeyboardEvent) => {
 		switch (event.key) {
 			case "Escape": 
 				setIsOpen(false);
@@ -73,7 +73,7 @@ export function SelectInput<Value>(props: SelectInputProps<Value, SelectOption<V
 				value={isOpen ? searchValue : valueDisplay}
 				onFocus={handleOnFocus}
 				onBlur={handleBlur}
-				onChange={(e) => setSearchValue(e.target.value)}
+				onInput={(e) => setSearchValue(e.currentTarget.value)}
 				readOnly={props.isReadonly}
 			/>
 			<menu role="combobox">

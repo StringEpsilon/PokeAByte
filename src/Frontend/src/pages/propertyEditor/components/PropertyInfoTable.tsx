@@ -80,7 +80,7 @@ export function PropertyByteRow({ path }: { path: string }) {
 							maxLength={2}
 							className="no-padding"
 							value={byte.toString(16)}
-							onChange={() => { }}
+							onInput={() => { }}
 						/>
 					);
 				})}

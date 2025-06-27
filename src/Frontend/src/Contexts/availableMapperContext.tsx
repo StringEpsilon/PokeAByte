@@ -1,6 +1,7 @@
 import { ArchivedMappers, AvailableMapper, MapperUpdate } from "pokeaclient";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "preact/hooks";
 import { Store } from "../utility/propertyStore";
+import { ComponentChildren, createContext } from "preact";
 
 export interface MapperFilesContextData {
 	refresh: () => void,
@@ -10,9 +11,9 @@ export interface MapperFilesContextData {
 	archives: ArchivedMappers
 }
 
-export const MapperFilesContext = React.createContext<MapperFilesContextData>(null!);
+export const MapperFilesContext = createContext<MapperFilesContextData>(null!);
 
-export function MapperFilesContextProvider(props: { children: React.ReactNode}) {
+export function MapperFilesContextProvider(props: { children: ComponentChildren}) {
 	const refresh = async () => {
 		setState({
 			...state, 

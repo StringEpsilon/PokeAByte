@@ -1,4 +1,3 @@
-import React from "react";
 import { Store } from "../../../utility/propertyStore";
 import { SaveValueButton } from "./SaveValueButton";
 import { FreezeValueButton } from "./FreezeValueButton";
@@ -7,6 +6,7 @@ import { Toasts } from "../../../notifications/ToastStore";
 import { GamePropertyType } from "pokeaclient";
 import { PropertyTextbox } from "./PropertyTextbox";
 import { PropertyInputSelect } from "./PropertyInputSelect";
+import { useState } from "preact/hooks";
 
 export function PropertyEdit({ path }: { path: string }) {
 	const property = useGameProperty(path);
@@ -16,9 +16,9 @@ export function PropertyEdit({ path }: { path: string }) {
 	const isReadonly = !!(property?.address === null);
 	const type = (propertyType === "bit" || propertyType === "bool") ? "checkbox" : "text";
 	const isSelect = reference && reference !== "defaultCharacterMap"
-	const [value, setValue] = React.useState<string|boolean>("");
-	const [hasFocus, setHasFocus] = React.useState(false);
-	const [madeEdit, setMadeEdit] = React.useState(false);
+	const [value, setValue] = useState<string|boolean>("");
+	const [hasFocus, setHasFocus] = useState(false);
+	const [madeEdit, setMadeEdit] = useState(false);
 	const handleUpdate = (newValue: string|boolean)  => {
 		setValue(newValue);
 		setMadeEdit(newValue != property?.value);

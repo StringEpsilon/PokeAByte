@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect } from "preact/hooks";
 
 type ModalProps = {
 	display: boolean;

@@ -1,7 +1,7 @@
 import { Store } from "../../../utility/propertyStore"
 import { SelectInput } from "../../../components/SelectInput";
 import { Toasts } from "../../../notifications/ToastStore";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "preact/hooks";
 import { useAPI } from "../../../hooks/useAPI";
 import { LoadProgress } from "../../../components/LoadProgress";
 import { useLocation } from "wouter";

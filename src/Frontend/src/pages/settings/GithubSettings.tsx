@@ -1,12 +1,14 @@
-import React, { FormEvent } from "react";
+
+import type { JSX } from "preact";
+import { useEffect, useState } from "preact/hooks";
 import { Store } from "../../utility/propertyStore";
 import { useAPI } from "../../hooks/useAPI";
 
 export function GithubSettings() {
 	const filesClient = Store.client.files;
 	const githubSettings = useAPI(Store.client.files.getGithubSettings);
-	const [status, setStatus] = React.useState({ color: "", message: "" });
-	React.useEffect(
+	const [status, setStatus] = useState({ color: "", message: "" });
+	useEffect(
 		() => githubSettings.call(),
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[]
@@ -31,7 +33,7 @@ export function GithubSettings() {
 			}
 		});
 	}
-	const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+	const onSubmit = (event: JSX.TargetedSubmitEvent<HTMLFormElement>) => {
 		const formData = new FormData(event.currentTarget);
 		filesClient.saveGithubSettings({
 			owner: formData.get("owner") as string ?? "",

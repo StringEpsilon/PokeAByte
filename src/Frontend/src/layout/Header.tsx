@@ -1,7 +1,7 @@
 import { useLocation } from "wouter";
 import { HeaderNavigation } from "./HeaderNavigation";
 import { Store } from "../utility/propertyStore";
-import { useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "preact/compat";
 
 export function Header() {
 	const mapper = useSyncExternalStore(Store.subscribeMapper, Store.getMapper);

@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "preact/compat";
 import { Switch, Route, Redirect } from "wouter";
 import { LoadProgress } from "../components/LoadProgress";
 import { PropertyEditor } from "../pages/propertyEditor/PropertyEditor";
