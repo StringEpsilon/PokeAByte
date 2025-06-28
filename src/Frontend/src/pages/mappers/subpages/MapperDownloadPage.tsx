@@ -5,14 +5,25 @@ import { MapperSelectionTable } from "./components/MapperSelectionTable";
 import { useAPI } from "../../../hooks/useAPI";
 import { MapperUpdate } from "pokeaclient";
 import { MapperFilesContext } from "../../../Contexts/availableMapperContext";
+import { OpenMapperFolderButton } from "../../../components/OpenMapperFolderButton";
+import { Toasts } from "../../../notifications/ToastStore";
 
 export function MapperDownloadPage() {
 	const filesClient = Store.client.files;
 	const mapperFileContext = useContext(MapperFilesContext);
 	const [downloads, setDownloads] = useState<MapperUpdate[]>([]);
 	const [selectedDownloads, setSelectedDownloads] = useState<string[]>([]);
-	const downloadMappers = useAPI(filesClient.downloadMapperUpdatesAsync, mapperFileContext.refresh);
-
+	const downloadMappers = useAPI(
+		filesClient.downloadMapperUpdatesAsync, 
+		(success) => {
+			if (success) {
+				mapperFileContext.refresh();
+				Toasts.push(`Succesfully downloaded mapper(s).`, "task_alt", "success");
+			} else {
+				Toasts.push(`An error occured while downloading (a) mapper(s).`, "", "error");
+			}
+		}
+	);
 	useEffect(() => {
 		setDownloads(mapperFileContext.updates.filter(mapper => !mapper.currentVersion) ?? []);
 		setSelectedDownloads([]);		
@@ -44,9 +55,7 @@ export function MapperDownloadPage() {
 				</button>
 				{/* TODO: does not currently work :/ */}
 				<button className="border-blue margin-right" disabled>Check for mappers</button>
-				<button className="border-purple" onClick={filesClient.openMapperFolder}>
-					Open mapper folder
-				</button>
+				<OpenMapperFolderButton />
 			</div>
 			<div className="margin-top">
 				<MapperSelectionTable

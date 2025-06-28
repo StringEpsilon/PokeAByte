@@ -1,5 +1,6 @@
 import { GamePropertyType } from "pokeaclient";
 import { useGamePropertyField } from "../hooks/useGamePropertyField";
+import { useState } from "preact/hooks";
 
 export function getPropertyFieldValue(value: any, type: GamePropertyType | null) {
 	if (type === "bitArray") {
@@ -16,13 +17,14 @@ export type PropertyTextboxProps = {
 	propertyType: GamePropertyType | null,
 	editValue: string|boolean | null,
 	save: () => void,
-	setHasFocus: (focus: boolean) => void,
 	setValue: (value: string|boolean) => void,
 }
 
 export function PropertyTextbox(props: PropertyTextboxProps) {
 	const propertyValue = useGamePropertyField(props.path, "value");
 	const value = getPropertyFieldValue(propertyValue, props.propertyType) ?? "";
+	const [focusValue, setFocusValue] = useState<string|boolean|null>(null);
+	const [hasFocus, setHasFocus] = useState<boolean>(false);
 	const update = (value: string | boolean) => {
 		if (!props.isReadonly) {
 			props.setValue(value);
@@ -34,9 +36,7 @@ export function PropertyTextbox(props: PropertyTextboxProps) {
 				<input
 					type={"checkbox"}
 					role="switch"
-					checked={props.isEdit ? props.editValue : propertyValue}
-					onFocus={() => { props.setHasFocus(true); props.setValue(propertyValue); }}
-					onBlur={() => props.setHasFocus(false)}
+					checked={props.isEdit ? props.editValue : value}
 					onKeyDown={(e) => {
 						if (e.key === "Enter") {
 							props.save();
@@ -44,22 +44,24 @@ export function PropertyTextbox(props: PropertyTextboxProps) {
 					}}
 					onInput={(e) => update(e.currentTarget.checked)}
 					readOnly={props.isReadonly}
-					disabled={props.isReadonly} />
+					disabled={props.isReadonly} 
+				/>
 			</label>
 		);
 	}
+	const actualValue = hasFocus ? focusValue : value;
 	return (
 		<input
 			type={props.type}
-			value={props.isEdit ? props.editValue : value}
-			onFocus={() => { props.setHasFocus(true); props.setValue(propertyValue); }}
-			onBlur={() => props.setHasFocus(false)}
+			value={props.isEdit ? props.editValue : actualValue}
+			onFocus={() => { setHasFocus(true); setFocusValue(value) }}
+			onBlur={() => setHasFocus(false)}
 			onKeyDown={(e) => {
 				if (e.key === "Enter") {
 					props.save();
 				}
 			}}
-			onInput={(e) => props.setValue(e.currentTarget.value)}
+			onInput={(e) => {props.setValue(e.currentTarget.value); setFocusValue(e.currentTarget.value)}}
 			readOnly={props.isReadonly}
 			disabled={props.isReadonly} 
 		/>

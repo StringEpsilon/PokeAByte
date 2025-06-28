@@ -48,7 +48,7 @@ export class ToastStore {
 			autoclear,
 			id,
 			close: () => this.remove(id),
-			clearAt: autoclear ? new Date().getTime() + 2000 : 0,
+			clearAt: autoclear ? new Date().getTime() + 5000 : 0,
 		});
 		this._notifySubscribers();
 	}

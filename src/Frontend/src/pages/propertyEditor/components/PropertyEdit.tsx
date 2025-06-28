@@ -18,15 +18,16 @@ export function PropertyEdit({ path }: { path: string }) {
 	const isReadonly = !!(property?.address === null);
 	const type = (propertyType === "bit" || propertyType === "bool") ? "checkbox" : "text";
 	const isSelect = reference && reference !== "defaultCharacterMap"
-	const [value, setValue] = useState<string|boolean>("");
-	const [hasFocus, setHasFocus] = useState(false);
+	const actualValue = getPropertyFieldValue(property?.value, propertyType) ?? "";
+	const [value, setValue] = useState<string|boolean|null>(null);
 	const [madeEdit, setMadeEdit] = useState(false);
 	const handleUpdate = (newValue: string|boolean)  => {
 		setValue(newValue);
-		setMadeEdit(newValue != property?.value);
+		setMadeEdit(newValue !== actualValue);
 	};
 	const handleSave = () => {
 		if (path) {
+			setValue(null);
 			Store.client.updatePropertyValue(path, value)
 				.then(() => {
 					setMadeEdit(false);
@@ -49,12 +50,13 @@ export function PropertyEdit({ path }: { path: string }) {
 	return (
 		<>
 			<SaveValueButton active={madeEdit} onClick={handleSave} />
+	
 			<CopyValueIcon onClick={handleCopyClick} />
 			<FreezeValueButton disabled={isReadonly} isFrozen={isFrozen} path={path} />
 			{isSelect
 				? <PropertyInputSelect 
 					path={path} 
-					displayValue={value.toString()}
+					displayValue={(value ?? "").toString()}
 					isReadonly={isReadonly} 
 					onChange={handleUpdate}
 				/>
@@ -62,14 +64,21 @@ export function PropertyEdit({ path }: { path: string }) {
 					type={type}
 					propertyType={propertyType}
 					path={path}
-					editValue={(hasFocus || madeEdit) ? value : null}
-					setHasFocus={setHasFocus}
+					editValue={value}
 					save={handleSave}
 					setValue={handleUpdate}
-					isEdit={hasFocus || madeEdit}
+					isEdit={madeEdit}
 					isReadonly={!!isReadonly}
 				/>
 			}
+			<button 
+				className="icon-button" 
+				disabled={!madeEdit} 
+				type="button" 
+				onClick={() => {setValue(null); setMadeEdit(false)}}
+			>
+				<i className="material-icons"> undo </i>
+			</button>
 			<span class="margin-left color-darker center-self">
 				{addressString}
 			</span>

@@ -8,6 +8,7 @@ import { useLocation } from "wouter";
 import { AvailableMapper, Mapper } from "pokeaclient";
 import { MapperFilesContext } from "../../../Contexts/availableMapperContext";
 import { unique } from "../../propertyEditor/utils/unique";
+import { OpenMapperFolderButton } from "../../../components/OpenMapperFolderButton";
 
 type MapperSelectProps = {
 	mapper: Mapper | null
@@ -94,11 +95,7 @@ export function MapperSelection(props: MapperSelectProps) {
 				Load Mapper
 			</button>
 			<div className="margin-top">
-				<button
-					className="border-purple margin-right"
-					onClick={() => Store.client.files.openMapperFolder()}>
-					Open Mapper Folder
-				</button>
+				<OpenMapperFolderButton />
 			</div>
 		</div>
 	);

@@ -14,7 +14,6 @@ export function PropertyValue({ path }: { path: string }) {
 			<div>
 				<div>
 					<PropertyEdit path={path} />
-					
 				</div>
 			</div>
 			{tableOpen &&

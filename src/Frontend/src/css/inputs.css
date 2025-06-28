@@ -34,16 +34,19 @@ input[type="checkbox"] {
 	width: 2rem;
 	display: grid;
 	place-content: center;
-	background-color: var(--color-red) !important;
-	&:checked {
-		background-color: var(--color-green) !important;
+	&[role="switch"] {
+		position: relative;
+		background-color: var(--color-red) !important;
+		&:checked {
+			background-color: var(--color-green) !important;
+		}
 	}
 	&:not([role="switch"])  {
 		&:checked:before {
 			content: "";
 			height: 1rem;
 			width: 1rem;
-			transition: 120ms transform ease-in-out;
+			transition: 80ms transform ease-in-out;
 			background-color: var(--color-tone-5);
 		}
 	}
@@ -51,9 +54,9 @@ input[type="checkbox"] {
 		width: 4rem;
 		&:before {
 			content: "";
-			height: 1.4rem;
-			width: 1rem;
-			transition: 120ms transform ease-in-out;
+			height: calc(2rem - 4px);
+			width: 1.2rem;
+			transition: transform 80ms ease-in-out;
 			background-color: white;
 			transform: translateX(+100%);
 		}

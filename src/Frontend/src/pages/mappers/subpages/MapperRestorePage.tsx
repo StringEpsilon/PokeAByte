@@ -4,6 +4,7 @@ import { Store } from "../../../utility/propertyStore";
 import { ArchivedMapper, ArchivedMappers } from "pokeaclient";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { MapperFilesContext } from "../../../Contexts/availableMapperContext";
+import { OpenMapperFolderButton } from "../../../components/OpenMapperFolderButton";
 
 export function MapperRestorePage() {
 	const filesClient = Store.client.files;
@@ -20,9 +21,7 @@ export function MapperRestorePage() {
 				</strong>
 			</div>
 			<div className="row margin-top">
-				<button className="border-purple margin-right" type="button" onClick={filesClient.openMapperFolder}>
-					Open mapper folder
-				</button>
+				<OpenMapperFolderButton />
 				<button className="border-blue" type="button" onClick={filesClient.openMapperFolder}>
 					Open archive/backup folder
 				</button>

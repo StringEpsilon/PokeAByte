@@ -6,6 +6,7 @@ import { useAPI } from "../../../hooks/useAPI";
 import { archiveMappers, backupMappers } from "../../../utility/fetch";
 import { MapperUpdate } from "pokeaclient";
 import { MapperFilesContext } from "../../../Contexts/availableMapperContext";
+import { OpenMapperFolderButton } from "../../../components/OpenMapperFolderButton";
 
 export function MapperBackupPage() {
 	const filesClient = Store.client.files;
@@ -55,9 +56,7 @@ export function MapperBackupPage() {
 				<button className="margin-right border-green" disabled={!availableMappers.length} onClick={handleBackupAll}>
 					Backup all
 				</button>
-				<button className="border-purple" onClick={filesClient.openMapperFolder}>
-					Open mapper folder
-				</button>
+				<OpenMapperFolderButton />
 			</div>
 			<div className="margin-top">
 				<button 
@@ -76,7 +75,7 @@ export function MapperBackupPage() {
 					Archive all
 				</button>
 				<button 
-					className="border-blue" 
+					className="border-purple" 
 					onClick={filesClient.openMapperArchiveFolder}
 				>
 					Open archive folder
@@ -96,4 +95,3 @@ export function MapperBackupPage() {
 		</article>
 	);
 }
-

@@ -1,13 +1,11 @@
 import { Store } from "../../utility/propertyStore";
 import { PropertyTree } from "./components/PropertyTree";
 import { unique } from "./utils/unique";
-import { useCallback, useEffect, useState } from "preact/hooks";
+import { useEffect } from "preact/hooks";
 import { useSyncExternalStore } from "preact/compat";
 import { useLocation } from "wouter";
 
-
 export function PropertyEditor() {
-	const [isReloading, setReloading] = useState(false);
 	const [, setLocation] = useLocation();
 	const properties = Store.getAllProperties();
 	const paths = Object.keys(properties)
@@ -15,19 +13,11 @@ export function PropertyEditor() {
 		.filter(unique);
 	const mapper = useSyncExternalStore(Store.subscribeMapper, Store.getMapper);
 	const isConnected = useSyncExternalStore(Store.subscribeConnected, Store.isConnected);
-	const reloadMapper = useCallback(
-		async () => {
-			setReloading(true);
-			// @ts-expect-error The upstream type definition is incomplete, accessing fileId works just fine.
-			await Store.client.changeMapper(mapper.fileId);
-			setReloading(false);
-		}
-	, [setReloading]);
 	useEffect(() => {
-		if (!mapper && isConnected && !isReloading) {
+		if (!mapper && isConnected) {
 			setLocation("/mappers/");
 		}
-	}, [mapper, isConnected, isReloading, setLocation])
+	}, [mapper, isConnected, setLocation])
 
 	if (!isConnected) {
 		return (
@@ -41,17 +31,6 @@ export function PropertyEditor() {
 
 	return (
 		<div className="layout-box margin-top">
-			<span className="row">
-				<strong className="small margin-right">
-					Properties for {mapper?.gameName}
-				</strong>
-				<button type="button" className="border-red" onClick={Store.client.unloadMapper}>
-					Unload 
-				</button>
-				<button type="button" className="margin-left border-purple" onClick={reloadMapper}>
-					Reload
-				</button>
-			</span>
 			{mapper?.gameName.toLowerCase().includes("deprecated") &&
 				<p className="text-red">
 					<small>

@@ -1,6 +1,10 @@
+import { useState } from "preact/hooks";
 import { useGamePropertyField } from "../hooks/useGamePropertyField";
 import { clipboardCopy } from "../utils/clipboardCopy";
 import { CopyValueIcon } from "./CopyValueIcon";
+import { SaveValueButton } from "./SaveValueButton";
+import { Store } from "../../../utility/propertyStore";
+import { Toasts } from "../../../notifications/ToastStore";
 
 export function PropertyInfoTable({ path }: { path: string }) {
 	const type = useGamePropertyField(path, "type");
@@ -80,16 +84,36 @@ export function PropertyInfoTable({ path }: { path: string }) {
 
 export function PropertyByteRow({ path }: { path: string }) {
 	const bytes = useGamePropertyField(path, "bytes");
+	const [madeEdit, setMadeEdit] = useState<boolean>(false);
+	const originalValue = bytes?.map(x => x.toString(16).toUpperCase()) ?? [];
+	const [values, setValues] = useState(bytes?.map(x => x.toString(16).toUpperCase()) ?? []);
+	const handleEdit = (byte: string, index: number) => {
+		const newValues = structuredClone(values);
+		newValues[index] = byte.toUpperCase();
+		setValues(newValues);
+		setMadeEdit(newValues[index] !== originalValue[index]);
+	};
+	const handleSave = () => {
+		Store.client.updatePropertyBytes(path, values.map(x => parseInt(x, 16)))
+			.then(() => {
+				setMadeEdit(false);
+				Toasts.push(`Succesfully saved bytes!`, "task_alt", "success");
+			});
+		setMadeEdit(false);
+	}
+	if (bytes == null) {
+		return null;
+	}
 	return (
 		<tr>
 			<th>Bytes</th>
 			<td className="no-padding">
-				<CopyValueIcon onClick={() => clipboardCopy(bytes?.join(""))} />
+				<CopyValueIcon onClick={() => clipboardCopy(bytes.map(x => x.toString(16).toUpperCase()).join(" "))} />
 			</td>
 			<td className="property-bytes">
+				<SaveValueButton active={madeEdit} onClick={handleSave} />
 				<span>0x&nbsp;</span>
-				{bytes?.map((byte, i) => {
-					var value = byte.toString(16).toUpperCase().padStart(2, "0");
+				{values.map((value, i) => {
 					return (
 						<input
 							key={i}
@@ -98,10 +122,18 @@ export function PropertyByteRow({ path }: { path: string }) {
 							maxLength={2}
 							className="no-padding"
 							value={value}
-							onInput={() => { }}
+							onInput={(e) => handleEdit(e.currentTarget.value, i)}
 						/>
 					);
 				})}
+				<button 
+					className="icon-button" 
+					disabled={!madeEdit} 
+					type="button" 
+					onClick={() => {setValues(originalValue); setMadeEdit(false)}}
+				>
+					<i className="material-icons"> undo </i>
+				</button>
 			</td>
 		</tr>
 	);

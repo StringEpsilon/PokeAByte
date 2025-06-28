@@ -5,13 +5,25 @@ import { useAPI } from "../../../hooks/useAPI";
 import { MapperUpdate } from "pokeaclient";
 import { MapperFilesContext } from "../../../Contexts/availableMapperContext";
 import { useContext, useEffect, useState } from "preact/hooks";
+import { OpenMapperFolderButton } from "../../../components/OpenMapperFolderButton";
+import { Toasts } from "../../../notifications/ToastStore";
 
 export function MapperUpdatePage() {
 	const filesClient = Store.client.files;
 	const mapperFileContext = useContext(MapperFilesContext);
 	const [availableUpdates, setAvailableUpdates] = useState<MapperUpdate[]>([]);
 	const [selectedUpdates, sectSelectedUpdates] = useState<string[]>([]);
-	const downloadMappers = useAPI(filesClient.downloadMapperUpdatesAsync, mapperFileContext.refresh);
+	const downloadMappers = useAPI(
+		filesClient.downloadMapperUpdatesAsync, 
+		(success) => {
+			if (success) {
+				mapperFileContext.refresh();
+				Toasts.push(`Succesfully update mapper(s).`, "task_alt", "success");
+			} else {
+				Toasts.push(`An error occured while updating.`, "", "error");
+			}
+		}
+	);
 	
 	useEffect(() => {
 		setAvailableUpdates(
@@ -57,9 +69,7 @@ export function MapperUpdatePage() {
 				<button className="border-blue margin-right">
 					Check for mappers
 				</button>
-				<button className="border-purple" onClick={filesClient.openMapperFolder}>
-					Open mapper folder
-				</button>
+				<OpenMapperFolderButton />
 			</div>
 			<MapperSelectionTable
 				availableMappers={availableUpdates}
