@@ -77,11 +77,13 @@ export function SelectInput<Value>(props: SelectInputProps<Value, SelectOption<V
 				readOnly={props.isReadonly}
 			/>
 			<menu role="combobox">
-				{props.options.filter(matchDisplayValue(searchValue)).map((x, index) =>
-					<button role="button" key={index} onClick={() => handleSelection(x)}>
-						{x.display}
-					</button>
-				)}
+				<div>
+					{props.options.filter(matchDisplayValue(searchValue)).map((x, index) =>
+						<button role="button" key={index} onClick={() => handleSelection(x)}>
+							{x.display}
+						</button>
+					)}
+				</div>
 			</menu>
 		</div>
 	)
