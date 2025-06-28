@@ -1,19 +1,15 @@
 import { useLocation } from "wouter";
 import { HeaderNavigation } from "./HeaderNavigation";
 import { Store } from "../utility/propertyStore";
-import { useCallback, useSyncExternalStore } from "preact/compat";
+import {  useSyncExternalStore } from "preact/compat";
 
 export function Header() {
 	const mapper = useSyncExternalStore(Store.subscribeMapper, Store.getMapper);
 	const [, setLocation] = useLocation();
-	const reloadMapper = useCallback(
-		async () => {
-			// setReloading(true);
-			// @ts-expect-error The upstream type definition is incomplete, accessing fileId works just fine.
-			await Store.client.changeMapper(mapper.fileId);
-			// setReloading(false);
-		}
-		, []);
+	const reloadMapper = () => {
+		// @ts-expect-error The upstream type definition is incomplete, accessing fileId works just fine.
+		Store.client.changeMapper(mapper.fileId).then(() => setLocation("/ui/properties"));
+	};
 	const textHighlightClass = mapper ? "text-green" : "text-red";
 	return (
 		<header className="layout-box">
