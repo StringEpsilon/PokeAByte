@@ -53,8 +53,9 @@ export function MapperDownloadPage() {
 				<button className="border-green margin-right" disabled={!downloads.length} onClick={handleDownloadAll}>
 					Download all
 				</button>
-				{/* TODO: does not currently work :/ */}
-				<button className="border-blue margin-right" disabled>Check for mappers</button>
+				<button className="border-blue margin-right" disabled onClick={mapperFileContext.refresh}>
+					Reload mapper list
+				</button>
 				<OpenMapperFolderButton />
 			</div>
 			<div className="margin-top">

@@ -66,15 +66,15 @@ export function MapperUpdatePage() {
 				<button className="border-green margin-right" disabled={!availableUpdates.length} onClick={handleUpdateAll}>
 					Update all
 				</button>
-				<button className="border-blue margin-right">
-					Check for mappers
+				<button className="border-blue margin-right" onClick={mapperFileContext.refresh}>
+					Reload mapper list
 				</button>
 				<OpenMapperFolderButton />
 			</div>
 			<MapperSelectionTable
 				availableMappers={availableUpdates}
 				selectedMappers={selectedUpdates}
-				onMapperSelection={sectSelectedUpdates}
+				onMapperSelection={sectSelectedUpdates}				
 			/>
 		</article>
 	);

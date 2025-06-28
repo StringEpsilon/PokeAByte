@@ -75,9 +75,10 @@ export function MapperSelectionTable(props: MapperSelectionTableProps) {
 					onInput={(event) => setFilter(event.currentTarget.value)} 
 				/>
 			</span>
-			{/* TODO: Does not currently work */}
 			{props.onUpdateList &&
-				<button type="button" className="border-blue">Reload mapper list</button>
+				<button type="button" className="border-blue" onClick={props.onUpdateList}>
+					Reload mapper list
+				</button>
 			}
 			<table className="striped">
 				<thead>

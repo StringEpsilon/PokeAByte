@@ -88,7 +88,7 @@ export function MapperBackupPage() {
 					availableMappers={availableMappers}
 					selectedMappers={selectedMappers}
 					onMapperSelection={setSelectedMappers}
-					onUpdateList={() => mapperFileContext.refresh()}
+					onUpdateList={mapperFileContext.refresh}
 				/>
 			}
 			</div>
