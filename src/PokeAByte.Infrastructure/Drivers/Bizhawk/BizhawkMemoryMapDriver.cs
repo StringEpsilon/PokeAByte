@@ -116,7 +116,7 @@ public class BizhawkMemoryMapDriver : IPokeAByteDriver, IBizhawkMemoryMapDriver
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask WriteBytes(uint startingMemoryAddress, byte[] values, string? path = null)
+    public async ValueTask WriteBytes(uint startingMemoryAddress, byte[] values, string? path = null)
     {
         if (_platform == null)
         {
@@ -134,15 +134,14 @@ public class BizhawkMemoryMapDriver : IPokeAByteDriver, IBizhawkMemoryMapDriver
                 $"Could not find the BizHawk identifier for memory address {startingMemoryAddress}");
 
 
-        var memoryContract = new MemoryContract
+        var memoryContract = new MemoryContract<byte[]>
         {
             BizHawkIdentifier = bizhawkMemory.BizhawkIdentifier,
             Data = values,
             DataLength = values.Length,
             MemoryAddressStart = (long)startingMemoryAddress - bizhawkMemory.PhysicalStartingAddress
         };
-        BizhawkNamedPipesClient.WriteToBizhawk(memoryContract);
-        return ValueTask.CompletedTask;
+        await BizhawkNamedPipesClient.WriteToBizhawk(memoryContract);
     }
 
     public static Task<bool> Probe(AppSettings appSettings)

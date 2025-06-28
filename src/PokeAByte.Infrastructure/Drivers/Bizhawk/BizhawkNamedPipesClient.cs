@@ -7,7 +7,7 @@ public static class BizhawkNamedPipesClient
 {
     public const string PipeName = "BizHawk_Named_Pipe";
 
-    public static void WriteToBizhawk(MemoryContract contract, int timeoutMs = 100)
+    public static async Task WriteToBizhawk(MemoryContract<byte[]> contract, int timeoutMs = 100)
     {
         try
         {
@@ -16,13 +16,13 @@ public static class BizhawkNamedPipesClient
                 PipeDirection.Out,
                 PipeOptions.Asynchronous);
             var contractBytes = contract.Serialize();
-            client.Connect(timeoutMs);
-            client.BeginWrite(contractBytes,
+            await client.ConnectAsync(timeoutMs);
+            await client.WriteAsync(contractBytes,
                 0,
-                contractBytes.Length,
-                SendAsync,
-                client
+                contractBytes.Length
             );
+            client.Flush();
+            client.Dispose();
         }
         catch (Exception e)
         {
@@ -30,22 +30,5 @@ public static class BizhawkNamedPipesClient
             throw;
         }
     }
-    private static void SendAsync(IAsyncResult iar)
-    {
-        if (iar.AsyncState is null)
-            throw new InvalidOperationException("Named pipe client is null.");
-        try
-        {
-            var pipeClient = (NamedPipeClientStream)iar.AsyncState;
-            pipeClient.EndWrite(iar);
-            pipeClient.Flush();
-            pipeClient.Close();
-            pipeClient.Dispose();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
+
 }
