@@ -1,31 +1,50 @@
 import { useLocation } from "wouter";
 import { HeaderNavigation } from "./HeaderNavigation";
 import { Store } from "../utility/propertyStore";
-import { useSyncExternalStore } from "preact/compat";
+import { useCallback, useSyncExternalStore } from "preact/compat";
 
 export function Header() {
 	const mapper = useSyncExternalStore(Store.subscribeMapper, Store.getMapper);
 	const [, setLocation] = useLocation();
-	const onPowerButtonClick = () => {
-		setLocation("");
-	};
-
+	const reloadMapper = useCallback(
+		async () => {
+			// setReloading(true);
+			// @ts-expect-error The upstream type definition is incomplete, accessing fileId works just fine.
+			await Store.client.changeMapper(mapper.fileId);
+			// setReloading(false);
+		}
+		, []);
 	const textHighlightClass = mapper ? "text-green" : "text-red";
 	return (
 		<header className="layout-box">
 			<div>
-				<h1>
+				<h1 class={textHighlightClass}>
 					Poke-A-Byte
 				</h1>
-				<button
-					type="button"
-					onClick={onPowerButtonClick}
-					title={mapper ? "Status: Connected" : "Status: Disconnected"}
-				>
-					<i className={`material-icons ${textHighlightClass}`}> power_settings_new </i>
-				</button>
+				<div class={"mapper-info"}>
+					<div class={textHighlightClass}>
+						{mapper
+							? mapper.gameName
+							: "No mapper"
+						}
+						{mapper
+							? <i title="Status: Connected" className={`material-icons ${textHighlightClass}`}> cell_tower </i>
+							: <i title="Status: Disconnected" className={`material-icons ${textHighlightClass}`}> remove_circle_outline </i>
+						}
+					</div>
+					{mapper &&
+						<span>
+							<button type="button" className="border-red" onClick={Store.client.unloadMapper}>
+								Unload
+							</button>
+							<button type="button" className="margin-left border-purple" onClick={reloadMapper}>
+								Reload
+							</button>
+						</span>
+					}
+				</div>
 			</div>
-			<nav className="tab">
+			<nav className={`tab`}>
 				<HeaderNavigation mapper={mapper} />
 			</nav>
 		</header>

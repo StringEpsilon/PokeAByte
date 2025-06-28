@@ -50,13 +50,13 @@ export function MapperBackupPage() {
 			<span>{selectedMappers.length} / {availableMappers.length} Mappers Selected</span>
 			<div className="margin-top">
 				<button className="border-green margin-right" disabled={!selectedMappers.length} onClick={handleBackupSelected}>
-					BACKUP SELECTED
+					Backup selected
 				</button>
 				<button className="margin-right border-green" disabled={!availableMappers.length} onClick={handleBackupAll}>
-					BACKUP ALL
+					Backup all
 				</button>
 				<button className="border-purple" onClick={filesClient.openMapperFolder}>
-					OPEN MAPPER FOLDER
+					Open mapper folder
 				</button>
 			</div>
 			<div className="margin-top">
@@ -66,20 +66,20 @@ export function MapperBackupPage() {
 					disabled={selectedMappers.length === 0} 
 					onClick={handleArchiveSelected}
 				>
-					ARCHIVE SELECTED
+					Archive selected
 				</button>
 				<button 
 					className="margin-right border-red" 
 					disabled={availableMappers.length === 0} 
 					onClick={handleArchiveAll}
 				>
-					ARCHIVE ALL
+					Archive all
 				</button>
 				<button 
 					className="border-blue" 
 					onClick={filesClient.openMapperArchiveFolder}
 				>
-					OPEN ARCHIVE FOLDER
+					Open archive folder
 				</button>
 			</div>
 			<div className="margin-top">

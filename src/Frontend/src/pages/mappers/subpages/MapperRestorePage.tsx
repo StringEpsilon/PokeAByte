@@ -21,10 +21,10 @@ export function MapperRestorePage() {
 			</div>
 			<div className="row margin-top">
 				<button className="border-purple margin-right" type="button" onClick={filesClient.openMapperFolder}>
-					OPEN MAPPER FOLDER
+					Open mapper folder
 				</button>
 				<button className="border-blue" type="button" onClick={filesClient.openMapperFolder}>
-					OPEN ARCHIVE/BACKUP FOLDER
+					Open archive/backup folder
 				</button>
 			</div>
 			<br />

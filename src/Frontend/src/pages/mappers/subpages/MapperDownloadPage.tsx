@@ -37,14 +37,15 @@ export function MapperDownloadPage() {
 			</span>
 			<div className="margin-top">
 				<button className="border-green margin-right" disabled={!selectedDownloads.length} onClick={handleDownload}>
-					DOWNLOAD SELECTED
+					Download selected
 				</button>
 				<button className="border-green margin-right" disabled={!downloads.length} onClick={handleDownloadAll}>
-					DOWNLOAD ALL
+					Download all
 				</button>
-				<button className="border-blue margin-right">CHECK FOR MAPPERS</button>
+				{/* TODO: does not currently work :/ */}
+				<button className="border-blue margin-right" disabled>Check for mappers</button>
 				<button className="border-purple" onClick={filesClient.openMapperFolder}>
-					OPEN MAPPER FOLDER
+					Open mapper folder
 				</button>
 			</div>
 			<div className="margin-top">

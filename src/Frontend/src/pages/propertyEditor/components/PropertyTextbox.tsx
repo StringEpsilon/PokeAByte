@@ -20,7 +20,6 @@ export type PropertyTextboxProps = {
 	setValue: (value: string|boolean) => void,
 }
 
-
 export function PropertyTextbox(props: PropertyTextboxProps) {
 	const propertyValue = useGamePropertyField(props.path, "value");
 	const value = getPropertyFieldValue(propertyValue, props.propertyType) ?? "";
@@ -51,7 +50,6 @@ export function PropertyTextbox(props: PropertyTextboxProps) {
 	}
 	return (
 		<input
-			className="margin-left"
 			type={props.type}
 			value={props.isEdit ? props.editValue : value}
 			onFocus={() => { props.setHasFocus(true); props.setValue(propertyValue); }}

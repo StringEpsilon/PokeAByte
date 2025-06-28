@@ -49,16 +49,16 @@ export function MapperUpdatePage() {
 			</span>
 			<div className="margin-top">
 				<button className="border-green margin-right" disabled={!selectedUpdates.length} onClick={handleUpdate}>
-					UPDATE SELECTED
+					Update selected
 				</button>
 				<button className="border-green margin-right" disabled={!availableUpdates.length} onClick={handleUpdateAll}>
-					UPDATE ALL
+					Update all
 				</button>
 				<button className="border-blue margin-right">
-					CHECK FOR MAPPERS
+					Check for mappers
 				</button>
 				<button className="border-purple" onClick={filesClient.openMapperFolder}>
-					OPEN MAPPER FOLDER
+					Open mapper folder
 				</button>
 			</div>
 			<MapperSelectionTable

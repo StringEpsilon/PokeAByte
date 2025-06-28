@@ -46,10 +46,10 @@ export function PropertyEditor() {
 					Properties for {mapper?.gameName}
 				</strong>
 				<button type="button" className="border-red" onClick={Store.client.unloadMapper}>
-					UNLOAD 
+					Unload 
 				</button>
 				<button type="button" className="margin-left border-purple" onClick={reloadMapper}>
-					RELOAD
+					Reload
 				</button>
 			</span>
 			{mapper?.gameName.toLowerCase().includes("deprecated") &&

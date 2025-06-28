@@ -13,15 +13,7 @@ export default function MapperPage() {
 
 	return (
 		<MapperFilesContextProvider>
-			<article className="layout-box">
-				<button className={mapper ? "border-red" : ""} disabled={!mapper} onClick={Store.client.unloadMapper}>
-					{mapper
-						? `Unload '${mapper?.gameName}'`
-						: "No mapper loaded"
-					}
-				</button>
-				<br/>
-				<br/>
+			<article className="layout-box margin-top">
 				<Panel title="Load mapper" defaultOpen>
 					<MapperSelection mapper={mapper} />
 				</Panel>

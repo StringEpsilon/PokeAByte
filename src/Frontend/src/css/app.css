@@ -12,6 +12,7 @@
 	--margin-0: 0.25rem;
 	--margin-1: 0.5rem;
 	--margin-2: 1rem;
+	--margin-3: 2rem;
 
 	/** Theme primary colors */
 	--text-primary: #ffffff;
@@ -62,49 +63,58 @@ main {
 
 header {
 	display: flex;
+	flex-direction: column;
 	margin-top: var(--margin-0);
 	padding-left: var(--margin-0);
 	padding-right: var(--margin-0);
 	background-color: var(--color-surface-0);
 	border-bottom: 2px solid var(--color-border-0);
+	align-items: center;
 
-	nav {
-		display: flex;
-		flex-grow: 1;
-		align-self: flex-end;
-		background-color: var(--color-surface-0);
-
-		>button {
+	&>div:nth-child(2) {
+		nav {
 			display: flex;
-			align-items: center;
-			margin-right: var(--margin-0);
-			padding: var(--margin-0) var(--margin-1);
+			flex-grow: 1;
+			align-self: flex-end;
+			justify-self: center;
+			background-color: var(--color-surface-0);
+			
+			>button {
+				display: flex;
+				align-items: center;
+				margin-right: var(--margin-0);
+				padding: var(--margin-0) var(--margin-1);
+			}
 		}
 	}
-
-	div {
+		
+	&>div:nth-child(1) { 
 		display: flex;
-		align-content: center;
-		order: 2;
-		margin-left: auto;
-		background-color: var(--color-surface-0);
-
+		width: 100%;
 		h1 {
-			font-size: var(--font-size-0);
+			font-size: 1.5em;
 			font-family: var(--default-font);
 			display: inline;
+			padding-right: var(--margin-0);
+			flex-grow: 1;
 		}
-
-		button {
-			border: none;
-			margin-left: 8px;
-			color: var(--font-color-main);
-			background-color: var(--color-surface-0);
+		.mapper-info {
+			min-height: 60px;
+			align-content: center;
+			justify-items: right;
+			flex-shrink: 1;
+			span:nth-child(2) {
+				display: flex;
+				justify-content: right;
+				
+			}
 		}
 	}
 }
 
 nav.tab {
+	justify-content: center;
+	margin-top: -25px;
 	button {
 		position: relative;
 		clip-path: polygon(0 13px, 13px 0, 100% 0, 100% 100%, 0 100%);
@@ -114,7 +124,7 @@ nav.tab {
 		background-color: var(--color-border-0) !important;
 		padding: 6px 12px 6px 12px;
 		margin-bottom: -2px;
-		align-content: center;
+		align-content: center;  
 
 		&.active {
 			border-bottom: 1px solid var(--color-surface-1);
@@ -131,6 +141,9 @@ nav.tab {
 			z-index: -1;
 			clip-path: polygon(0 12px, 12px 0, 100% 0, 100% 100%, 0 100%);
 			background-color: var(--color-surface-1);
+		}
+		&:not([disabled]):hover::before {
+			background-color: var(--color-surface-2) !important;
 		}
 
 		&[disabled]::before {
@@ -200,12 +213,43 @@ a {
 
 .property {
 	display: flex !important;
+	flex-wrap: wrap;
 	padding: var(--margin-0);
 
 	>label {
 		min-width: 15rem;
 		display: flex;
 		gap: var(--margin-0);
+		align-self: center;
+	}
+	>table {
+		width: 100%;
+		margin-left: var(--margin-3);
+		margin-top: var(--margin-0);
+		font-family: var(--monospace-font);
+		border: 1px solid var(--color-tone-1);
+		border-collapse: collapse;
+
+		tr:nth-child(odd) {
+			background-color: var(--color-tone-1);
+		}
+
+		tr:nth-child(even) {
+			background-color: var(--color-tone-0);
+		}
+
+		td {
+			padding: var(--margin-0);
+			min-height: 44px;
+		}
+
+		td:nth-child(2) {
+			width: 2rem;
+		}
+
+		td:nth-child(3) {
+			text-align: left;
+		}
 	}
 
 	.property-bytes {
@@ -224,58 +268,30 @@ a {
 		flex-grow: 1;
 		gap: var(--margin-0);
 		flex-direction: column;
-
+		label {
+			margin-top: var(--margin-0);
+			input {
+				margin-top: 0 !important;
+			}
+		}
 		div {
 			display: flex;
-			align-items: center;
-		}
-
-		table {
-			width: 100%;
-			margin-top: var(--margin-0);
-			font-family: var(--monospace-font);
-			border: 1px solid var(--color-tone-1);
-			border-collapse: collapse;
-
-			tr:nth-child(odd) {
-				background-color: var(--color-tone-1);
-			}
-
-			tr:nth-child(even) {
-				background-color: var(--color-tone-0);
-			}
-
-			td {
-				padding: var(--margin-0);
-				min-height: 44px;
-			}
-
-			td:nth-child(2) {
-				width: 2rem;
-			}
-
-			td:nth-child(3) {
-				text-align: left;
-			}
 		}
 	}
 
 	label,
 	input {
-		text-align: end;
 		font-family: var(--monospace-font);
 	}
 
 	button,
 	input {
-		text-align: end;
 		font-size: var(--font-size-0);
 		padding: var(--margin-0);
 	}
 
 	button .material-icons {
 		font-size: var(--font-size-1) !important;
-
 	}
 
 	&:nth-child(odd) {
@@ -346,4 +362,18 @@ table.striped {
 		height: 100%;
 		text-align: left;
 	}
+}
+
+.icon-button {
+	height: 2rem !important;
+	width: 2rem !important;
+	padding: 0 !important;
+	.material-icons {
+		margin: auto;
+		font-size: var(--font-size-1) !important;
+	}
+}
+
+.center-self {
+	align-self: center;
 }

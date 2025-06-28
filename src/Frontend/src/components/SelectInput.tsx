@@ -60,7 +60,7 @@ export function SelectInput<Value>(props: SelectInputProps<Value, SelectOption<V
 
 	return (
 		<div 
-			className={"combobox margin-left " + (isOpen ? "open" : "")} 
+			className={"combobox " + (isOpen ? "open" : "")} 
 			ref={divRef} 
 			tabIndex={-1}
 			onBlur={handleBlur}
