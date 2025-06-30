@@ -3,7 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace PokeAByte.Protocol;
 
-public static class Instructions {
+public static class Instructions
+{
     public const byte NOOP = 0x00;
     public const byte PING = 0x01;
     public const byte SETUP = 0x02;
@@ -42,8 +43,10 @@ public struct Metadata
     [FieldOffset(6)]
     public byte IsResponse;
 
-    public void CopyTo(byte[] destination) {
-        if (destination.Length < LENGTH) {
+    public void CopyTo(byte[] destination)
+    {
+        if (destination.Length < LENGTH)
+        {
             throw new ArgumentException($"Can not write metadata into byte array smaller than 8");
         }
         destination[0] = ProtocolVersion;

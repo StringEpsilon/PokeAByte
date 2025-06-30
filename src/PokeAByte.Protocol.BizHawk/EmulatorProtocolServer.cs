@@ -2,9 +2,8 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using PokeAByte.Protocol;
 
-namespace PokeAByte.Integrations.BizHawk;
+namespace PokeAByte.Protocol.BizHawk;
 
 public delegate void WriteHandler(WriteInstruction instruction);
 public delegate void SetupHandler(SetupInstruction instruction);
@@ -30,7 +29,8 @@ public class EmulatorProtocolServer : IDisposable
 
     private void Receive()
     {
-        if (disposed) {
+        if (disposed)
+        {
             return;
         }
         _socket.BeginReceiveFrom(_buffer, 0, _buffer.Length, SocketFlags.None, ref endpoint, OnData, _state);
@@ -38,7 +38,8 @@ public class EmulatorProtocolServer : IDisposable
 
     private void OnData(IAsyncResult ar)
     {
-        if (disposed) {
+        if (disposed)
+        {
             return;
         }
         int length = _socket.EndReceiveFrom(ar, ref endpoint);
@@ -50,7 +51,8 @@ public class EmulatorProtocolServer : IDisposable
 
     private void HandleMessage(byte[] message)
     {
-        if (disposed) {
+        if (disposed)
+        {
             return;
         }
         var protocolVersion = message[0];
@@ -58,9 +60,12 @@ public class EmulatorProtocolServer : IDisposable
         switch (instructionType)
         {
             case Instructions.PING:
-                try {
+                try
+                {
                     _socket.SendTo(new PingResponse().GetByteArray(), endpoint);
-                } catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     Console.WriteLine(ex);
                 }
                 break;
@@ -71,10 +76,13 @@ public class EmulatorProtocolServer : IDisposable
                 OnWrite?.Invoke(instruction);
                 break;
             case Instructions.SETUP:
-                try {
+                try
+                {
                     OnSetup?.Invoke(SetupInstruction.FromByteArray(message));
                     _socket.SendTo(new SetupResponse().GetByteArray(), endpoint);
-                } catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     Console.WriteLine(ex);
                 }
                 break;
@@ -85,7 +93,8 @@ public class EmulatorProtocolServer : IDisposable
 
     public void Dispose()
     {
-        if (!disposed) {
+        if (!disposed)
+        {
             disposed = true;
             _thread?.Abort();
             _socket?.Dispose();

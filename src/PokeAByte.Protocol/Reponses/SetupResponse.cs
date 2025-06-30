@@ -2,7 +2,8 @@ using System;
 
 namespace PokeAByte.Protocol;
 
-public struct SetupResponse {
+public struct SetupResponse
+{
     public static Metadata Metadata = new Metadata(Instructions.SETUP, 0x01);
     public byte[] GetByteArray()
     {

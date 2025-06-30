@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.IO.MemoryMappedFiles;
@@ -8,9 +7,8 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
-using PokeAByte.Protocol;
 
-namespace PokeAByte.Integrations.BizHawk;
+namespace PokeAByte.Protocol.BizHawk;
 
 [ExternalTool("Emulator Data Protocol Server")]
 public sealed class EDPSForm : Form, IExternalToolForm, IDisposable
@@ -32,12 +30,11 @@ public sealed class EDPSForm : Form, IExternalToolForm, IDisposable
 
     public bool IsLoaded { get; }
 
-    private SharedPlatformConstants.PlatformEntry? _platform;
+    private PlatformConstants.PlatformEntry? _platform;
     private string System = string.Empty;
 
     private EmulatorProtocolServer? _udpServer;
     private ReadBlock[]? _blocks;
-    private MemoryMappedFile? _dataFile;
     private MemoryMappedViewAccessor? _dataAccessor;
     private byte[] _dataBuffer = new byte[0];
 
@@ -63,7 +60,8 @@ public sealed class EDPSForm : Form, IExternalToolForm, IDisposable
         IsActive = true;
     }
 
-    private void StartServer() {
+    private void StartServer()
+    {
         _udpServer = new EmulatorProtocolServer();
         _udpServer.OnWrite = WriteToMemory;
         _udpServer.OnSetup = Setup;
@@ -74,8 +72,7 @@ public sealed class EDPSForm : Form, IExternalToolForm, IDisposable
     {
         MainLabel.Text = $"Waiting for Client...";
         _udpServer?.Dispose();
-        _dataFile?.Dispose();
-        _dataFile = null;
+        _udpServer = null;
         _dataAccessor?.Dispose();
         _dataAccessor = null;
         if (File.Exists("/dev/shm/EDPS_MemoryData.bin"))
@@ -84,23 +81,31 @@ public sealed class EDPSForm : Form, IExternalToolForm, IDisposable
         }
     }
 
-    private MemoryMappedFile CreateMMF(int size)
+    private MemoryMappedViewAccessor GetMMFAccessor(int size)
     {
+        MemoryMappedViewAccessor accessor;
+        MemoryMappedFile memoryMappedFile;
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            return MemoryMappedFile.CreateOrOpen("EDPS_MemoryData.bin", size, MemoryMappedFileAccess.ReadWrite);
+            memoryMappedFile = MemoryMappedFile.CreateOrOpen("EDPS_MemoryData.bin", size, MemoryMappedFileAccess.ReadWrite);
         }
-        if (File.Exists("/dev/shm/EDPS_MemoryData.bin"))
+        else
         {
-            File.Delete("/dev/shm/EDPS_MemoryData.bin");
+            if (File.Exists("/dev/shm/EDPS_MemoryData.bin"))
+            {
+                File.Delete("/dev/shm/EDPS_MemoryData.bin");
+            }
+            memoryMappedFile = MemoryMappedFile.CreateFromFile(
+                "/dev/shm/EDPS_MemoryData.bin",
+                FileMode.OpenOrCreate,
+                null,
+                size,
+                MemoryMappedFileAccess.ReadWrite
+            );
         }
-        return MemoryMappedFile.CreateFromFile(
-            "/dev/shm/EDPS_MemoryData.bin",
-            FileMode.OpenOrCreate,
-            null,
-            size,
-            MemoryMappedFileAccess.ReadWrite
-        );
+        accessor = memoryMappedFile.CreateViewAccessor();
+        memoryMappedFile.Dispose();
+        return accessor;
     }
 
     private void Setup(SetupInstruction instruction)
@@ -113,11 +118,11 @@ public sealed class EDPSForm : Form, IExternalToolForm, IDisposable
             totalSize += instruction.Data[i].Length;
             _blocks[i] = instruction.Data[i];
         }
-        if (totalSize == 0) {
+        if (totalSize == 0)
+        {
             throw new InvalidDataException("Setup instruction came with invalid block sizes. ");
         }
-        _dataFile = this.CreateMMF(totalSize);
-        _dataAccessor = _dataFile.CreateViewAccessor();
+        _dataAccessor = this.GetMMFAccessor(totalSize);
         _dataBuffer = new byte[totalSize];
         MainLabel.Text = $"Providing memory data ({totalSize} bytes) to client...";
     }
@@ -144,7 +149,7 @@ public sealed class EDPSForm : Form, IExternalToolForm, IDisposable
         Cleanup();
         StartServer();
         System = APIs?.Emulation.GetGameInfo()?.System ?? string.Empty;
-        _platform = SharedPlatformConstants.Information.SingleOrDefault(x => x.BizhawkIdentifier == System);
+        _platform = PlatformConstants.Platforms.SingleOrDefault(x => x.SystemId == System);
 
         if (string.IsNullOrWhiteSpace(System))
         {
@@ -165,25 +170,20 @@ public sealed class EDPSForm : Form, IExternalToolForm, IDisposable
         {
             return;
         }
-        
+
         foreach (var block in _blocks)
         {
-            long domainAddress = 0;
             try
             {
-                var entry = _platform.MemoryLayout
-                    .FirstOrDefault(x => x.PhysicalStartingAddress <= block.GameAddress && x.PhysicalEndingAddress >= block.GameAddress + block.Length);
-                if (entry == null)
-                {
-                    break;
-                }
-                var memoryDomain = MemoryDomains?[entry.BizhawkIdentifier] ?? throw new Exception($"Memory domain not found.");
-                var address = (long)block.GameAddress - entry.PhysicalStartingAddress;
-                APIs.Memory.ReadByteRange(address,  block.Length, entry.BizhawkIdentifier).ToArray().CopyTo(_dataBuffer, block.Position);
+                var entry = _platform.Domains
+                    .First(x => x.Start <= block.GameAddress && x.End >= block.GameAddress + block.Length);
+                var memoryDomain = MemoryDomains?[entry.DomainId] ?? throw new Exception($"Memory domain not found.");
+                var address = block.GameAddress - entry.Start;
+                APIs.Memory.ReadByteRange(address, block.Length, entry.DomainId).ToArray().CopyTo(_dataBuffer, block.Position);
             }
             catch (Exception ex)
             {
-                MainLabel.Text = $"Error reading {domainAddress:x2}: {ex.Message}";
+                MainLabel.Text = $"Error reading {block.GameAddress:x2}: {ex.Message}";
             }
         }
         _dataAccessor.WriteArray(
@@ -206,8 +206,7 @@ public sealed class EDPSForm : Form, IExternalToolForm, IDisposable
     {
         if (disposing)
         {
-            this._udpServer?.Dispose();
-            this._udpServer = null;
+            this.Cleanup();
         }
         base.Dispose(disposing);
     }
@@ -215,148 +214,76 @@ public sealed class EDPSForm : Form, IExternalToolForm, IDisposable
 
 
 #region PlatformConstants
-public static class SharedPlatformConstants
+internal static class PlatformConstants
 {
-    public record PlatformEntry
+    internal class PlatformEntry
     {
-        public bool IsBigEndian { get; set; } = false;
-        public bool IsLittleEndian => IsBigEndian == false;
-        public string BizhawkIdentifier { get; set; } = string.Empty;
-        public int? FrameSkipDefault { get; set; } = null;
+        internal string SystemId { get; }
+        internal int FrameSkipDefault { get; }
+        internal DomainLayout[] Domains { get; }
 
-        public PlatformMemoryLayoutEntry[] MemoryLayout { get; set; } = Array.Empty<PlatformMemoryLayoutEntry>();
-    }
-
-    public record PlatformMemoryLayoutEntry
-    {
-        public string BizhawkIdentifier { get; set; } = string.Empty;
-        public int CustomPacketTransmitPosition { get; set; } = 0;
-        public int Length { get; set; } = 0;
-
-        public long PhysicalStartingAddress = 0x00;
-        public long PhysicalEndingAddress => PhysicalStartingAddress + Length;
-    }
-
-    public static readonly IEnumerable<PlatformEntry> Information = new List<PlatformEntry>()
-    {
-        new PlatformEntry
+        public PlatformEntry(string systemId, DomainLayout[] domains, int frameSkipDefault = 0)
         {
-            IsBigEndian = true,
-            BizhawkIdentifier = "NES",
-            MemoryLayout = new PlatformMemoryLayoutEntry[]
-            {
-                new PlatformMemoryLayoutEntry
-                {
-                    BizhawkIdentifier = "RAM",
-                    CustomPacketTransmitPosition = 0,
-                    PhysicalStartingAddress = 0x00,
-                    Length = 0x800
-                }
-            }
-        },
-        new PlatformEntry
-        {
-            IsBigEndian = false,
-            BizhawkIdentifier = "SNES",
-            MemoryLayout = new PlatformMemoryLayoutEntry[]
-            {
-                new PlatformMemoryLayoutEntry
-                {
-                    BizhawkIdentifier = "WRAM",
-                    CustomPacketTransmitPosition = 0,
-                    PhysicalStartingAddress = 0x7E0000,
-                    Length = 0x10000
-                }
-            }
-        },
-        new PlatformEntry()
-        {
-            IsBigEndian = false,
-            BizhawkIdentifier = "GB",
-            MemoryLayout = new PlatformMemoryLayoutEntry[]
-            {
-                new PlatformMemoryLayoutEntry {
-                    BizhawkIdentifier = "WRAM",
-                    CustomPacketTransmitPosition = 0,
-                    PhysicalStartingAddress = 0xC000,
-                    Length = 0x2000
-                },
-                new PlatformMemoryLayoutEntry {
-                    BizhawkIdentifier = "VRAM",
-                    CustomPacketTransmitPosition = 0x2000 + 1,
-                    PhysicalStartingAddress = 0x8000,
-                    Length = 0x1FFF
-                },
-                new PlatformMemoryLayoutEntry {
-                    BizhawkIdentifier = "HRAM",
-                    CustomPacketTransmitPosition = 0x1000 + 0x1FFF + 1,
-                    PhysicalStartingAddress = 0xFF80,
-                    Length = 0x7E
-                }
-            }
-        },
-        new PlatformEntry()
-        {
-            IsBigEndian = false,
-            BizhawkIdentifier = "GBC",
-            MemoryLayout = new PlatformMemoryLayoutEntry[]
-            {
-                new PlatformMemoryLayoutEntry {
-                    BizhawkIdentifier = "WRAM",
-                    CustomPacketTransmitPosition = 0,
-                    PhysicalStartingAddress = 0xC000,
-                    Length = 0x2000
-                },
-                new PlatformMemoryLayoutEntry {
-                    BizhawkIdentifier = "VRAM",
-                    CustomPacketTransmitPosition = 0x2000 + 1,
-                    PhysicalStartingAddress = 0x8000,
-                    Length = 0x1FFF
-                },
-                new PlatformMemoryLayoutEntry {
-                    BizhawkIdentifier = "HRAM",
-                    CustomPacketTransmitPosition = 0x2000 + 0x1FFF + 1,
-                    PhysicalStartingAddress = 0xFF80,
-                    Length = 0x7E
-                }
-            }
-        },
-        new PlatformEntry
-        {
-            IsBigEndian = true,
-            BizhawkIdentifier = "GBA",
-            MemoryLayout = new PlatformMemoryLayoutEntry[]
-            {
-                new PlatformMemoryLayoutEntry
-                {
-                    BizhawkIdentifier = "EWRAM",
-                    CustomPacketTransmitPosition = 0,
-                    PhysicalStartingAddress = 0x02000000,
-                    Length = 0x00040000
-                },
-                new PlatformMemoryLayoutEntry
-                {
-                    BizhawkIdentifier = "IWRAM",
-                    CustomPacketTransmitPosition = 0x00040000 + 1,
-                    PhysicalStartingAddress = 0x03000000,
-                    Length = 0x00008000
-                }
-            }
-        },
-        new PlatformEntry()
-        {
-            IsBigEndian = true,
-            BizhawkIdentifier = "NDS",
-            FrameSkipDefault = 15,
-            MemoryLayout = new PlatformMemoryLayoutEntry[] {
-                new PlatformMemoryLayoutEntry {
-                    BizhawkIdentifier = "Main RAM",
-                    CustomPacketTransmitPosition = 0,
-                    PhysicalStartingAddress = 0x2000000,
-                    Length = 0x400000
-                }
-            }
+            SystemId = systemId;
+            FrameSkipDefault = frameSkipDefault;
+            Domains = domains;
         }
-    };
+    }
+
+    internal readonly struct DomainLayout
+    {
+        public readonly string DomainId;
+        public readonly long Start;
+        public readonly int Length;
+        public readonly long End;
+
+        public DomainLayout(string domain, long start, int length)
+        {
+            DomainId = domain;
+            Start = start;
+            Length = length;
+            End = start + length;
+        }
+    }
+
+    public static readonly PlatformEntry[] Platforms =
+    [
+        new PlatformEntry(
+            "NES",
+            [ new DomainLayout("RAM", 0x00, 0x800) ]
+        ),
+        new PlatformEntry(
+            "SNES",
+            [new DomainLayout("WRAM",0x7E0000, 0x10000)]
+        ),
+        new PlatformEntry(
+            "GB",
+            [
+                new DomainLayout("WRAM", 0xC000, 0x2000),
+                new DomainLayout("VRAM", 0x8000, 0x1FFF),
+                new DomainLayout("HRAM", 0xFF80, 0x7E)
+            ]
+        ),
+        new PlatformEntry(
+            "GBC",
+            [
+                new DomainLayout("WRAM", 0xC000, 0x2000),
+                new DomainLayout("VRAM", 0x8000, 0x1FFF),
+                new DomainLayout("HRAM", 0xFF80, 0x7E),
+            ]
+        ),
+        new PlatformEntry(
+            "GBA",
+            [
+                new DomainLayout("EWRAM", 0x02000000, 0x00040000),
+                new DomainLayout("IWRAM", 0x03000000, 0x00008000),
+            ]
+        ),
+        new PlatformEntry(
+            "NDS",
+            [ new DomainLayout("Main RAM", 0x2000000, 0x400000) ],
+            15
+        )
+    ];
 }
 #endregion
