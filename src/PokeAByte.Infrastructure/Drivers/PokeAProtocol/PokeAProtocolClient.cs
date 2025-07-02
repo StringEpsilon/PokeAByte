@@ -14,6 +14,7 @@ public class PokeAProtocolClient : IDisposable
     private UdpClient _client;
     private CancellationTokenSource _connectionCts;
     private int _fileSize;
+    private bool _disposed;
 
     public PokeAProtocolClient()
     {
@@ -41,21 +42,26 @@ public class PokeAProtocolClient : IDisposable
         }
     }
 
-    private MemoryMappedViewAccessor? GetMemoryAccessor()
+    private MemoryMappedViewAccessor GetMemoryAccessor()
     {
-        using MemoryMappedFile mmfData = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-            ? MemoryMappedFile.OpenExisting(
-                SharedConstants.MemoryMappedFileName,
-                MemoryMappedFileRights.Read
-            )
-            : MemoryMappedFile.CreateFromFile(
-                $"/dev/shm/{SharedConstants.MemoryMappedFileName}",
-                FileMode.Open,
-                null,
-                _fileSize,
-                MemoryMappedFileAccess.Read
-            );
-        return mmfData.CreateViewAccessor(0, _fileSize, MemoryMappedFileAccess.Read);
+        try
+        {
+            using MemoryMappedFile mmfData = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+                ? MemoryMappedFile.OpenExisting(
+                    SharedConstants.MemoryMappedFileName,
+                    MemoryMappedFileRights.Read
+                )
+                : MemoryMappedFile.CreateFromFile(
+                    $"/dev/shm/{SharedConstants.MemoryMappedFileName}",
+                    FileMode.Open,
+                    null,
+                    _fileSize,
+                    MemoryMappedFileAccess.Read
+                );
+            return mmfData.CreateViewAccessor(0, _fileSize, MemoryMappedFileAccess.Read);
+        } catch {
+            throw new VisibleException("Poke-A-Protocol server closed the connection.");
+        }
     }
     
     public async ValueTask Setup(ReadBlock[] blocks, int fileSize, int frameSkip, int timeoutMs = 64)
@@ -82,10 +88,7 @@ public class PokeAProtocolClient : IDisposable
     public void Read(ulong position, BlockData block, int timeoutMs = 64)
     {
         using var memoryAccessor = GetMemoryAccessor(); ;
-        if (memoryAccessor == null)
-        {
-            throw new VisibleException("Poke-A-Protocol communication timed out. Memory mapped file was null.");
-        }
+
         try
         {
             memoryAccessor.SafeMemoryMappedViewHandle.ReadSpan((ulong)position, block.Data.AsSpan());
@@ -99,8 +102,12 @@ public class PokeAProtocolClient : IDisposable
 
     public void Dispose()
     {
-        _connectionCts.Cancel();
-        _connectionCts.Dispose();
-        _client.Dispose();
+        if (!_disposed)
+        {            
+            _disposed = true;
+            _connectionCts.Cancel();
+            _connectionCts.Dispose();
+            _client.Dispose();
+        }
     }
 }
