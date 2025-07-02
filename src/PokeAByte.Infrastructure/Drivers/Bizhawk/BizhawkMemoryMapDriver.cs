@@ -116,7 +116,7 @@ public class BizhawkMemoryMapDriver : IPokeAByteDriver, IBizhawkMemoryMapDriver
         return ValueTask.CompletedTask;
     }
 
-    public async ValueTask WriteBytes(uint startingMemoryAddress, byte[] values, string? path = null)
+    public ValueTask WriteBytes(uint startingMemoryAddress, byte[] values, string? path = null)
     {
         if (_platform == null)
         {
@@ -142,6 +142,7 @@ public class BizhawkMemoryMapDriver : IPokeAByteDriver, IBizhawkMemoryMapDriver
             MemoryAddressStart = (long)startingMemoryAddress - bizhawkMemory.PhysicalStartingAddress
         };
         BizhawkNamedPipesClient.WriteToBizhawk(memoryContract);
+        return ValueTask.CompletedTask;
     }
 
     public static Task<bool> Probe(AppSettings appSettings)
