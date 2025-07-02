@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { MapperUpdate, MapperVersion } from "pokeaclient";
+import { useEffect, useState } from "preact/hooks";
 
 type MapperSelectionTableProps = {
 	onMapperSelection: React.Dispatch<React.SetStateAction<string[]>>,
@@ -18,7 +18,7 @@ export function MapperSelectionTable(props: MapperSelectionTableProps) {
 			setMappers(availableMappers.map(x => x.currentVersion ?? x.latestVersion).filter(x => !!x))
 			setAllMappers(availableMappers.map(x => x.currentVersion ?? x.latestVersion).filter(x => !!x))
 		},
-		[availableMappers]
+		[availableMappers, setMappers, setAllMappers]
 	);
 
 	useEffect(
@@ -28,12 +28,14 @@ export function MapperSelectionTable(props: MapperSelectionTableProps) {
 			} else {
 				const filterLower = filter.toLowerCase();
 				const filteredMappers = allMappers
-					.filter(x => x.display_name.toLowerCase().includes(filterLower))
-				onMapperSelection(selectedMappers.filter(path => filteredMappers.some(filtered => filtered.path === path)));
+					.filter(
+						x => x.display_name.toLowerCase().includes(filterLower)
+						|| x.path.toLowerCase().includes(filterLower)
+					);
 				setMappers(filteredMappers);
 			}
 		},
-		[filter]
+		[filter, allMappers, onMapperSelection, selectedMappers]
 	)
 
 	const selectAll = (checked: boolean) => {
@@ -63,25 +65,29 @@ export function MapperSelectionTable(props: MapperSelectionTableProps) {
 
 	return (
 		<>
-			<span>
-				<label htmlFor="mapper-filter margin-right">Filter:</label>
-				<input 
-					id="mapper-filter"
-					type="text" 
-					className="margin-right"
-					placeholder="" 
-					onChange={(event) => setFilter(event.target.value)} 
-				/>
-			</span>
+			<label htmlFor="mapper-filter margin-right">Filter:</label>
+			<input 
+				id="mapper-filter"
+				type="text" 
+				className="margin-right margin-left"
+				placeholder="" 
+				onInput={(event) => setFilter(event.currentTarget.value)} 
+			/>
 			{props.onUpdateList &&
-				<button type="button"  className="border-blue">RELOAD MAPPER LIST</button>
+				<button type="button" className="blue wide-button" onClick={props.onUpdateList}>
+					Reload mapper list
+				</button>
 			}
 			<table className="striped">
 				<thead>
 					<tr  >
 						<th className="min">
 							<label className="checkbox">
-								<input type="checkbox" checked={selectedMappers.length == mappers.length} onChange={(e) => selectAll(e.target.checked)} />
+								<input 
+									type="checkbox" 
+									checked={selectedMappers.length == mappers.length} 
+									onInput={(e) => selectAll(e.currentTarget.checked)} 
+								/>
 								<span />
 							</label>
 						</th>
@@ -95,7 +101,7 @@ export function MapperSelectionTable(props: MapperSelectionTableProps) {
 								<td >
 									<input
 										type="checkbox"
-										onChange={() => { }}
+										onInput={() => { }}
 										checked={selectedMappers.includes(mapper.path)}
 										onClick={() => select(mapper.path)}
 										aria-label="Select mapper"

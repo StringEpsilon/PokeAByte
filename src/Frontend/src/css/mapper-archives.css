@@ -10,8 +10,6 @@
 			display: flex;
 			gap: var(--margin-1);
 			align-items: center;
-			
-
 			*:nth-child(2) {
 				flex-grow: 1;
 			}
@@ -31,5 +29,4 @@
 		list-style: none;
 		
 	}
-
 }
