@@ -141,7 +141,7 @@ public class BizhawkMemoryMapDriver : IPokeAByteDriver, IBizhawkMemoryMapDriver
             DataLength = values.Length,
             MemoryAddressStart = (long)startingMemoryAddress - bizhawkMemory.PhysicalStartingAddress
         };
-        await BizhawkNamedPipesClient.WriteToBizhawk(memoryContract);
+        BizhawkNamedPipesClient.WriteToBizhawk(memoryContract);
     }
 
     public static Task<bool> Probe(AppSettings appSettings)
