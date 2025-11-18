@@ -9,6 +9,7 @@
 
 - Fixed and edgecase where some properties may not get updates correctly the first time the game memory changes.
 - Fixed an inconsistent spacing in the property table in the UI.
+- EDPS: Create the memory mapped file in /tmp/ on macOS.
 
 ## Performance
 
