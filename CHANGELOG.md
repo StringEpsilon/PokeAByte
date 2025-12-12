@@ -3,6 +3,16 @@
 [Version 0.9.0](#090)  
 [Version 0.8.1](#081-2024-11-09)  
   
+# Future
+
+## Features
+
+- Emulator Data Protocl: Added "FREEZE" and "UNFREEZE" instructions. This can reduce communication overhead when freezing properties that update frequently in the game.
+
+## Bugfixes
+
+## Other changes
+
 # 0.9.3
 
 ## Bugfixes

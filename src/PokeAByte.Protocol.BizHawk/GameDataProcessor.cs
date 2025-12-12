@@ -22,11 +22,9 @@ internal class GameDataProcessor : IDisposable
     private MemoryMappedFile _memoryMappedFile;
     private byte[] _writeBuffer;
     private Queue<WriteInstruction> _writeQueue = new();
+    private List<FreezeInstruction> _freezes = new();
 
-    internal GameDataProcessor(
-        PlatformEntry platform,
-        SetupInstruction setup,
-        Label mainLabel)
+    internal GameDataProcessor(PlatformEntry platform, SetupInstruction setup, Label mainLabel)
     {
         _mainLabel = mainLabel;
         _platform = platform;
@@ -98,9 +96,9 @@ internal class GameDataProcessor : IDisposable
     /// <param name="domains"> The BizHawk memory domains to be used for memory access. </param>
     private void WriteToGameMemory(WriteInstruction instruction, IMemoryDomains domains)
     {
-        DomainLayout? layout = _platform.Domains.FirstOrDefault(
-            x => x.Start <= instruction.Address && x.End >= instruction.Address + instruction.Data.Length
-        );
+        DomainLayout? layout = _platform.Domains
+            .Where(x => x.Start <= instruction.Address)
+            .FirstOrDefault(x => x.End >= instruction.Address + instruction.Data.Length -1);
         if (layout == null)
         {
             return;
@@ -119,6 +117,29 @@ internal class GameDataProcessor : IDisposable
             }
             domain.Exit();
         }
+    }
+
+    private void WriteFreeze(FreezeInstruction instruction, IMemoryDomains domains)
+    {
+        DomainLayout? layout = _platform.Domains
+            .Where(x => x.Start <= instruction.Address)
+            .FirstOrDefault(x => x.End >= instruction.Address + instruction.Data.Length -1);
+        if (layout == null || instruction.Data.Length == 0)
+        {
+            return;
+        }
+        var domain = domains[layout.Value.DomainId];
+        if (domain == null)
+        {
+            return;
+        }
+        
+        domain.Enter();
+        for (int i = 0; i < instruction.Data.Length; i++)
+        {
+            domain.PokeByte(instruction.Address + i - layout.Value.Start, instruction.Data[i]);
+        }
+        domain.Exit();
     }
 
     private MemoryMappedFile CreateMemoryMappedFile(int size)
@@ -144,6 +165,16 @@ internal class GameDataProcessor : IDisposable
                 size,
                 MemoryMappedFileAccess.ReadWrite
             );
+        }
+    }
+    internal void WriteFreezes(IMemoryDomains memoryDomains)
+    {
+        lock(_freezes)
+        {
+            foreach (var freeze in _freezes)
+            {
+                WriteFreeze(freeze, memoryDomains);
+            }
         }
     }
 
@@ -201,6 +232,37 @@ internal class GameDataProcessor : IDisposable
     {
         this._writeQueue.Enqueue(instruction);
     }
+
+    internal void AddFreeze(FreezeInstruction instruction)
+    {
+        lock(_freezes)
+        {
+            var index = _freezes.FindIndex(x => x.Address == instruction.Address);
+            if (index >= 0)
+            {
+                _freezes[index] = instruction;
+            } 
+            else
+            {
+                _freezes.Add(instruction);            
+            }
+            _mainLabel.Text = _freezes.Count + " freezes";
+        }
+    }
+
+    internal void RemoveFreeze(UnfreezeInstruction instruction)
+    {
+        lock(_freezes)
+        {
+            var index = _freezes.FindLastIndex(x => x.Address == instruction.Address);
+            if (index >= 0)
+            {
+                this._freezes.RemoveAt(index);
+            }
+            _mainLabel.Text = _freezes.Count + " freezes";
+        }
+    }
+
 
     public void Dispose()
     {
