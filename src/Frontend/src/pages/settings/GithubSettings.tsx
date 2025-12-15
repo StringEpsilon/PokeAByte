@@ -93,16 +93,14 @@ export function GithubSettingsPage() {
 	}
 	return (
 		<article>
-			<h3 className="small"><strong>GitHub Api Settings</strong></h3>
 			<div>
-				<hr />
-				<p className="error-text large-line">
+				<span class="text-red">
 					Changing these settings is generally not recommended unless you know what you are doing.
+					<br/>
 					These settings allow you to set a custom mapper repository, incorrect settings can cause issues retrieving
-					new and updated mappers. Please only do so with caution.
-				</p>
+					new and updated mappers. <strong>Please only do so with caution.</strong>
+				</span>
 				<hr />
-				<br />
 				<form onSubmit={onSubmit} ref={formRef}>
 					<table>
 						<tbody>
@@ -208,6 +206,6 @@ export function GithubSettingsPage() {
 					/>
 				</form>
 			</div>
-		</article>
+			</article>
 	)
 }

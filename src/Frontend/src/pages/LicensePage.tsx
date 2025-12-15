@@ -3,7 +3,7 @@ import license from "../../LICENSE.txt?raw";
 
 export function LicensePage() {
 	return (
-		<article className="layout-box license">
+		<article class="license">
 			<h2>License</h2>
 			<p>
 				Poke-A-Byte is available under the GNU Affero General Public License. <br />

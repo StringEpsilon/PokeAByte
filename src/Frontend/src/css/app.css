@@ -59,16 +59,16 @@ body {
 	background-color: #1f1f1f;
 	color: var(--text-primary);
 	margin: 0;
-}
-
-#root {
 	display: flex;
 	flex-direction: column;
 	min-height: 100vh;
-	overflow: hidden;
 }
 
 main {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
 	background-color: var(--color-surface-1);
 }
 
@@ -76,8 +76,6 @@ header {
 	display: flex;
 	flex-direction: row;
 	padding-top: var(--margin-0);
-	padding-left: var(--margin-0);
-	padding-right: var(--margin-0);
 	background-color: var(--color-surface-0);
 	border-bottom: 2px solid var(--color-border-0);
 	align-items: center;
@@ -109,19 +107,17 @@ header {
 
 	.mapper-info {
 		margin-top: var(--margin-0);
-		flex-grow: 0;
-		align-self: center;
-		align-content: center;
 		justify-items: right;
 		flex-shrink: 1;
 		& > * {
 			vertical-align: middle;
 		}
-		span:nth-child(2) {
-			display: flex;
-			justify-content: right;
-		}
 	}
+}
+
+header, main {
+	padding-left: 12.5%;
+	padding-right: 12.5%;
 }
 
 nav.tab {
@@ -170,10 +166,7 @@ nav.tab {
 	}
 }
 
-main {
-	flex-grow: 1;
-	padding: 0 8px;
-}
+
 
 h2 {
 	margin-bottom: 0;
@@ -291,6 +284,7 @@ form>table {
 		text-align: left;
 		vertical-align: top;
 		white-space: nowrap;
+		padding-top: 1em;
 	}
 
 	td {

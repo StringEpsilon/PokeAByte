@@ -13,11 +13,11 @@ export function Header() {
 	const textHighlightClass = mapper ? "text-green" : "text-red";
 
 	return (
-		<header className="layout-box">
+		<header>
 			<h1 class={textHighlightClass}>
 				Poke-A-Byte
 			</h1>
-			<nav className={`tab`}>
+			<nav class="tab">
 				<HeaderNavigation mapper={mapper} />
 			</nav>
 			<div class={"mapper-info"}>
