@@ -40,22 +40,20 @@ export function HeaderNavigation({ mapper }: { mapper: Mapper | null }) {
 				</i>
 				PROPERTIES
 			</button>
-			<Advanced>
-				<button
-					role="link"
-					type="button"
-					className={classNames({"active": settingsActive })}
-					onClick={() => setLocation("/settings/")}
+			<button
+				role="link"
+				type="button"
+				className={classNames({"active": settingsActive })}
+				onClick={() => setLocation("/settings/")}
 				>
-					<i 
-						className={classNames("material-icons", { [activeClass]: settingsActive })}
-						aria-hidden="true"
+				<i 
+					className={classNames("material-icons", { [activeClass]: settingsActive })}
+					aria-hidden="true"
 					>
-						settings
-					</i>
-					SETTINGS
-				</button>
-			</Advanced>
+					settings
+				</i>
+				SETTINGS
+			</button>
 		</>
 	)
 }

@@ -2,7 +2,20 @@
 [Version 0.9.1](#091)  
 [Version 0.9.0](#090)  
 [Version 0.8.1](#081-2024-11-09)  
-  
+
+# Future
+
+## Features
+
+**Frotend:**
+- Added a "Poke-A-Byte settings" box to the Settings tab.
+  Allows configuration of the `appsettings.json` options through the Web UI.
+
+## General changes
+
+- Put the GitHub settings in the frontend in a box similar to the boxes on the mapper page.
+- Minor frontend UI tweaks.
+
 # 0.9.3
 
 ## Bugfixes

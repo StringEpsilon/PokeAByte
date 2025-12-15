@@ -46,3 +46,29 @@ export async function backupMappers(mappers: MapperVersion[]) {
 export async function deleteMappers(mappers: ArchivedMapper[]) {
 	return await postWithoutResult("http://localhost:8085/files/mapper/delete_mappers", mappers);
 }
+
+export type AppSettingsModel = {
+	RETROARCH_LISTEN_IP_ADDRESS: string,
+	RETROARCH_LISTEN_PORT: number,
+	RETROARCH_READ_PACKET_TIMEOUT_MS: number,
+	DELAY_MS_BETWEEN_READS: number,
+	PROTOCOL_FRAMESKIP: number,
+}
+
+export async function getAppSettings<AppSettings>() {
+	try {
+		const response = await fetch(
+			"http://localhost:8085/settings/appsettings",
+			{
+				headers: { "Content-Type": "application/json" }
+			}
+		);
+		return <AppSettings>response.json();
+	} catch {
+		throw new Error("Unable to retrieve app settings.");
+	}
+}
+
+export async function saveAppSettings(settings: Partial<AppSettingsModel>) {
+	return await postWithoutResult("http://localhost:8085/settings/save_appsettings", settings);
+}

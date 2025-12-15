@@ -28,13 +28,13 @@ export function MainView() {
 
 	if (!isConnected) {
 		return (
-			<main className="loading">
+			<main class="loading">
 				<LoadProgress label="Waiting for WebSocket connection" />
 			</main>
 		);
 	}
 	return (
-		<main className="responsive max surface-container-high">
+		<main>
 			<Switch>
 				<Route path="/properties">
 					<PropertyEditor />

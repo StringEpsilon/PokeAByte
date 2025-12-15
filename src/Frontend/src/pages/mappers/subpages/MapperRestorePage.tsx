@@ -33,7 +33,7 @@ export function MapperRestorePage() {
 				{archives.map((archive) => {
 					return (
 						<MapperRestoreRow
-							key={archive.Path}
+							key={archive.Path + "" +  archive.Mappers.length}
 							archive={archive}
 							restoreArchive={restoreArchiveApi.call}
 							deleteArchive={deleteArchiveApi.call}
@@ -71,7 +71,7 @@ export function MapperRestoreRow(props: MapperRestoreRowProps) {
 				<div>
 					<ul>
 						{archive.Mappers.map(archivedMapper =>
-							<li key={archivedMapper.fullPath}>
+							<li key={archivedMapper.fullPath +  archivedMapper.mapper.path}>
 								{archivedMapper.pathDisplayName}/{archivedMapper.mapper.display_name}
 								&nbsp;
 								<i>({archivedMapper.mapper.date_created})</i>
