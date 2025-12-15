@@ -1,6 +1,5 @@
 import { PropertyEdit } from "./PropertyEdit";
 import { AttributesTable } from "./AttributesTable";
-import { NotAdvanced } from "../../../components/NotAdvanced";
 import { Advanced } from "../../../components/Advanced";
 import { useStorageRecordState } from "../../../hooks/useStorageState";
 
@@ -9,21 +8,21 @@ export function PropertyValue({ path, mapperId }: { mapperId: string, path: stri
 	const toggleTable = () => setTableOpen(!isTableOpen);
 	return (
 		<>
-			<tr className="property striped">
+			<tr class="property striped">
 				<Advanced>
-					<th onClick={() => toggleTable()} class={"interactive"}>
+					<th onClick={() => toggleTable()} class="interactive">
 						<label htmlFor={"edit-" + path} >
 							{path.split(".").pop()}:
 						</label>
 					</th>
 				</Advanced>
-				<NotAdvanced>
+				<Advanced when={false}>
 					<th >
 						<label htmlFor={"edit-" + path} >
 							{path.split(".").pop()}:
 						</label>
 					</th>
-				</NotAdvanced>
+				</Advanced>
 				<td>
 					<PropertyEdit path={path} />
 				</td>
@@ -38,9 +37,9 @@ export function PropertyValue({ path, mapperId }: { mapperId: string, path: stri
 					: <tr class="hidden" />
 				}
 			</Advanced>
-			<NotAdvanced>
+			<Advanced when={false}>
 				<tr class="hidden" />
-			</NotAdvanced>
+			</Advanced>
 		</>
 	);
 }

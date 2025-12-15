@@ -8,11 +8,11 @@ import { GameProperty } from "pokeaclient";
  *
  * @export
  * @param {string} path The path of the property to select.
- * @param {K} field The property field to select. See {@link GameProperty} definition.
- * @returns {(GameProperty[K]|null)} The property field value, or null if the property does not exist.
+ * @param {Key} field The property field to select. See {@link GameProperty} definition.
+ * @returns {(GameProperty[Key]|null)} The property field value, or null if the property does not exist.
  */
-export function useGamePropertyField<K extends keyof GameProperty>(path: string, field: K): GameProperty[K] | null {
-	const ref = useRef<GameProperty[K] | null>(null);
+export function useGamePropertyField<Key extends keyof GameProperty>(path: string, field: Key): GameProperty[Key] | null {
+	const ref = useRef<GameProperty[Key] | null>(null);
 
 	// Cache the result of the store snapshot function (getProperty) to avoid unncessary updates:
 	const getProperty = useCallback(() => {
