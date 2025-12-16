@@ -1,13 +1,12 @@
 import { ComponentChildren } from "preact";
-import { useContext } from "preact/hooks";
-import { AdvancedFeatureContext } from "../Contexts/advancedFeatureContext";
+import { useUISetting } from "../Contexts/UISettingsContext";
 
 /**
  * Renders the children only when advanced mode is disabled.
  */
 export function NotAdvanced(props: { children: ComponentChildren; }) {
-	const context = useContext(AdvancedFeatureContext);
-	if (!context.show) {
+	const [advancedMode] = useUISetting("advancedMode");
+	if (!advancedMode) {
 		return props.children;
 	}
 	return null;

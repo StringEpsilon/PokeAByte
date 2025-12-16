@@ -11,7 +11,6 @@ import { Panel } from "./Panel";
 export default function MapperPage() {
 	const mapper = useSyncExternalStore(Store.subscribeMapper, Store.getMapper);
 	return (
-		<MapperFilesContextProvider>
 			<article class="margin-top">
 				<Panel id="_mapper-select-panel" title="Load mapper" defaultOpen>
 					<MapperSelection mapper={mapper} />
@@ -29,7 +28,6 @@ export default function MapperPage() {
 					<MapperRestorePage />
 				</Panel>
 			</article>
-		</MapperFilesContextProvider>
 	);
 }
 

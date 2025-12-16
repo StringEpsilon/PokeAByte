@@ -1,7 +1,7 @@
 import { useCallback, useContext } from "preact/hooks";
 import { ComponentChildren, createContext } from "preact";
-import { useStorageRecordState, useStorageState } from "../hooks/useStorageState";
-import { AdvancedFeatureContext } from "./advancedFeatureContext";
+import { useStorageRecordState } from "../hooks/useStorageState";
+import { UISettingsContext, useUISetting } from "./UISettingsContext";
 
 export interface HiddenPropertyData {
 	hideProperty: (path: string) => void,
@@ -17,12 +17,13 @@ export interface HiddenPropertyData {
 export const HidePropertyContext = createContext<HiddenPropertyData>(null!);
 
 /**
- * Default context provider for the {@link AdvancedFeatureContext}.
+ * Default context provider for the {@link HidePropertyContext}.
  */
 export function HidePropertyContextProvider(props: { mapperId: string, children: ComponentChildren}) {
-	const advancedFeatureContext = useContext(AdvancedFeatureContext);
+	const settingsContext = useContext(UISettingsContext);
+	const toggleOverride = () => settingsContext.save({forceVisible: !settingsContext.settings.forceVisible});
+	const [advancedMode] = useUISetting("advancedMode");
 	const [data, setData] = useStorageRecordState<string, string[]>("_hiddenProperties", props.mapperId, []);
-	const [forceVisible, setForceVisible] = useStorageState<boolean>("_forceVisible", false);
 	const hideProperty = useCallback((path: string) => {
 		if (!data.includes(path)) {
 			setData([...data, path]);
@@ -38,8 +39,8 @@ export function HidePropertyContextProvider(props: { mapperId: string, children:
 			hiddenProperties: data,
 			hideProperty,
 			showProperty,
-			toggleOverride: () => setForceVisible(!forceVisible),
-			override: forceVisible || !advancedFeatureContext.show
+			toggleOverride: toggleOverride,
+			override: settingsContext.settings.forceVisible || !advancedMode
 		}} >
 			{props.children}
 		</HidePropertyContext.Provider>
