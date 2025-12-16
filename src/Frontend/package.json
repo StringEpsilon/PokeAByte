@@ -27,6 +27,7 @@
     "@types/deep-equal": "^1.0.4",
     "@types/node": "^22.6.1",
     "eslint": "^9.39.2",
+    "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "globals": "^15.13.0",
     "typescript": "^5.8.3",

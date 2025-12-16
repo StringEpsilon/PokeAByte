@@ -115,13 +115,13 @@ export function PropertyEdit({ path }: { path: string }) {
 				<>
 					<SaveValueButton active={madeEdit} onClick={handleSave} />
 					<button 
-						className="icon-button margin-left" 
+						class="icon-button margin-left" 
 						disabled={!madeEdit} 
 						type="button" 
-						title={"Discard pending changes"}
+						title="Discard pending changes"
 						onClick={() => {setValue(null); setMadeEdit(false)}}
 						>
-						<i className="material-icons"> undo </i>
+						<i class="material-icons"> undo </i>
 					</button>
 				</>
 			}

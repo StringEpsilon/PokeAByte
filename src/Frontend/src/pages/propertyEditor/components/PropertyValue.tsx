@@ -9,9 +9,9 @@ export function PropertyValue({ path, mapperId }: { mapperId: string, path: stri
 	const toggleTable = () => setTableOpen(!isTableOpen);
 	return (
 		<>
-			<tr className="property striped">
+			<tr class="property striped">
 				<Advanced>
-					<th onClick={() => toggleTable()} class={"interactive"}>
+					<th onClick={() => toggleTable()} class="interactive">
 						<label htmlFor={"edit-" + path} >
 							{path.split(".").pop()}:
 						</label>

@@ -8,6 +8,7 @@ import { useContext, useEffect, useState } from "preact/hooks";
 import { OpenMapperFolderButton } from "../../../components/OpenMapperFolderButton";
 import { Toasts } from "../../../notifications/ToastStore";
 import { Advanced } from "../../../components/Advanced";
+import { WideButton } from "../../../components/WideButton";
 
 export function MapperUpdatePage() {
 	const filesClient = Store.client.files;
@@ -60,16 +61,10 @@ export function MapperUpdatePage() {
 			<span>
 				{selectedUpdates.length} / {availableUpdates.length} Mappers Selected
 			</span>
-			<div className="margin-top">
-				<button className="green margin-right wide-button" disabled={!selectedUpdates.length} onClick={handleUpdate}>
-					Update selected
-				</button>
-				<button className="green margin-right wide-button" disabled={!availableUpdates.length} onClick={handleUpdateAll}>
-					Update all
-				</button>
-				<button className="blue margin-right wide-button" onClick={mapperFileContext.refresh}>
-					Reload mapper list
-				</button>
+			<div class="margin-top">
+				<WideButton text="Update selected" color="green" disabled={!selectedUpdates.length} onClick={handleUpdate} />
+				<WideButton text="Update all" color="green" disabled={!availableUpdates.length} onClick={handleUpdateAll} />
+				<WideButton text="Reload mapper list" color="blue" onClick={mapperFileContext.refresh} />
 				<Advanced>
 					<OpenMapperFolderButton />
 				</Advanced>

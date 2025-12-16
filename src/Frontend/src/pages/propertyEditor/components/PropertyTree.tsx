@@ -132,7 +132,7 @@ function PropertyTreeHeader(props: PropertyTreeHeaderProps) {
 	return (
 		<tr class="leaf interactive" onClick={props.onToggleOpen}>
 			<th >
-				<i className="material-icons"> {props.isOpen ? "folder" : "folder_open"} </i>
+				<i class="material-icons"> {props.isOpen ? "folder" : "folder_open"} </i>
 				<span class="margin-left">
 					{props.name}
 					{props.secondaryName &&

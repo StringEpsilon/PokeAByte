@@ -42,10 +42,10 @@ export function MainView() {
 				<Route path="/settings">
 					<Settings />
 				</Route>
-				<Route path={"/mapper"} nest>
+				<Route path="/mapper" nest>
 					<MapperPage />
 				</Route>
-				<Route path={"/license/"} nest>
+				<Route path="/license/" nest>
 					<LicensePage />
 				</Route>
 				<Route>

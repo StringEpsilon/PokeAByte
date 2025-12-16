@@ -2,11 +2,11 @@ export function CopyValueIcon({ onClick }: { onClick: () => void }) {
 	return (
 		<button 
 			type="button" 
-			className={"margin-right icon-button"} 
+			class="margin-right icon-button" 
 			onClick={onClick}
-			title={"Copy value"}
+			title="Copy value"
 		>
-			<i className="material-icons"> content_copy </i>
+			<i class="material-icons"> content_copy </i>
 		</button>
 	)
 }

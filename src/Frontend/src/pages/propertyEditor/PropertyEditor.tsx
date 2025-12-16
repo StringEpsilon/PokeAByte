@@ -43,7 +43,7 @@ export function PropertyEditor() {
 
 	return (
 		<HidePropertyContextProvider mapperId={mapper.id} key="unique">
-			<div className="layout-box margin-top" >
+			<div class="layout-box margin-top" >
 				<div class="title">
 					<div>
 						<strong>{mapper.gameName}</strong>
@@ -59,16 +59,16 @@ export function PropertyEditor() {
 					<span class="input-addon">
 						<input type="text" value={internalSearch} onInput={x => onSearchInput(x.currentTarget.value)}></input>
 						<button
-							class={"add-on material-icons"}
+							class="add-on material-icons"
 							disabled={!internalSearch}
 							onClick={() => setInternalSearch("")}
-							title={"Clear search"}
+							title="Clear search"
 						>
 							clear
 						</button>
 					</span>
 				</Advanced>
-				<table className="tree">
+				<table class="tree">
 					<tbody>
 						{paths.map((x) =>
 							<IfNotHidden key={x} path={x} >

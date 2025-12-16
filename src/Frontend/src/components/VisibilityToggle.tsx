@@ -6,20 +6,23 @@ import { HidePropertyContext } from "../Contexts/HidePropertyContext";
 export function VisibilityToggle(props: { path: string; }) {
 	const context = useContext(HidePropertyContext);
 	const isVisible = !context.hiddenProperties.includes(props.path);
+	
 	const onHideClick = useCallback((event: Event) => {
 		context.hideProperty(props.path);
 		event.stopPropagation();
-	}, [context, isVisible]);
+	}, [context, props.path]);
+
 	const onShowClick = useCallback((event: Event) => {
 		context.showProperty(props.path);
 		event.stopPropagation();
-	}, [context, isVisible]);
+	}, [context, props.path]);
+
 	if (isVisible) {
 		return (
 			<i
-				role={"button"}
+				role="button"
 				tabIndex={0}
-				title={"Hide property"}
+				title="Hide property"
 				class={classNames("material-icons icon-button-bare hide-icon")}
 				onClick={onHideClick}
 			>
@@ -29,9 +32,9 @@ export function VisibilityToggle(props: { path: string; }) {
 	}
 	return (
 		<i
-			role={"button"}
+			role="button"
 			tabIndex={0}
-			title={"Unhide property"}
+			title="Unhide property"
 			class={classNames("material-icons icon-button-bare hide-icon")}
 			onClick={onShowClick}
 		>

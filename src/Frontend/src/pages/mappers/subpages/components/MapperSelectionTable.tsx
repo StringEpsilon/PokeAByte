@@ -1,5 +1,6 @@
 import { MapperUpdate, MapperVersion } from "pokeaclient";
 import { useEffect, useState } from "preact/hooks";
+import { WideButton } from "../../../../components/WideButton";
 
 type MapperSelectionTableProps = {
 	onMapperSelection: React.Dispatch<React.SetStateAction<string[]>>,
@@ -74,19 +75,17 @@ export function MapperSelectionTable(props: MapperSelectionTableProps) {
 				onInput={(event) => setFilter(event.currentTarget.value)} 
 			/>
 			{props.onUpdateList &&
-				<button type="button" className="blue wide-button" onClick={props.onUpdateList}>
-					Reload mapper list
-				</button>
+				<WideButton text="Reload mapper list" color="blue" onClick={props.onUpdateList} />
 			}
-			<table className="striped">
+			<table class="striped">
 				<thead>
 					<tr  >
-						<th className="min">
-							<label className="checkbox">
-								<input 
-									type="checkbox" 
-									checked={selectedMappers.length == mappers.length} 
-									onInput={(e) => selectAll(e.currentTarget.checked)} 
+						<th>
+							<label class="checkbox">
+								<input  
+									type="checkbox"  
+									checked={selectedMappers.length == mappers.length}  
+									onInput={(e) => selectAll(e.currentTarget.checked)}  
 								/>
 								<span />
 							</label>

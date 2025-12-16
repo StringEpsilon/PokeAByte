@@ -80,7 +80,7 @@ export function MapperSelection(props: MapperSelectProps) {
 				Select the mapper you would like to load:
 			</span>
 			<br/>
-			<span class={"margin-right"}>
+			<span class="margin-right">
 				<Dropdown
 					size={10}
 					tabIndex={-1}
@@ -98,11 +98,11 @@ export function MapperSelection(props: MapperSelectProps) {
 				value={currentMapper}
 				options={filteredMappers.map((x: AvailableMapper) => ({ value: x.id, display: x.displayName })) || []}
 			/>
-			<button ref={loadButtonRef} className="green margin-left wide-button" onClick={onLoadMapper}>
+			<button ref={loadButtonRef} class="green margin-left wide-button" onClick={onLoadMapper}>
 				Load Mapper
 			</button>
 			<Advanced>
-				<div className="margin-top">
+				<div class="margin-top">
 					<OpenMapperFolderButton />
 				</div>
 			</Advanced>

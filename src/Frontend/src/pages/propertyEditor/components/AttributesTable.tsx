@@ -16,7 +16,7 @@ export function AttributesTable({ path }: { path: string }) {
 	const memoryContainer = useGamePropertyField(path, "memoryContainer");
 
 	return (
-		<table className="attributes-table stripes small-space">
+		<table class="attributes-table">
 			<tbody>
 				<tr>
 					<th>type</th>
@@ -118,7 +118,7 @@ export function PropertyByteRow({ path }: { path: string }) {
 					onClick={() => clipboardCopy(values.join(" "))} 
 				/>
 			</td>
-			<td className="property-bytes">
+			<td class="property-bytes">
 				<span>0x&nbsp;</span>
 				{values.map((value, i) => {
 					return (
@@ -138,12 +138,12 @@ export function PropertyByteRow({ path }: { path: string }) {
 					<>
 						<SaveValueButton active={madeEdit} onClick={handleSave} />
 						<button 
-							className="icon-button margin-left" 
+							class="icon-button margin-left" 
 							disabled={!madeEdit} 
 							type="button" 
 							onClick={() => {setValues(originalValue); setMadeEdit(false)}}
 						>
-							<i className="material-icons"> undo </i>
+							<i class="material-icons"> undo </i>
 						</button>
 					</>
 				}

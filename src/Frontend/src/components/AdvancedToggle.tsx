@@ -9,11 +9,11 @@ export function AdvancedToggle() {
 	const context = useContext(AdvancedFeatureContext);
 	return (
 		<i
-			role={"button"}
+			role="button"
 			tabIndex={0}
-			title={"Toggle advanced mode"}
+			title="Toggle advanced mode"
 			class={classNames("material-icons icon-button-bare", { "text-green": context.show })}
-			onClick={context.toggle}
+			onClick={() => setAdvancedMode(!advancedMode)}
 		>
 			rocket
 		</i>

@@ -5,7 +5,7 @@ export function Panel(props: PanelProps) {
 	const [isOpen, setOpen] = useStorageState(props.id, !!props.defaultOpen);
 	return (
 		<details
-			className="panel"
+			class="panel"
 			open={isOpen}
 			onToggle={event => setOpen(event.currentTarget.open)}
 		>

@@ -3,7 +3,7 @@ import preact from "@preact/preset-vite";
 import { readFileSync } from 'fs';
 
 const match = readFileSync("../PokeAByte.Web/PokeAByte.Web.csproj", "utf-8")
-	.match(/(?:\<AssemblyVersion\>)((\d+\.)+\d)/);
+	.match(/(?:<AssemblyVersion>)((\d+\.)+\d)/);
 const version = match ? match[1] : "";
 
 export default defineConfig({

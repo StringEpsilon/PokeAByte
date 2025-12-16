@@ -20,23 +20,23 @@ export function Header() {
 			<nav class="tab">
 				<HeaderNavigation mapper={mapper} />
 			</nav>
-			<div class={"mapper-info"}>
+			<div class="mapper-info">
 				{mapper 
 					?<>
 						<span class={`margin-right ${textHighlightClass}`}  title={"Current mapper: " + mapper.gameName}>Connected</span>
 						<i
 							tabIndex={0} 
 							title="Unload Mapper" 
-							role={"button"} 
-							className={`icon-button-bare material-icons text-red`} 
+							role="button" 
+							class="icon-button-bare material-icons text-red" 
 							onClick={Store.client.unloadMapper}
 						> 
 							clear 
 						</i>
 						<i tabIndex={0} 
 							title="Reload Mapper" 
-							role={"button"} 
-							className={`icon-button-bare material-icons text-purple`} 
+							role="button" 
+							class="icon-button-bare material-icons text-purple" 
 							onClick={reloadMapper}
 						> 
 							refresh
