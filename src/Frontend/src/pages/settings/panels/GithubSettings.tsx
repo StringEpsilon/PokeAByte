@@ -1,11 +1,11 @@
 
 import type { JSX, TargetedInputEvent } from "preact";
 import { useCallback, useEffect, useReducer, useRef, useState } from "preact/hooks";
-import { Store } from "../../utility/propertyStore";
-import { useAPI } from "../../hooks/useAPI";
+import { Store } from "@/utility/propertyStore";
+import { useAPI } from "@/hooks/useAPI";
 import { GithubSettings } from "pokeaclient";
-import { ConfirmationModal } from "../../components/ConfirmationModal";
-import { WideButton } from "../../components/WideButton";
+import { ConfirmationModal } from "@/components/ConfirmationModal";
+import { WideButton } from "@/components/WideButton";
 
 export function GithubSettingsPage() {
 	const filesClient = Store.client.files;

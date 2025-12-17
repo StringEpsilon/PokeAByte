@@ -1,7 +1,6 @@
 import { useCallback, useContext, useEffect } from "preact/hooks";
 import { ComponentChildren, createContext } from "preact";
-import { useStorageState } from "../hooks/useStorageState";
-import { UISettings } from "../pages/settings/UISettings";
+import { useStorageState } from "@/hooks/useStorageState";
 
 export type UISettings = {
 	initialized: boolean,
@@ -11,6 +10,7 @@ export type UISettings = {
 	test?: Record<string, any>,
 	recentlyUsedEnabled?: boolean,
 	favoriteMappers?: string[]
+	recentMappers?: string[]
 }
 
 export type  UISettingsContextType = {

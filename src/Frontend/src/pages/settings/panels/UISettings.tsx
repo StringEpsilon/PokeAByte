@@ -1,10 +1,8 @@
 import { useContext } from "preact/hooks";
-import { Panel } from "../mappers/Panel";
-import { UISettingsContext, useUISetting } from "../../Contexts/UISettingsContext";
-import { SelectInput } from "../../components/SelectInput";
-import { unique } from "../propertyEditor/utils/unique";
-import { MapperFilesContext } from "../../Contexts/availableMapperContext";
-import { WideButton } from "../../components/WideButton";
+import { Panel } from "../../mappers/Panel";
+import { UISettingsContext, useUISetting } from "@/Contexts/UISettingsContext";
+import { MapperFilesContext } from "@/Contexts/availableMapperContext";
+import { WideButton } from "@/components/WideButton";
 
 export function UISettings() {
 	const settingsContext = useContext(UISettingsContext);
@@ -21,7 +19,7 @@ export function UISettings() {
 				</strong>
 				<hr />
 				<form onSubmit={(e) => e.preventDefault()}>
-					<table>
+					<table class="striped">
 						<tbody>
 							<tr>
 								<th>
@@ -35,6 +33,7 @@ export function UISettings() {
 										checked={advancedMode}
 										onInput={() => setAdanvedMode(!advancedMode)}
 									/>
+									<span>Displays additional information and enables certain features.</span>
 								</td>
 							</tr>
 							<tr>
@@ -49,7 +48,7 @@ export function UISettings() {
 										checked={forceVisible}
 										onInput={() => setForceVisible(!forceVisible)}
 									/>
-									<p>Enabling this shows properties even if you chose to hide them. </p>
+									<span>Enabling this shows properties even if you chose to hide them. </span>
 								</td>
 							</tr>
 							<tr>
@@ -64,11 +63,12 @@ export function UISettings() {
 										checked={preserveFreeze}
 										onInput={() => setPreserveFreeze(!preserveFreeze)}
 									/>
+									<span>When reloading a mapper, reapply previously frozen values. </span>
 								</td>
 							</tr>
 							<tr>
 								<th>
-									<label htmlFor="recentlyUsed">Show "Recently used mappers":</label>
+									<label htmlFor="recentlyUsed">Track recently used mappers:</label>
 								</th>
 								<td>
 									<input
@@ -78,6 +78,7 @@ export function UISettings() {
 										checked={settingsContext.settings.recentlyUsedEnabled}
 										onInput={() => setRecentlyUsed(!recentlyUsedEnabled)}
 									/>
+									<span> When enabled, keep track of the last 5 used mappers for quick loading </span>
 								</td>
 							</tr>							
 							<FavoriteManagement />							
@@ -91,16 +92,10 @@ export function UISettings() {
 
 export function FavoriteManagement() {
 	const [favoriteIds, setFavorites] = useUISetting("favoriteMappers");
-
-	const addFavorite = (mapperName: string) => {
-		const newFavorites = favoriteIds ? [...favoriteIds] : [];
-		newFavorites.push(mapperName);		
-		setFavorites(newFavorites.filter(unique));
-	};
-
 	const removeFavorite = (favorite: string) => {
 		setFavorites(favoriteIds?.filter(x => x !== favorite) ?? []);
 	};
+	
 	const moveFavoriteUp = (favoriteId: string) => {
 		if (!favoriteIds) {
 			return;
@@ -114,6 +109,7 @@ export function FavoriteManagement() {
 			setFavorites([...newArrangement]);
 		}
 	};
+
 	const moveFavoriteDown = (favoriteId: string) => {
 		if (!favoriteIds) {
 			return;
@@ -130,21 +126,9 @@ export function FavoriteManagement() {
 	const mapperFileContext = useContext(MapperFilesContext);
 	const favorites = favoriteIds?.map(id => mapperFileContext.availableMappers?.find(mapper => mapper.id == id))
 		.filter(x => !!x);
+		
 	return (
 		<>
-			<tr>
-				<th>
-					<label htmlFor="selectFavorite">Select mapper to add:</label>
-				</th>
-				<td>
-					<SelectInput
-						size={55}
-						id="mapper-select"
-						onSelection={(option) => addFavorite(option.value)}
-						options={mapperFileContext.availableMappers.map((x) => ({ value: x.id, display: x.displayName })) || []}
-					/>
-				</td>
-			</tr>
 			<tr>
 				<th>
 					<label>Favorites:</label>
@@ -187,7 +171,7 @@ export function FavoriteManagement() {
 							})}
 						</tbody>
 					</table>
-					{favoriteIds?.length > 0 && 
+					{!!favoriteIds?.length && 
 						<WideButton text="Clear all" color="red" onClick={() => setFavorites([])} />
 					}
 					{!favoriteIds?.length && 

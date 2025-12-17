@@ -1,5 +1,5 @@
 ﻿import { useSyncExternalStore } from "preact/compat";
-import { Store } from "../../utility/propertyStore";
+import { Store } from "@/utility/propertyStore";
 import { MapperSelection } from "./subpages/MapperSelectPage";
 import { MapperDownloadPage } from "./subpages/MapperDownloadPage";
 import { MapperBackupPage } from "./subpages/MapperBackupPage";
@@ -7,6 +7,7 @@ import { MapperUpdatePage } from "./subpages/MapperUpdatePage";
 import { MapperRestorePage } from "./subpages/MapperRestorePage";
 import { Panel } from "./Panel";
 import { FavoritePanel } from "./FavoritePanel";
+import { RecentPanel } from "./subpages/RecentPanel";
 
 export default function MapperPage() {
 	const mapper = useSyncExternalStore(Store.subscribeMapper, Store.getMapper);
@@ -17,6 +18,7 @@ export default function MapperPage() {
 			<Panel id="_mapper-select-panel" title="Load mapper" defaultOpen>
 				<MapperSelection mapper={mapper} />
 			</Panel>
+			<RecentPanel />
 			<Panel id="_mapper-download-panel" title="Download mappers" >
 				<MapperDownloadPage />
 			</Panel>

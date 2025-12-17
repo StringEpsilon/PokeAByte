@@ -1,9 +1,9 @@
 
 import { useEffect, useState } from "preact/hooks";
-import { ConfirmationModal } from "../../components/ConfirmationModal";
-import { useAPI } from "../../hooks/useAPI";
-import { AppSettingsModel, getAppSettings, saveAppSettings } from "../../utility/fetch";
-import { Toasts } from "../../notifications/ToastStore";
+import { ConfirmationModal } from "@/components/ConfirmationModal";
+import { useAPI } from "@/hooks/useAPI";
+import { AppSettingsModel, getAppSettings, saveAppSettings } from "@/utility/fetch";
+import { Toasts } from "@/notifications/ToastStore";
 import { TargetedInputEvent } from "preact";
 
 export function AppSettings() {

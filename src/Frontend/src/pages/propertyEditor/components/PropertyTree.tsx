@@ -1,7 +1,7 @@
 
 import { Store } from "../../../utility/propertyStore";
 import { PropertyValue } from "./PropertyValue";
-import { unique } from "../utils/unique";
+import { unique } from "../../../utility/unique";
 import { useStorageRecordState } from "../../../hooks/useStorageState";
 import { useContext, useState } from "preact/hooks";
 import { useGamePropertyField } from "../hooks/useGamePropertyField";

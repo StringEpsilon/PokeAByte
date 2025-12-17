@@ -1,29 +1,29 @@
 import { useContext } from "preact/hooks";
-import { Link } from "wouter";
 import { MapperFilesContext } from "@/Contexts/availableMapperContext";
 import { useUISetting } from "@/Contexts/UISettingsContext";
 import { useAPI } from "@/hooks/useAPI";
 import { changeMapper } from "@/utility/fetch";
-import { Panel } from "./Panel";
-import { createMapperLoadToast } from "./subpages/createMapperLoadToast";
+import { Panel } from "../Panel";
+import { createMapperLoadToast } from "./createMapperLoadToast";
 import { CSSProperties } from "preact";
 import { getMapperColors } from "@/utility/getMapperColors";
 
-export function FavoritePanel() {
-	const [favoriteIds] = useUISetting("favoriteMappers");
+export function RecentPanel() {
+	const [isEnabled] = useUISetting("recentlyUsedEnabled");
+	const [recentMappers] = useUISetting("recentMappers");
 	const mapperFileContext = useContext(MapperFilesContext);
 	const changeMapperApi = useAPI(changeMapper, createMapperLoadToast);
-	const favorites = favoriteIds?.map(id => mapperFileContext.availableMappers?.find(mapper => mapper.id == id))
+	const mappers = recentMappers?.map(id => mapperFileContext.availableMappers?.find(mapper => mapper.id == id))
 		.filter(x => !!x);
 
-	if (!favorites?.length) {
+	if (!isEnabled || !mappers?.length) {
 		return null;
 	}
 	
 	return (
-		<Panel id="_mapper-favorites" title="Favorite mappers" defaultOpen>
+		<Panel id="_mapper-recent" title="Recently used mappers" defaultOpen>
 			<div class="favorites">
-				{favorites?.map((favorite) => {
+				{mappers?.map((favorite) => {
 					const buttonColors = getMapperColors(favorite.displayName);
 					const style: CSSProperties = {};
 					if (buttonColors) {
@@ -42,10 +42,6 @@ export function FavoritePanel() {
 					);
 				})}			
 			</div>
-			<br />
-			<span>
-				You can manage your favorites <Link href="~/ui/settings/#settings_ui">here</Link>.
-			</span>
 		</Panel>
 	);
 }

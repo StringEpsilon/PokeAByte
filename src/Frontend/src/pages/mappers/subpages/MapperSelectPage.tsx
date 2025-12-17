@@ -1,17 +1,18 @@
-import { SelectInput } from "../../../components/SelectInput";
-import { Dropdown } from "../../../components/Dropdown";
+import { SelectInput } from "@/components/SelectInput";
+import { Dropdown } from "@/components/Dropdown";
 import { useContext, useEffect, useRef, useState } from "preact/hooks";
-import { useAPI } from "../../../hooks/useAPI";
-import { LoadProgress } from "../../../components/LoadProgress";
+import { useAPI } from "@/hooks/useAPI";
+import { LoadProgress } from "@/components/LoadProgress";
 import { AvailableMapper, Mapper } from "pokeaclient";
-import { MapperFilesContext } from "../../../Contexts/availableMapperContext";
-import { unique } from "../../propertyEditor/utils/unique";
-import { OpenMapperFolderButton } from "../../../components/OpenMapperFolderButton";
-import { Advanced } from "../../../components/Advanced";
-import { useStorageState } from "../../../hooks/useStorageState";
-import { changeMapper } from "../../../utility/fetch";
+import { MapperFilesContext } from "@/Contexts/availableMapperContext";
+import { unique } from "@/utility/unique";
+import { OpenMapperFolderButton } from "@/components/OpenMapperFolderButton";
+import { Advanced } from "@/components/Advanced";
+import { useStorageState } from "@/hooks/useStorageState";
+import { changeMapper } from "@/utility/fetch";
 import { FavoriteIcon } from "./FavoriteIcon";
 import { createMapperLoadToast } from "./createMapperLoadToast";
+import { useUISetting } from "@/Contexts/UISettingsContext";
 
 type MapperSelectProps = {
 	mapper: Mapper | null
@@ -32,6 +33,8 @@ export function MapperSelection(props: MapperSelectProps) {
 	const changeMapperApi = useAPI(changeMapper, createMapperLoadToast);
 	const [currentMapper, setCurrentMapper] = useState<string | null>(null);
 	const [filter, setFilter] = useStorageState("mapper-category", "");
+	const [isRecentlyUsedEnabled] = useUISetting("recentlyUsedEnabled");
+	const [recentMappers, setRecentMappers] = useUISetting("recentMappers");
 
 	useEffect(() => {
 		if (currentMapper) {
@@ -46,6 +49,9 @@ export function MapperSelection(props: MapperSelectProps) {
 	const onLoadMapper = () => {
 		if (currentMapper) {
 			changeMapperApi.call(currentMapper);
+			if (isRecentlyUsedEnabled) {
+				setRecentMappers([currentMapper, ...(recentMappers??[])].filter(unique).slice(0, 5));
+			}
 		}
 	};
 

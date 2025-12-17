@@ -1,8 +1,8 @@
 import { Advanced } from "../../components/Advanced";
 import { Panel } from "../mappers/Panel";
-import { AppSettings } from "./AppSettings";
-import { GithubSettingsPage } from "./GithubSettings";
-import { UISettings } from "./UISettings";
+import { AppSettings } from "./panels/AppSettings";
+import { GithubSettingsPage } from "./panels/GithubSettings";
+import { UISettings } from "./panels/UISettings";
 
 export function Settings() {
 	return (

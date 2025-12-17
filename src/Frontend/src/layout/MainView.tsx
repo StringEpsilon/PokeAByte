@@ -23,6 +23,7 @@ export function MainView() {
 	useEffect(() => {
 		if (mapper && !previousMapper) {
 			setLocation("/properties", { replace: false});
+			
 		}
 	}, [mapper, previousMapper, setLocation]);
 

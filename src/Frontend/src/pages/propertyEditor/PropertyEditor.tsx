@@ -1,13 +1,13 @@
-import { Store } from "../../utility/propertyStore";
+import { Store } from "@/utility/propertyStore";
 import { PropertyTree } from "./components/PropertyTree";
-import { unique } from "./utils/unique";
+import { unique } from "@/utility/unique";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import { useSyncExternalStore } from "preact/compat";
 import { useLocation } from "wouter";
-import { HidePropertyContextProvider } from "../../Contexts/HidePropertyContext";
-import { ForceVisibilityToggle } from "../../components/ForceVisibilityToggle";
-import { IfNotHidden } from "../../components/IfNotHidden";
-import { Advanced } from "../../components/Advanced";
+import { HidePropertyContextProvider } from "@/Contexts/HidePropertyContext";
+import { ForceVisibilityToggle } from "@/components/ForceVisibilityToggle";
+import { IfNotHidden } from "@/components/IfNotHidden";
+import { Advanced } from "@/components/Advanced";
 import debounce from "debounce";
 
 export function PropertyEditor() {
