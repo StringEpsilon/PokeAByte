@@ -21,7 +21,7 @@ function createMapperOption(value: AvailableMapper) {
 	return {
 		value: value.id,
 		display: value.displayName,
-		extra: <FavoriteIcon mapperId={value.id}  />
+		extra: <FavoriteIcon mapperId={value.id} />
 	};
 }
 
@@ -32,7 +32,7 @@ export function MapperSelection(props: MapperSelectProps) {
 	const changeMapperApi = useAPI(changeMapper, createMapperLoadToast);
 	const [currentMapper, setCurrentMapper] = useState<string | null>(null);
 	const [filter, setFilter] = useStorageState("mapper-category", "");
-	
+
 	useEffect(() => {
 		if (currentMapper) {
 			requestAnimationFrame(() => loadButtonRef.current?.focus());
@@ -64,11 +64,11 @@ export function MapperSelection(props: MapperSelectProps) {
 		? mapperFileContext.availableMappers.filter(x => x.displayName.startsWith(`(${filter})`))
 		: mapperFileContext.availableMappers;
 	return (
-		<>
+		<article>
 			<span> Select the mapper you would like to load: </span>
 			<br />
 			<span class="margin-right">
-				<Dropdown 
+				<Dropdown
 					size={10}
 					tabIndex={-1}
 					id="mapper-select"
@@ -92,6 +92,6 @@ export function MapperSelection(props: MapperSelectProps) {
 					<OpenMapperFolderButton />
 				</div>
 			</Advanced>
-		</>
+		</article>
 	);
 }

@@ -20,7 +20,7 @@ const COLOR_MAP: Record<string, ButtonColor> = {
 	"pokemon platinum": { border: "#C1C1B5", bg:"#A0A08D",  text: "black" },
 	"pokemon soulsilver": { border: "#C8D2E0", bg:"#AAB9CF",  text: "white" },
 	"pokemon heartgold": { border: "#F0CF5B", bg:"#E8B502",  text: "black" },
-	"pokemon white 2": { border: "#F2D9D8", bg:"#F2D9D8",  text: "white" },
+	"pokemon white 2": { border: "#F2D9D8", bg:"#F2D9D8",  text: "black" },
 	"pokemon black 2": { border: "#1F2835", bg:"#1F2835",  text: "white" },
 	"pokemon white": { border: "#EBEBEB", bg:"#EBEBEB",  text: "black" },
 	"pokemon black": { border: "#444444", bg:"#444444",  text: "white" },
@@ -39,7 +39,8 @@ export function FavoritePanel() {
 	const [favoriteIds] = useUISetting("favoriteMappers");
 	const mapperFileContext = useContext(MapperFilesContext);
 	const changeMapperApi = useAPI(changeMapper, createMapperLoadToast);
-	const favorites = mapperFileContext.availableMappers?.filter((mapper) => favoriteIds?.includes(mapper.id));
+	const favorites = favoriteIds?.map(id => mapperFileContext.availableMappers?.find(mapper => mapper.id == id))
+		.filter(x => !!x);
 
 	if (!favorites?.length) {
 		return null;

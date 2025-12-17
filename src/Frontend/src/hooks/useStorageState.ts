@@ -17,7 +17,7 @@ export function useStorageState<T>(key: string, defaultValue: T): [T, (value: T)
 	);
 	
 	const setter = useCallback((newValue: T) => {
-		setItem(newValue);
+		setItem(structuredClone(newValue));		
 		window.localStorage.setItem(key, JSON.stringify(newValue));
 	}, [setItem, key]);
 

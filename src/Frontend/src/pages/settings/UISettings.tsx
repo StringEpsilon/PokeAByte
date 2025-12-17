@@ -4,6 +4,7 @@ import { UISettingsContext, useUISetting } from "../../Contexts/UISettingsContex
 import { SelectInput } from "../../components/SelectInput";
 import { unique } from "../propertyEditor/utils/unique";
 import { MapperFilesContext } from "../../Contexts/availableMapperContext";
+import { WideButton } from "../../components/WideButton";
 
 export function UISettings() {
 	const settingsContext = useContext(UISettingsContext);
@@ -89,19 +90,46 @@ export function UISettings() {
 }
 
 export function FavoriteManagement() {
-	const [favoritIds, setFavorites] = useUISetting("favoriteMappers");
+	const [favoriteIds, setFavorites] = useUISetting("favoriteMappers");
 
 	const addFavorite = (mapperName: string) => {
-		const newFavorites = favoritIds ? [...favoritIds] : [];
+		const newFavorites = favoriteIds ? [...favoriteIds] : [];
 		newFavorites.push(mapperName);		
 		setFavorites(newFavorites.filter(unique));
 	};
 
 	const removeFavorite = (favorite: string) => {
-		setFavorites(favoritIds?.filter(x => x !== favorite) ?? []);
+		setFavorites(favoriteIds?.filter(x => x !== favorite) ?? []);
+	};
+	const moveFavoriteUp = (favoriteId: string) => {
+		if (!favoriteIds) {
+			return;
+		}
+		const newArrangement = [...favoriteIds];
+		const index = newArrangement.indexOf(favoriteId);
+		console.log(index + " => "+ (index-1));
+		if (index > 0) {
+			newArrangement.splice(index, 1) 
+			newArrangement.splice(index-1, 0, favoriteId);
+			setFavorites([...newArrangement]);
+		}
+	};
+	const moveFavoriteDown = (favoriteId: string) => {
+		if (!favoriteIds) {
+			return;
+		}
+		const newArrangement = [...favoriteIds];
+		const index = newArrangement?.indexOf(favoriteId);
+		if (index < newArrangement?.length) {
+			newArrangement.splice(index, 1) 
+			newArrangement.splice(index+1, 0, favoriteId);
+			setFavorites([...newArrangement]);
+		}
+		console.log(newArrangement.join(" "));
 	};
 	const mapperFileContext = useContext(MapperFilesContext);
-	const favorites = mapperFileContext.availableMappers?.filter((mapper) => favoritIds?.includes(mapper.id));
+	const favorites = favoriteIds?.map(id => mapperFileContext.availableMappers?.find(mapper => mapper.id == id))
+		.filter(x => !!x);
 	return (
 		<>
 			<tr>
@@ -124,9 +152,8 @@ export function FavoriteManagement() {
 				<td>
 					<table class="striped">
 						<tbody>
-							{favorites?.map(favorite => {
-		
-								return <tr>
+							{favorites?.map((favorite, index) => {
+								return <tr key={favorite.id}>
 									<td>
 										<span class="margin-left" >{favorite.displayName}</span>
 									</td>
@@ -137,15 +164,36 @@ export function FavoriteManagement() {
 										> 
 											<i class="material-icons text-red"> delete </i> 
 										</button>
+										{index+1 < favorites.length &&
+											<button 
+											onClick={() => moveFavoriteDown(favorite.id)}
+											class="margin-right"
+											> 
+												<i class="material-icons"> arrow_downward </i> 
+											</button>
+										}
+										{index > 0 &&
+											<button 
+												onClick={() => moveFavoriteUp(favorite.id)}
+												class="margin-right"
+												style={{ float: "right"}}
+											> 
+												<i class="material-icons"> arrow_upward </i> 
+											</button>
+										}
 									</td>
 									<br/>
 								</tr>
 							})}
 						</tbody>
 					</table>
-					{!favoritIds?.length && 
+					{favoriteIds?.length > 0 && 
+						<WideButton text="Clear all" color="red" onClick={() => setFavorites([])} />
+					}
+					{!favoriteIds?.length && 
 						<span> You currently have no favorites </span>
 					}
+					
 				</td>
 			</tr>
 		</>
