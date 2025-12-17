@@ -8,8 +8,14 @@
 ## Features
 
 **Frotend:**
-- Added a "Poke-A-Byte settings" box to the Settings tab.
+- Added a "Poke-A-Byte settings" panel to the settings tab.
   Allows configuration of the `appsettings.json` options through the Web UI.
+- Added a "UI settings" panel to the settings tab.
+  - Added an option to preserve frozen property values between mapper reloads (via the button in the header).
+- Added favorites 
+  - You can favorite a mapper via the heart icon in the mapper select.
+  - Favorite mappers are shown as buttons above the "Load mapper" panel for those mappers with one click.
+
 
 ## General changes
 

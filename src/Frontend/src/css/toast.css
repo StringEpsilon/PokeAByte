@@ -3,11 +3,7 @@
 	right: var(--margin-2);
 	position: fixed;
 	z-index: 1000;
-	overflow: clip;
-	display: flex;
-	align-items: flex-end;
-	flex-direction: column;
-	text-align: end;	
+	display: grid;
 	.toast {
 		text-align: left;
 		margin-top: var(--margin-0);
