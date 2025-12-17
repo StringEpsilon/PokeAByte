@@ -1,16 +1,16 @@
-import { ArchivedMapper, MapperVersion } from "pokeaclient";
+import { MapperVersion } from "pokeaclient";
 
-export async function postWithoutResult<T>(
-	requestUrl: string,
-	body: null | T = null
-) {
+const BASE_URL = "http://localhost:8085";
+const DEFAULT_HEADERS = { "Content-Type": "application/json" };
+
+async function postWithoutResult<T>(requestUrl: string, body: null | T = null) {
 	try {
 		const response = await fetch(
 			requestUrl,
 			{
 				method: "POST",
 				body: JSON.stringify(body),
-				headers: { "Content-Type": "application/json" }
+				headers: DEFAULT_HEADERS,
 			}
 		);
 		return response.ok;
@@ -22,29 +22,25 @@ export async function postWithoutResult<T>(
 export async function changeMapper(mapperId: string | null) {
 	try {
 		const response = await fetch(
-			"http://localhost:8085/mapper-service/change-mapper",
+			BASE_URL + "/mapper-service/change-mapper",
 			{
 				method: "PUT",
 				body: JSON.stringify(mapperId),
-				headers: { "Content-Type": "application/json" }
+				headers: DEFAULT_HEADERS,
 			}
 		);
-		return response.ok || response.json();
+		return response.ok || await response.json() as string;
 	} catch {
 		return false;
 	}
 }
 
 export async function archiveMappers(mappers: MapperVersion[]) {
-	return await postWithoutResult("http://localhost:8085/files/mapper/archive_mappers", mappers);
+	return await postWithoutResult(BASE_URL + "/files/mapper/archive_mappers", mappers);
 }
 
 export async function backupMappers(mappers: MapperVersion[]) {
-	return await postWithoutResult("http://localhost:8085/files/mapper/backup_mappers", mappers);
-}
-
-export async function deleteMappers(mappers: ArchivedMapper[]) {
-	return await postWithoutResult("http://localhost:8085/files/mapper/delete_mappers", mappers);
+	return await postWithoutResult(BASE_URL + "/files/mapper/backup_mappers", mappers);
 }
 
 export type AppSettingsModel = {
@@ -58,10 +54,8 @@ export type AppSettingsModel = {
 export async function getAppSettings<AppSettings>() {
 	try {
 		const response = await fetch(
-			"http://localhost:8085/settings/appsettings",
-			{
-				headers: { "Content-Type": "application/json" }
-			}
+			BASE_URL + "/settings/appsettings",
+			{ headers: DEFAULT_HEADERS }
 		);
 		return <AppSettings>response.json();
 	} catch {
@@ -70,5 +64,9 @@ export async function getAppSettings<AppSettings>() {
 }
 
 export async function saveAppSettings(settings: Partial<AppSettingsModel>) {
-	return await postWithoutResult("http://localhost:8085/settings/save_appsettings", settings);
+	return await postWithoutResult(BASE_URL + "/settings/save_appsettings", settings);
+}
+
+export async function resetAppSettings() {
+	return await postWithoutResult(BASE_URL + "/settings/appsettings/reset");
 }

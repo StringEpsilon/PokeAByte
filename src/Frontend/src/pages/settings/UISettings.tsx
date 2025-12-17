@@ -11,7 +11,6 @@ export function UISettings() {
 	const [preserveFreeze, setPreserveFreeze] = useUISetting("preserveFreeze");
 	const [forceVisible, setForceVisible] = useUISetting("forceVisible");
 	const [recentlyUsedEnabled, setRecentlyUsed] = useUISetting("recentlyUsedEnabled");
-	const [favoritesEnabled, setFavorites] = useUISetting("favoritesEnabled");
 
 	return (
 		<Panel id="_settings_ui" title="UI settings">
@@ -30,7 +29,7 @@ export function UISettings() {
 								<td>
 									<input
 										name="advanced"
-										type={"checkbox"}
+										type="checkbox"
 										role="switch"
 										checked={advancedMode}
 										onInput={() => setAdanvedMode(!advancedMode)}
@@ -44,7 +43,7 @@ export function UISettings() {
 								<td>
 									<input
 										name="forceVisible"
-										type={"checkbox"}
+										type="checkbox"
 										role="switch"
 										checked={forceVisible}
 										onInput={() => setForceVisible(!forceVisible)}
@@ -59,7 +58,7 @@ export function UISettings() {
 								<td>
 									<input
 										name="preserveFreeze"
-										type={"checkbox"}
+										type="checkbox"
 										role="switch"
 										checked={preserveFreeze}
 										onInput={() => setPreserveFreeze(!preserveFreeze)}
@@ -73,30 +72,14 @@ export function UISettings() {
 								<td>
 									<input
 										name="recentlyUsed"
-										type={"checkbox"}
+										type="checkbox"
 										role="switch"
 										checked={settingsContext.settings.recentlyUsedEnabled}
 										onInput={() => setRecentlyUsed(!recentlyUsedEnabled)}
 									/>
 								</td>
-							</tr>
-							<tr>
-								<th>
-									<label htmlFor="preserveFreeze">Enable "Favorite mappers":</label>
-								</th>
-								<td>
-									<input
-										name="favoritesEnabled"
-										type={"checkbox"}
-										role="switch"
-										checked={favoritesEnabled}
-										onInput={() => setFavorites(!favoritesEnabled)}
-									/>
-								</td>
-							</tr>
-							{favoritesEnabled &&
-								<FavoriteManagement />
-							}
+							</tr>							
+							<FavoriteManagement />							
 						</tbody>
 					</table>
 				</form>
@@ -116,7 +99,7 @@ export function FavoriteManagement() {
 
 	const removeFavorite = (favorite: string) => {
 		setFavorites(favoritIds?.filter(x => x !== favorite) ?? []);
-	}
+	};
 	const mapperFileContext = useContext(MapperFilesContext);
 	const favorites = mapperFileContext.availableMappers?.filter((mapper) => favoritIds?.includes(mapper.id));
 	return (
@@ -139,7 +122,7 @@ export function FavoriteManagement() {
 					<label>Favorites:</label>
 				</th>
 				<td>
-					<table class={"striped"}>
+					<table class="striped">
 						<tbody>
 							{favorites?.map(favorite => {
 		

@@ -31,7 +31,7 @@ export function MapperSelectionTable(props: MapperSelectionTableProps) {
 				const filteredMappers = allMappers
 					.filter(
 						x => x.display_name.toLowerCase().includes(filterLower)
-						|| x.path.toLowerCase().includes(filterLower)
+							|| x.path.toLowerCase().includes(filterLower)
 					);
 				setMappers(filteredMappers);
 			}
@@ -58,7 +58,7 @@ export function MapperSelectionTable(props: MapperSelectionTableProps) {
 	if (allMappers.length === 0) {
 		return (
 			<>
-				<br/>
+				<br />
 				<strong>No Mappers Found</strong>
 			</>
 		)
@@ -67,12 +67,12 @@ export function MapperSelectionTable(props: MapperSelectionTableProps) {
 	return (
 		<>
 			<label htmlFor="mapper-filter margin-right">Filter:</label>
-			<input 
+			<input
 				id="mapper-filter"
-				type="text" 
+				type="text"
 				className="margin-right margin-left"
-				placeholder="" 
-				onInput={(event) => setFilter(event.currentTarget.value)} 
+				placeholder=""
+				onInput={(event) => setFilter(event.currentTarget.value)}
 			/>
 			{props.onUpdateList &&
 				<WideButton text="Reload mapper list" color="blue" onClick={props.onUpdateList} />

@@ -1,7 +1,6 @@
 import classNames from "classnames";
 import { useLocation } from "wouter";
 import { Mapper } from "pokeaclient";
-import { Advanced } from "../components/Advanced";
 
 export function HeaderNavigation({ mapper }: { mapper: Mapper | null }) {
 	const [location, setLocation] = useLocation();

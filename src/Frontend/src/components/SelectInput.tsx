@@ -1,6 +1,6 @@
 import { useRef, useState } from "preact/hooks";
 
-export type SelectOption<V> = { value: V, display: string }
+export type SelectOption<V> = { value: V, display: string, extra?: React.ReactNode }
 
 export interface SelectInputProps<V, T extends SelectOption<V>> {
 	id: string,
@@ -121,9 +121,13 @@ export function SelectInput<Value>(props: SelectInputProps<Value, SelectOption<V
 							onClick={() => handleSelection(x)}
 							class={index === 0 && focusIndex === -1 ? "highlight" : ""}
 							tabIndex={-1}
-							className={focusIndex === index ? "focused" : ""}
 						>
-							{x.display}
+							<span>
+								{x.display}
+							</span>
+							{x.extra && 
+								<span>{x.extra}</span>
+							}
 						</button>
 					)}
 				</div>

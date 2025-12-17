@@ -25,6 +25,13 @@ button {
 	&.highlight {
 		color: var(--color-blue)
 	}
+	.no-border {
+		margin-top: 0;
+		padding: 0;
+		border: none;
+		background-color: transparent;
+		cursor: pointer;
+	}
 }
 input,
 input[type="checkbox"] {

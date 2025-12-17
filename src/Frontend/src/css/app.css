@@ -384,3 +384,13 @@ form>table {
 		}
 	}
 }
+
+
+.favorites {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	>button {
+		width: 10em;
+	}
+}

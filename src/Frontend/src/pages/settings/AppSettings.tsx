@@ -117,7 +117,7 @@ export function AppSettings() {
 									type="text" 
 									name="PROTOCOL_FRAMESKIP" 
 									value={formState.PROTOCOL_FRAMESKIP}
-									aria-describedby={"frameskip_description"}
+									aria-describedby="frameskip_description"
 								/>
 								<p id="frameskip_description">
 									When using the Emulator Data Protocol, let the emulator wait X frames between 

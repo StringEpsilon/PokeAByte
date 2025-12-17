@@ -22,7 +22,7 @@ export function useAPI<T extends (...args: any[]) => Promise<any>>(
 				setLoading(false)
 				setResult(null);
 				if (chain) {
-					chain(true, null);
+					chain(false, null);
 				}
 			});
 	}

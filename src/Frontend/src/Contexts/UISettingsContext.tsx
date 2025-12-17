@@ -10,7 +10,6 @@ export type UISettings = {
 	forceVisible?: boolean,
 	test?: Record<string, any>,
 	recentlyUsedEnabled?: boolean,
-	favoritesEnabled?: boolean,
 	favoriteMappers?: string[]
 }
 

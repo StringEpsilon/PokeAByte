@@ -1,6 +1,5 @@
 import { SelectInput } from "../../../components/SelectInput";
 import { Dropdown } from "../../../components/Dropdown";
-import { Toasts } from "../../../notifications/ToastStore";
 import { useContext, useEffect, useRef, useState } from "preact/hooks";
 import { useAPI } from "../../../hooks/useAPI";
 import { LoadProgress } from "../../../components/LoadProgress";
@@ -11,82 +10,69 @@ import { OpenMapperFolderButton } from "../../../components/OpenMapperFolderButt
 import { Advanced } from "../../../components/Advanced";
 import { useStorageState } from "../../../hooks/useStorageState";
 import { changeMapper } from "../../../utility/fetch";
+import { FavoriteIcon } from "./FavoriteIcon";
+import { createMapperLoadToast } from "./createMapperLoadToast";
 
 type MapperSelectProps = {
 	mapper: Mapper | null
 }
 
+function createMapperOption(value: AvailableMapper) {
+	return {
+		value: value.id,
+		display: value.displayName,
+		extra: <FavoriteIcon mapperId={value.id}  />
+	};
+}
+
 export function MapperSelection(props: MapperSelectProps) {
 	const mapperFileContext = useContext(MapperFilesContext);
 	const mapper = props.mapper;
-
-	const fileId = mapper?.fileId;
 	const loadButtonRef = useRef<HTMLButtonElement>(null)
-	const changeMapperApi = useAPI(changeMapper);
-	const [currentMapper, setCurrentMapper] = useState<string|null>(null);
+	const changeMapperApi = useAPI(changeMapper, createMapperLoadToast);
+	const [currentMapper, setCurrentMapper] = useState<string | null>(null);
+	const [filter, setFilter] = useStorageState("mapper-category", "");
+	
 	useEffect(() => {
 		if (currentMapper) {
 			requestAnimationFrame(() => loadButtonRef.current?.focus());
 		}
-	}, [currentMapper])
-	const [filter, setFilter] = useStorageState("mapper-category", "");
+	}, [currentMapper]);
+
+	useEffect(() => {
+		setCurrentMapper(mapperFileContext.availableMappers?.find(x => x.id === mapper?.fileId)?.id ?? null);
+	}, [mapper, mapperFileContext.availableMappers]);
+
 	const onLoadMapper = () => {
 		if (currentMapper) {
 			changeMapperApi.call(currentMapper);
 		}
-	}
+	};
 
-	useEffect(() => {
-		setCurrentMapper(mapperFileContext.availableMappers?.find(x => x.id === fileId)?.id ?? null);
-	}, [fileId, mapper,mapperFileContext.availableMappers])
-
-	useEffect(() => {
-		if (changeMapperApi.wasCalled && !changeMapperApi.isLoading) {
-			if (changeMapperApi.result === true) {
-				Toasts.push("Loaded mapper", "task_alt", "success");
-			} else if (changeMapperApi.result) {
-				Toasts.push("Failed to load mapper:\n " + changeMapperApi.result, "", "error", false);
-			} else {
-				Toasts.push("Failed to load mapper.\n Check Poke-A-Byte log for more information.", "", "error");
-			}
-			console.log(changeMapperApi.result);
-		}
-	}, [changeMapperApi.wasCalled, changeMapperApi.isLoading, changeMapperApi.result])
-
-	const onCategorySelect = (category: string|null ) => {
-		let filter = category ?? "";
-		if (category === "<No filter>") {
-			filter = "";
-		}
-		setFilter(filter);
-	}
 	if (changeMapperApi.isLoading) {
 		return <LoadProgress label="Loading mapper" />
 	}
-	const allMappers = mapperFileContext.availableMappers;
+
 	const availableCategories = [
 		{ value: "", display: "<No filter>" },
-		...allMappers.map(x => x.displayName?.substring(1, x.displayName.indexOf(')')))
+		...mapperFileContext.availableMappers.map(x => x.displayName?.substring(1, x.displayName.indexOf(')')))
 			.filter(unique)
 			.toSorted()
 			.map(x => ({ value: x, display: x }))
 	];
-	const filteredMappers = filter 
-		? allMappers.filter(x => x.displayName.startsWith(`(${filter})`))
-		: allMappers;
+	const filteredMappers = filter
+		? mapperFileContext.availableMappers.filter(x => x.displayName.startsWith(`(${filter})`))
+		: mapperFileContext.availableMappers;
 	return (
-		<div>
-			<span>
-				Select the mapper you would like to load:
-			</span>
-			<br/>
+		<>
+			<span> Select the mapper you would like to load: </span>
+			<br />
 			<span class="margin-right">
-				<Dropdown
+				<Dropdown 
 					size={10}
 					tabIndex={-1}
-					placeholder="Select filter"
 					id="mapper-select"
-					onSelection={(option) => onCategorySelect(option.value)}
+					onSelection={(option) => setFilter(option.value ?? "")}
 					value={filter}
 					options={availableCategories}
 				/>
@@ -96,7 +82,7 @@ export function MapperSelection(props: MapperSelectProps) {
 				id="mapper-select"
 				onSelection={(option) => setCurrentMapper(option.value)}
 				value={currentMapper}
-				options={filteredMappers.map((x: AvailableMapper) => ({ value: x.id, display: x.displayName })) || []}
+				options={filteredMappers.map(createMapperOption)}
 			/>
 			<button ref={loadButtonRef} class="green margin-left wide-button" onClick={onLoadMapper}>
 				Load Mapper
@@ -106,6 +92,6 @@ export function MapperSelection(props: MapperSelectProps) {
 					<OpenMapperFolderButton />
 				</div>
 			</Advanced>
-		</div>
+		</>
 	);
 }
