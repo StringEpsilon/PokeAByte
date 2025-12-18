@@ -12,6 +12,9 @@ export default defineConfig({
 	define: {
         '__POKEABYTE_VERSION__': JSON.stringify(version)
     },
+	build: {
+		target: ["safari17.2"]
+	},
 	resolve: {
 		alias: {
 			"@": path.resolve(__dirname, "./src"),

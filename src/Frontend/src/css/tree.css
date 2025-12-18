@@ -28,9 +28,7 @@ table.tree {
 	.icon-button {
 		margin: 0 var(--margin-0) 0 0;
 		padding: 2px !important;
-		.material-icons {
-			font-size: 22px !important;
-		}
+		font-size: 22px !important;
 	}
 	label,
 	input {
@@ -49,6 +47,10 @@ table.tree {
 	}
 	input[role="switch"]::before {
 		height: 19.25px;
+	}
+
+	.icon-button, input, button {
+		margin-right: var(--margin-0);
 	}
 }
 

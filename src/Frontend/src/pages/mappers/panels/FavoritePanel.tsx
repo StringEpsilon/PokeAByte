@@ -4,8 +4,8 @@ import { MapperFilesContext } from "@/Contexts/availableMapperContext";
 import { useUISetting } from "@/Contexts/UISettingsContext";
 import { useAPI } from "@/hooks/useAPI";
 import { changeMapper } from "@/utility/fetch";
-import { Panel } from "./Panel";
-import { createMapperLoadToast } from "./subpages/createMapperLoadToast";
+import { Panel } from "../../../components/Panel";
+import { createMapperLoadToast } from "./createMapperLoadToast";
 import { CSSProperties } from "preact";
 import { getMapperColors } from "@/utility/getMapperColors";
 
@@ -21,7 +21,7 @@ export function FavoritePanel() {
 	}
 	
 	return (
-		<Panel id="_mapper-favorites" title="Favorite mappers" defaultOpen>
+		<Panel id="mapper-favorites" title="Favorite mappers" defaultOpen>
 			<div class="favorites">
 				{favorites?.map((favorite) => {
 					const buttonColors = getMapperColors(favorite.displayName);

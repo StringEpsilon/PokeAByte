@@ -2,14 +2,7 @@ import { ToastNotification } from "./ToastStore";
 import classNames from "classnames";
 
 export function Toast(props: ToastNotification) {
-	const classes = classNames(
-		"toast",
-		{
-			"blue": props.type === "blue",
-			"red": props.type === "error",
-			"green": props.type === "success",
-		}
-	);
+	const classes = classNames("toast", props.type);
 	return (
 		<div role="alert" aria-live="polite" class={classes}>
 			<div class="toast-content margin-right">

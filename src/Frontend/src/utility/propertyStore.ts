@@ -56,7 +56,7 @@ export class PropertyStore {
 	}
 
 	onError = (error: ProblemDetails) => {
-		Toasts.push(`${error.title}: ${error.detail}`, "", "error", false);
+		Toasts.push(`${error.title}: ${error.detail}`, "", "red", false);
 	}
 
 	subscribeProperty = (path: string) => (onStoreChange: () => void) => {

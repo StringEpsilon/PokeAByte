@@ -251,10 +251,7 @@ table.striped {
 	user-select: none;
 }
 
-.interactive,
-.icon-button-bare {
-	cursor: pointer;
-}
+
 
 .icon-button {
 	padding: 4px !important;
@@ -343,11 +340,9 @@ form>table {
 
 	tr {
 		/* height: max-content; */
-		th,
-		td {
+		th, td {
 			line-height: 31px;
 			padding: var(--margin-0);
-			vertical-align: middle;
 		}
 
 		th {
@@ -357,16 +352,16 @@ form>table {
 			text-align: left;
 		}
 
-		input,
-		button {
-			margin-top: 0;
+		input, button, .icon-button {
 			vertical-align: middle;
 		}
 
 		input {
-			font-family: var(--monospace-font);
-			margin-left: -2px;
-			position: relative;
+			margin-right: 0;
+			margin-left: -2px ;
+			&:last-of-type {
+				margin-right: var(--margin-0);
+			}
 
 			&:focus-visible {
 				outline: none;
@@ -377,8 +372,7 @@ form>table {
 
 		td:nth-of-type(1) {
 			width: 0;
-
-			button {
+			.icon-button {
 				margin: 0
 			}
 		}

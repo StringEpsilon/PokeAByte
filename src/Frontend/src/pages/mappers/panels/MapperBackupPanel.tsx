@@ -9,8 +9,9 @@ import { MapperFilesContext } from "../../../Contexts/availableMapperContext";
 import { OpenMapperFolderButton } from "../../../components/OpenMapperFolderButton";
 import { Advanced } from "../../../components/Advanced";
 import { WideButton } from "../../../components/WideButton";
+import { Panel } from "@/components/Panel";
 
-export function MapperBackupPage() {
+export function MapperBackupPanel() {
 	const filesClient = Store.client.files;
 	const mapperFileContext = useContext(MapperFilesContext);
 	const [availableMappers, setAvailableMappers] = useState<MapperUpdate[]>([]);
@@ -49,7 +50,7 @@ export function MapperBackupPage() {
 		return <LoadProgress label="Processing mapper(s)" />
 	}
 	return (
-		<article>
+		<Panel id="mapper-backup" title="Backup mappers" >		
 			<span>{selectedMappers.length} / {availableMappers.length} Mappers Selected</span>
 			<div class="margin-top">
 				<WideButton 
@@ -100,6 +101,6 @@ export function MapperBackupPage() {
 					/>
 				}
 			</div>
-		</article>
+		</Panel>
 	);
 }

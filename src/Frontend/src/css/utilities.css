@@ -16,6 +16,9 @@
 .text-green {
 	color: var(--color-green) !important;
 }
+.text-blue {
+	color: var(--color-blue) !important;
+}
 
 .margin-top {
 	margin-top: var(--margin-1);
@@ -48,4 +51,8 @@ button.purple {
 }
 button.red {
 	--button-base-color: var(--color-red);
+}
+
+.float-right {
+	float: right;
 }

@@ -9,8 +9,9 @@ import { OpenMapperFolderButton } from "../../../components/OpenMapperFolderButt
 import { Toasts } from "../../../notifications/ToastStore";
 import { Advanced } from "../../../components/Advanced";
 import { WideButton } from "../../../components/WideButton";
+import { Panel } from "@/components/Panel";
 
-export function MapperDownloadPage() {
+export function DownloadMapperPanel() {
 	const filesClient = Store.client.files;
 	const mapperFileContext = useContext(MapperFilesContext);
 	const [downloads, setDownloads] = useState<MapperUpdate[]>([]);
@@ -20,9 +21,9 @@ export function MapperDownloadPage() {
 		(success) => {
 			if (success) {
 				mapperFileContext.refresh();
-				Toasts.push(`Successfully downloaded mapper(s).`, "task_alt", "success");
+				Toasts.push(`Successfully downloaded mapper(s).`, "task_alt", "green");
 			} else {
-				Toasts.push(`An error occured while downloading (a) mapper(s).`, "", "error");
+				Toasts.push(`An error occured while downloading (a) mapper(s).`, "", "red");
 			}
 		}
 	);
@@ -44,7 +45,7 @@ export function MapperDownloadPage() {
 		return <LoadProgress label="Downloading mapper(s)" />
 	}
 	return (
-		<article>
+		<Panel id="mapper-download" title="Download mappers" >
 			<span>
 				{selectedDownloads.length} / {downloads.length} Mappers Selected
 			</span>
@@ -63,6 +64,6 @@ export function MapperDownloadPage() {
 					onMapperSelection={setSelectedDownloads}
 				/>
 			</div>
-		</article>
+		</Panel>
 	);
 }

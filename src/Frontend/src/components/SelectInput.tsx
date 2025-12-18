@@ -119,7 +119,7 @@ export function SelectInput<Value>(props: SelectInputProps<Value, SelectOption<V
 							role="button"
 							key={index}
 							onClick={() => handleSelection(x)}
-							class={index === 0 && focusIndex === -1 ? "highlight" : ""}
+							class={index === 0 && focusIndex === -1 ? "text-blue" : ""}
 							tabIndex={-1}
 						>
 							<span>

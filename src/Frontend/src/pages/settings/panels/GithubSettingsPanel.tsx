@@ -6,8 +6,9 @@ import { useAPI } from "@/hooks/useAPI";
 import { GithubSettings } from "pokeaclient";
 import { ConfirmationModal } from "@/components/ConfirmationModal";
 import { WideButton } from "@/components/WideButton";
+import { Panel } from "@/components/Panel";
 
-export function GithubSettingsPage() {
+export function GithubSettingsPanel() {
 	const filesClient = Store.client.files;
 	const [status, setStatus] = useState({ color: "", message: "" });
 	const [formState, setFieldState] = useReducer(
@@ -99,11 +100,11 @@ export function GithubSettingsPage() {
 		return false;
 	}
 	return (
-		<article>
+		<Panel id="settings_gh" title="GitHub API settings" defaultOpen>
 			<div>
 				<span class="text-red">
 					Changing these settings is generally not recommended unless you know what you are doing.
-					<br/>
+					<br />
 					These settings allow you to set a custom mapper repository, incorrect settings can cause issues retrieving
 					new and updated mappers. <strong>Please only do so with caution.</strong>
 				</span>
@@ -182,6 +183,6 @@ export function GithubSettingsPage() {
 					/>
 				</form>
 			</div>
-			</article>
+		</Panel>
 	)
 }

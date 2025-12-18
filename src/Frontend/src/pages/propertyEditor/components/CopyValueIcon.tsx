@@ -1,12 +1,11 @@
+import { IconButton } from "@/components/IconButton";
+
 export function CopyValueIcon({ onClick }: { onClick: () => void }) {
 	return (
-		<button 
-			type="button" 
-			class="margin-right icon-button" 
+		<IconButton
 			onClick={onClick}
 			title="Copy value"
-		>
-			<i class="material-icons"> content_copy </i>
-		</button>
+			icon="content_copy"
+		/>
 	)
 }

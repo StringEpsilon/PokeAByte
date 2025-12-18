@@ -5,6 +5,7 @@ import { AdvancedToggle } from "../components/AdvancedToggle";
 import { useUISetting } from "../Contexts/UISettingsContext";
 import { GameProperty, Mapper } from "pokeaclient";
 import { Toasts } from "../notifications/ToastStore";
+import { IconButton } from "@/components/IconButton";
 
 async function performReload(mapper: Mapper, preserveFreeze: boolean ) {
 	if (!preserveFreeze) {
@@ -27,10 +28,10 @@ async function performReload(mapper: Mapper, preserveFreeze: boolean ) {
 				Store.client.updatePropertyBytes(property.path, property.bytes, true)
 			}
 		);
-		Toasts.push("Reloaded mapper with "+ frozenProperties.length + " frozen values reapplied", "", "success");
+		Toasts.push("Reloaded mapper with "+ frozenProperties.length + " frozen values reapplied", "", "green");
 	} else {
 		if (frozenProperties.length > 0) {
-			Toasts.push("Failed to reapply frozen values. Frozen values are unfortunately lost. :/", "", "error");
+			Toasts.push("Failed to reapply frozen values. Frozen values are unfortunately lost. :/", "", "red");
 		}
 	}
 }
@@ -43,11 +44,11 @@ export function Header() {
 			performReload(mapper, !!preserveFreeze);
 		}
 	};
-	const textHighlightClass = mapper ? "text-green" : "text-red";
+	const textColor = mapper ? "text-green" : "text-red";
 
 	return (
 		<header>
-			<h1 class={textHighlightClass}>
+			<h1 class={textColor}>
 				Poke-A-Byte
 			</h1>
 			<nav class="tab">
@@ -55,29 +56,26 @@ export function Header() {
 			</nav>
 			<div class="mapper-info">
 				{mapper 
-					?<>
-						<span class={`margin-right ${textHighlightClass}`}  title={"Current mapper: " + mapper.gameName}>Connected</span>
-						<i
-							tabIndex={0} 
+					? <>
+						<span class={`margin-right ${textColor}`}  title={"Current mapper: " + mapper.gameName}>
+							Connected
+						</span>
+						<IconButton
+							noBorder
 							title="Unload Mapper" 
-							role="button" 
-							class="icon-button-bare material-icons text-red" 
+							class="text-red" 
 							onClick={Store.client.unloadMapper}
-						> 
-							clear 
-						</i>
-						<i tabIndex={0} 
+							icon="clear"
+						/>
+						<IconButton
+							noBorder
 							title="Reload Mapper" 
-							role="button" 
-							class="icon-button-bare material-icons text-purple" 
+							class="text-purple" 
 							onClick={reloadMapper}
-						> 
-							refresh
-						</i>
+							icon="refresh"
+						/>
 					</>
-					: <>
-						No Mapper loaded
-					</>
+					: "No Mapper loaded"
 				}
 				<AdvancedToggle />
 			</div>		

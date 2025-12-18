@@ -1,4 +1,5 @@
 import "material-icons/iconfont/filled.css";
+
 import "./css/app.css"
 import { Router } from "wouter"
 import { Header } from "./layout/Header.tsx"

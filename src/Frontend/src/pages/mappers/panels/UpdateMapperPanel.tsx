@@ -9,31 +9,32 @@ import { OpenMapperFolderButton } from "../../../components/OpenMapperFolderButt
 import { Toasts } from "../../../notifications/ToastStore";
 import { Advanced } from "../../../components/Advanced";
 import { WideButton } from "../../../components/WideButton";
+import { Panel } from "@/components/Panel";
 
-export function MapperUpdatePage() {
+export function UpdateMapperPanel() {
 	const filesClient = Store.client.files;
 	const mapperFileContext = useContext(MapperFilesContext);
 	const [availableUpdates, setAvailableUpdates] = useState<MapperUpdate[]>([]);
 	const [selectedUpdates, sectSelectedUpdates] = useState<string[]>([]);
 	const downloadMappers = useAPI(
-		filesClient.downloadMapperUpdatesAsync, 
+		filesClient.downloadMapperUpdatesAsync,
 		(success) => {
 			if (success) {
 				mapperFileContext.refresh();
-				Toasts.push(`Successfully update mapper(s).`, "task_alt", "success");
+				Toasts.push(`Successfully update mapper(s).`, "task_alt", "green");
 			} else {
-				Toasts.push(`An error occured while updating.`, "", "error");
+				Toasts.push(`An error occured while updating.`, "", "red");
 			}
 		}
 	);
-	
+
 	useEffect(() => {
 		setAvailableUpdates(
 			mapperFileContext.updates
 				.filter(mapper => !!mapper.currentVersion)
 				.filter(mapper => !!mapper.latestVersion)
 		);
-		sectSelectedUpdates([]);		
+		sectSelectedUpdates([]);
 	}, [mapperFileContext.updates])
 
 	useEffect(() => {
@@ -57,7 +58,7 @@ export function MapperUpdatePage() {
 	}
 
 	return (
-		<article>
+		<Panel id="mapper-update" title="Update mappers" >
 			<span>
 				{selectedUpdates.length} / {availableUpdates.length} Mappers Selected
 			</span>
@@ -72,8 +73,8 @@ export function MapperUpdatePage() {
 			<MapperSelectionTable
 				availableMappers={availableUpdates}
 				selectedMappers={selectedUpdates}
-				onMapperSelection={sectSelectedUpdates}				
+				onMapperSelection={sectSelectedUpdates}
 			/>
-		</article>
+		</Panel>
 	);
 }

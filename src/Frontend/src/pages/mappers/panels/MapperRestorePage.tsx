@@ -7,8 +7,9 @@ import { MapperFilesContext } from "../../../Contexts/availableMapperContext";
 import { OpenMapperFolderButton } from "../../../components/OpenMapperFolderButton";
 import { Advanced } from "../../../components/Advanced";
 import { WideButton } from "../../../components/WideButton";
+import { Panel } from "@/components/Panel";
 
-export function MapperRestorePage() {
+export function RestoreMapperPanel() {
 	const filesClient = Store.client.files;
 	const mapperFileContext = useContext(MapperFilesContext);
 	const deleteArchiveApi = useAPI(filesClient.deleteMappers, mapperFileContext.refresh);
@@ -16,7 +17,7 @@ export function MapperRestorePage() {
 	const archives = processArchive(mapperFileContext.archives);
 
 	return (
-		<div>
+		<Panel id="mapper-restore" title="Restore backup/archive" >
 			<div class="margin-top">
 				<strong>
 					{archives.length} Archives/Backups and {archives.reduce((c, x) => c + x.Mappers.length, 0)} files found
@@ -41,7 +42,7 @@ export function MapperRestorePage() {
 					);
 				})}
 			</ul>
-		</div>
+		</Panel>
 	);
 }
 

@@ -3,7 +3,7 @@ import { MapperFilesContext } from "@/Contexts/availableMapperContext";
 import { useUISetting } from "@/Contexts/UISettingsContext";
 import { useAPI } from "@/hooks/useAPI";
 import { changeMapper } from "@/utility/fetch";
-import { Panel } from "../Panel";
+import { Panel } from "../../../components/Panel";
 import { createMapperLoadToast } from "./createMapperLoadToast";
 import { CSSProperties } from "preact";
 import { getMapperColors } from "@/utility/getMapperColors";
@@ -21,7 +21,7 @@ export function RecentPanel() {
 	}
 	
 	return (
-		<Panel id="_mapper-recent" title="Recently used mappers" defaultOpen>
+		<Panel id="mapper-recent" title="Recently used mappers" defaultOpen>
 			<div class="favorites">
 				{mappers?.map((favorite) => {
 					const buttonColors = getMapperColors(favorite.displayName);

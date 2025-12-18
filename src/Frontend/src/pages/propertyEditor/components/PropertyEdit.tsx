@@ -11,6 +11,7 @@ import { CopyValueIcon } from "./CopyValueIcon";
 import { clipboardCopy } from "../utils/clipboardCopy";
 import { Advanced } from "../../../components/Advanced";
 import { VisibilityToggle } from "../../../components/VisibilityToggle";
+import { IconButton } from "@/components/IconButton";
 
 export function PropertyEdit({ path }: { path: string }) {
 	const property = useGameProperty(path);
@@ -37,7 +38,7 @@ export function PropertyEdit({ path }: { path: string }) {
 			Store.client.updatePropertyValue(path, newPropertyValue, isFrozen)
 			.then(() => {
 				setSaved(true);
-				Toasts.push(`Successfully saved property value!`, "task_alt", "success");
+				Toasts.push(`Successfully saved property value!`, "task_alt", "green");
 			});
 		}
 	};
@@ -47,7 +48,7 @@ export function PropertyEdit({ path }: { path: string }) {
 			const message = `Property value now frozen to: '${freezeValue}'!`
 			Store.client.updatePropertyValue(path, freezeValue, true)
 				.then(() => {
-					Toasts.push(message, "task_alt", "success");
+					Toasts.push(message, "task_alt", "green");
 				});
 			if(madeEdit) {
 				setValue(null);
@@ -56,7 +57,7 @@ export function PropertyEdit({ path }: { path: string }) {
 		} else {
 			const message = `Property value is no longer frozen!`;
 			Store.client.freezeProperty(path, false)
-				.then(() => Toasts.push(message, "task_alt", "success"));
+				.then(() => Toasts.push(message, "task_alt", "green"));
 		}
 	}
 	const handleCopyClick = () => {
@@ -113,20 +114,16 @@ export function PropertyEdit({ path }: { path: string }) {
 			}
 			{ madeEdit && 
 				<>
-					<SaveValueButton active={madeEdit} onClick={handleSave} />
-					<button 
-						class="icon-button margin-left" 
-						disabled={!madeEdit} 
-						type="button" 
+					<SaveValueButton onClick={handleSave} />
+					<IconButton 
 						title="Discard pending changes"
 						onClick={() => {setValue(null); setMadeEdit(false)}}
-						>
-						<i class="material-icons"> undo </i>
-					</button>
+						icon="undo"
+					/>
 				</>
 			}
 			<Advanced>
-				<span class="margin-left color-darker center-self">
+				<span class="color-darker center-self">
 					{addressString}
 				</span>
 			</Advanced>

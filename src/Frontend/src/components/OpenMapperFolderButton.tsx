@@ -7,7 +7,7 @@ export function OpenMapperFolderButton() {
 	const onClick = useCallback(
 		() => {
 			Store.client.files.openMapperFolder().then(
-				() => Toasts.push(`Folder opened. Check your file browser.`, "task_alt", "success")
+				() => Toasts.push(`Folder opened. Check your file browser.`, "task_alt", "green")
 			)
 		}, 
 		[]

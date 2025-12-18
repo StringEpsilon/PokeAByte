@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import { useUISetting } from "../Contexts/UISettingsContext";
+import { IconButton } from "./IconButton";
 
 /**
  * The toggle button to activate/deactivate advanced mode.
@@ -7,14 +8,13 @@ import { useUISetting } from "../Contexts/UISettingsContext";
 export function AdvancedToggle() {
 	const [advancedMode, setAdvancedMode] = useUISetting("advancedMode");
 	return (
-		<i
-			role="button"
+		<IconButton
 			tabIndex={0}
+			noBorder
 			title="Toggle advanced mode"
-			class={classNames("material-icons icon-button-bare", { "text-green": advancedMode })}
 			onClick={() => setAdvancedMode(!advancedMode)}
-		>
-			rocket
-		</i>
+			class={classNames({ "text-green": advancedMode })}
+			icon="rocket"
+		/>
 	);
 }

@@ -9,6 +9,7 @@ import { ForceVisibilityToggle } from "@/components/ForceVisibilityToggle";
 import { IfNotHidden } from "@/components/IfNotHidden";
 import { Advanced } from "@/components/Advanced";
 import debounce from "debounce";
+import { IconButton } from "@/components/IconButton";
 
 export function PropertyEditor() {
 	const [, setLocation] = useLocation();
@@ -58,14 +59,12 @@ export function PropertyEditor() {
 					<label>Search property: </label>
 					<span class="input-addon">
 						<input type="text" value={internalSearch} onInput={x => onSearchInput(x.currentTarget.value)}></input>
-						<button
-							class="add-on material-icons"
+						<IconButton
 							disabled={!internalSearch}
-							onClick={() => setInternalSearch("")}
+							onClick={() => onSearchInput("")}
 							title="Clear search"
-						>
-							clear
-						</button>
+							icon="clear"
+						/>
 					</span>
 				</Advanced>
 				<table class="tree">

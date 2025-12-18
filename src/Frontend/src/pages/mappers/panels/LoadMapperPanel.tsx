@@ -10,9 +10,10 @@ import { OpenMapperFolderButton } from "@/components/OpenMapperFolderButton";
 import { Advanced } from "@/components/Advanced";
 import { useStorageState } from "@/hooks/useStorageState";
 import { changeMapper } from "@/utility/fetch";
-import { FavoriteIcon } from "./FavoriteIcon";
+import { FavoriteIcon } from "./components/FavoriteIcon";
 import { createMapperLoadToast } from "./createMapperLoadToast";
 import { useUISetting } from "@/Contexts/UISettingsContext";
+import { Panel } from "@/components/Panel";
 
 type MapperSelectProps = {
 	mapper: Mapper | null
@@ -26,7 +27,7 @@ function createMapperOption(value: AvailableMapper) {
 	};
 }
 
-export function MapperSelection(props: MapperSelectProps) {
+export function LoadMapperPanel(props: MapperSelectProps) {
 	const mapperFileContext = useContext(MapperFilesContext);
 	const mapper = props.mapper;
 	const loadButtonRef = useRef<HTMLButtonElement>(null)
@@ -70,7 +71,7 @@ export function MapperSelection(props: MapperSelectProps) {
 		? mapperFileContext.availableMappers.filter(x => x.displayName.startsWith(`(${filter})`))
 		: mapperFileContext.availableMappers;
 	return (
-		<article>
+		<Panel id="mapper-load" title="Load mapper" defaultOpen>			
 			<span> Select the mapper you would like to load: </span>
 			<br />
 			<span class="margin-right">
@@ -98,6 +99,6 @@ export function MapperSelection(props: MapperSelectProps) {
 					<OpenMapperFolderButton />
 				</div>
 			</Advanced>
-		</article>
+		</Panel>
 	);
 }

@@ -1,13 +1,7 @@
-export function SaveValueButton({ active, onClick }: { active: boolean, onClick: () => void }) {
+import { IconButton } from "@/components/IconButton";
+
+export function SaveValueButton({ onClick }: { onClick: () => void }) {
 	return (
-		<button 
-			class="icon-button margin-right" 
-			disabled={!active} 
-			type="button" 
-			onClick={() => active && onClick()}
-			title="Save"
-		>
-			<i class="material-icons"> save </i>
-		</button>
+		<IconButton onClick={onClick} title="Save" icon="save"/>
 	)
 }

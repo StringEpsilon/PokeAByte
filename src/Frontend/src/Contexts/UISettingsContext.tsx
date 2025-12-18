@@ -11,6 +11,7 @@ export type UISettings = {
 	recentlyUsedEnabled?: boolean,
 	favoriteMappers?: string[]
 	recentMappers?: string[]
+	openPanels: Record<string, boolean | undefined>,
 }
 
 export type  UISettingsContextType = {
@@ -36,7 +37,7 @@ function tryGetLocalStorage<T>(key: string, defaultValue: T) {
 }
 
 export function UISettingsProvider(props: { children: ComponentChildren}) {
-	const [settings, saveSettings] = useStorageState<UISettings>("_uiSettings", { initialized: false });
+	const [settings, saveSettings] = useStorageState<UISettings>("_uiSettings", { initialized: false, openPanels: {} });
 
 	const save = useCallback((newSettings: Partial<UISettings>) => {
 		saveSettings({...settings, ...newSettings});
@@ -49,6 +50,7 @@ export function UISettingsProvider(props: { children: ComponentChildren}) {
 				initialized: true,
 				advancedMode: tryGetLocalStorage("_advandedMode", false),
 				forceVisible: tryGetLocalStorage("_forceVisible", false),
+				openPanels: {},
 			});
 		}
 	}, [settings, saveSettings])

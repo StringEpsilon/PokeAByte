@@ -48,7 +48,7 @@ export function HeaderNavigation({ mapper }: { mapper: Mapper | null }) {
 				<i 
 					className={classNames("material-icons", { [activeClass]: settingsActive })}
 					aria-hidden="true"
-					>
+				>
 					settings
 				</i>
 				SETTINGS

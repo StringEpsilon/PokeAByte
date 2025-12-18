@@ -5,6 +5,7 @@ import { CopyValueIcon } from "./CopyValueIcon";
 import { SaveValueButton } from "./SaveValueButton";
 import { Store } from "../../../utility/propertyStore";
 import { Toasts } from "../../../notifications/ToastStore";
+import { IconButton } from "@/components/IconButton";
 
 export function AttributesTable({ path }: { path: string }) {
 	const type = useGamePropertyField(path, "type");
@@ -46,7 +47,7 @@ export function AttributesTable({ path }: { path: string }) {
 					<tr>
 						<th>address</th>
 						<td >
-							<CopyValueIcon onClick={() => clipboardCopy(address ? `0x${address.toUpperCase()}`: "")} />
+							<CopyValueIcon onClick={() => clipboardCopy(address ? `0x${address.toUpperCase()}` : "")} />
 						</td>
 						<td>{address ? `0x${address.toUpperCase()}` : "-"}</td>
 					</tr>
@@ -55,7 +56,7 @@ export function AttributesTable({ path }: { path: string }) {
 					<tr>
 						<th>bits</th>
 						<td >
-							<CopyValueIcon onClick={() => clipboardCopy(address ? `0x${address.toUpperCase()}`: "")} />
+							<CopyValueIcon onClick={() => clipboardCopy(address ? `0x${address.toUpperCase()}` : "")} />
 						</td>
 						<td>{bits}</td>
 					</tr>
@@ -103,7 +104,7 @@ export function PropertyByteRow({ path }: { path: string }) {
 		Store.client.updatePropertyBytes(path, values.map(x => parseInt(x, 16)))
 			.then(() => {
 				setMadeEdit(false);
-				Toasts.push(`Successfully saved bytes!`, "task_alt", "success");
+				Toasts.push(`Successfully saved bytes!`, "task_alt", "green");
 			});
 		setMadeEdit(false);
 	}
@@ -114,39 +115,39 @@ export function PropertyByteRow({ path }: { path: string }) {
 		<tr>
 			<th>bytes</th>
 			<td>
-				<CopyValueIcon 
-					onClick={() => clipboardCopy(values.join(" "))} 
+				<CopyValueIcon
+					onClick={() => clipboardCopy(values.join(" "))}
 				/>
 			</td>
 			<td class="property-bytes">
-				<span>0x&nbsp;</span>
-				{values.map((value, i) => {
-					return (
-						<input
-							key={i}
-							type="text"
-							size={2}
-							maxLength={2}
-							value={value}
-							onFocus={() => setHasFocus(true)}
-							onBlur={() => setHasFocus(false)}
-							onInput={(e) => handleEdit(e.currentTarget.value, i)}
-						/>
-					);
-				})}
-				{ madeEdit && 
-					<>
-						<SaveValueButton active={madeEdit} onClick={handleSave} />
-						<button 
-							class="icon-button margin-left" 
-							disabled={!madeEdit} 
-							type="button" 
-							onClick={() => {setValues(originalValue); setMadeEdit(false)}}
-						>
-							<i class="material-icons"> undo </i>
-						</button>
-					</>
-				}
+				<span>
+					<span>0x&nbsp;</span>
+					{values.map((value, i) => {
+						return (
+							<input
+								key={i}
+								type="text"
+								size={2}
+								maxLength={2}
+								value={value}
+								onFocus={() => setHasFocus(true)}
+								onBlur={() => setHasFocus(false)}
+								onInput={(e) => handleEdit(e.currentTarget.value, i)}
+							/>
+						);
+					})}
+					{madeEdit &&
+						<>
+							<SaveValueButton onClick={handleSave} />
+							<IconButton
+								disabled={!madeEdit}
+								onClick={() => { setValues(originalValue); setMadeEdit(false) }}
+								title="Undo"
+								icon="undo"
+							/>
+						</>
+					}
+				</span>
 			</td>
 		</tr>
 	);

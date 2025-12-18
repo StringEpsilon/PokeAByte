@@ -1,13 +1,12 @@
 ﻿import { useSyncExternalStore } from "preact/compat";
 import { Store } from "@/utility/propertyStore";
-import { MapperSelection } from "./subpages/MapperSelectPage";
-import { MapperDownloadPage } from "./subpages/MapperDownloadPage";
-import { MapperBackupPage } from "./subpages/MapperBackupPage";
-import { MapperUpdatePage } from "./subpages/MapperUpdatePage";
-import { MapperRestorePage } from "./subpages/MapperRestorePage";
-import { Panel } from "./Panel";
-import { FavoritePanel } from "./FavoritePanel";
-import { RecentPanel } from "./subpages/RecentPanel";
+import { LoadMapperPanel } from "./panels/LoadMapperPanel";
+import { DownloadMapperPanel } from "./panels/MapperDownloadPage";
+import { MapperBackupPanel } from "./panels/MapperBackupPanel";
+import { UpdateMapperPanel } from "./panels/UpdateMapperPanel";
+import { RestoreMapperPanel } from "./panels/MapperRestorePage";
+import { FavoritePanel } from "./panels/FavoritePanel";
+import { RecentPanel } from "./panels/RecentPanel";
 
 export default function MapperPage() {
 	const mapper = useSyncExternalStore(Store.subscribeMapper, Store.getMapper);
@@ -15,22 +14,12 @@ export default function MapperPage() {
 	return (
 		<article class="margin-top">
 			<FavoritePanel />
-			<Panel id="_mapper-select-panel" title="Load mapper" defaultOpen>
-				<MapperSelection mapper={mapper} />
-			</Panel>
-			<RecentPanel />
-			<Panel id="_mapper-download-panel" title="Download mappers" >
-				<MapperDownloadPage />
-			</Panel>
-			<Panel id="_mapper-update-panel" title="Update mappers" >
-				<MapperUpdatePage />
-			</Panel>
-			<Panel id="_mapper-backup-panel" title="Backup mappers" >
-				<MapperBackupPage />
-			</Panel>
-			<Panel id="_mapper-restore-panel" title="Restore backup/archive" >
-				<MapperRestorePage />
-			</Panel>
+			<LoadMapperPanel mapper={mapper} />			
+			<RecentPanel />			
+			<DownloadMapperPanel />
+			<UpdateMapperPanel />			
+			<MapperBackupPanel />
+			<RestoreMapperPanel />			
 		</article>		
 	);
 }
