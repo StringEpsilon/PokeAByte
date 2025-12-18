@@ -90,11 +90,6 @@ export function LicensePage() {
 						<td className="min">Sebastien Ros</td>
 						<td className="min">BSD-2-Clause</td>
 					</tr>
-					<tr>
-						<td className="min">Serilog</td>
-						<td className="min">Serilog Contributors</td>
-						<td className="min">Apache-2.0 license</td>
-					</tr>
 				</tbody>
 			</table>
 		</article>

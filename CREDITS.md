@@ -15,6 +15,5 @@ The following libraries are used in this project:
 **Backend:**
 - CoreCLR-NCalc
 - Jint
-- Serilog
 
 As well as the .NET and ASP.NET Core runtime and libraries.
