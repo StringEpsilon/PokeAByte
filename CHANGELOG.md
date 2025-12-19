@@ -3,11 +3,13 @@
 [Version 0.9.0](#090)  
 [Version 0.8.1](#081-2024-11-09)  
   
-## Future
+# Future
 
 ## Other changes
 
-- Tweaks to the logging.
+- Improved feedback when a mapper download fails.
+- Improved some error messages.
+- Tweaks to the format of the logging.
 
 # 0.9.3
 
