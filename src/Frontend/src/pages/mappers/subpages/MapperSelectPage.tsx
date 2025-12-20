@@ -44,8 +44,11 @@ export function MapperSelection(props: MapperSelectProps) {
 		if (changeMapperApi.wasCalled && !changeMapperApi.isLoading) {
 			if (changeMapperApi.result === true) {
 				Toasts.push("Loaded mapper", "task_alt", "success");
+			} else if (changeMapperApi.result) {
+				Toasts.push("Failed to load mapper:\n " + changeMapperApi.result, "", "error", false);
+			} else {
+				Toasts.push("Failed to load mapper.\n Check Poke-A-Byte log for more information.", "", "error");
 			}
-			console.log(changeMapperApi.result);
 		}
 	}, [changeMapperApi.wasCalled, changeMapperApi.isLoading, changeMapperApi.result])
 

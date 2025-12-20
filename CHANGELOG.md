@@ -8,8 +8,8 @@
 ## Other changes
 
 - Improved feedback when a mapper download fails.
-- Improved some error messages.
 - Tweaks to the format of the logging.
+- Improved several error messages, especially JavaScript related errors.
 - EDPS.Bizhawk: Reject Poke-A-Byte setup if more than half of blocks are unreadable.
   This prevents Poke-A-Byte from loading a mapper "succesfully" on the wrong game.
 
