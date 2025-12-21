@@ -7,11 +7,15 @@
 
 ## Features
 
+- Added a "Poke-A-Byte settings" panel to the settings tab.
+  Allows configuration of the `appsettings.json` options through the Web UI.
+
 ## Bugfixes
 
 ## Other changes
 
 - Minor UI tweaks (phrasing, margins, etc).
+- The "Settings" tab is no longer exclusive to advanced mode.
 
 # 0.9.3
 
