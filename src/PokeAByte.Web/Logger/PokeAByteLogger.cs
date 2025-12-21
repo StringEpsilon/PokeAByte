@@ -49,6 +49,16 @@ internal sealed class PokeAByteLogger(string name, LoggerConfiguration config, L
         );
     }
 
+    private Exception GetJintBaseException(Exception ex)
+    {
+        
+        while(ex.InnerException != null && ex is not JavaScriptException)
+        {
+            ex = ex.InnerException;
+        }
+        return ex;
+    }
+
     /// <summary>
     /// Format given exception for logging: <br/>
     /// <c>{ExceptionName}: {ExceptionMessage}\n{StackTrace}</c>
@@ -60,9 +70,10 @@ internal sealed class PokeAByteLogger(string name, LoggerConfiguration config, L
     private string FormatException(Exception exception)
     {
         string stacktrace = ReformatStacktrace(exception.StackTrace ?? "");
-        string name = exception.GetBaseException().GetType().Name;
+        var baseException = GetJintBaseException(exception);
+        string name = baseException.GetType().Name;
         string message = exception.Message;
-        if (exception.GetBaseException() is JavaScriptException jsException && jsException.Error is JsError error)
+        if (baseException is JavaScriptException jsException && jsException.Error is JsError error)
         {
             name = "(JavaScript) " + error.Prototype;
             if (error.HasProperty("message"))
