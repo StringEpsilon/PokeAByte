@@ -1,0 +1,17 @@
+name: .NET CI
+
+on: [tag]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10"
+      - name: Run build.sh
+        run: ./build.sh --publish

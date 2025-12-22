@@ -1,4 +1,4 @@
-#/bin/sh
+#/bin/zsh
 set -e
 cd src
 
@@ -34,3 +34,18 @@ cd ../..
 # Build the bizhawk DLLs:
 dotnet publish PokeAByte.Protocol.BizHawk -o artifacts/github/ -c Release
 dotnet publish PokeAByte.Integrations.BizHawk -o artifacts/github/ -c Release
+
+if [[ $* == *--publish* ]] then
+	cd artifacts/github
+	awk '/^# /{if (version) exit; version=1} version {print}' ../../../CHANGELOG.md > release_notes.md
+	gh release create $GITHUB_REF \
+		Linux-x64.zip \
+		macOS-arm64.zip \
+		macOS-x64.zip \
+		Windows-x64.zip \
+		EDPS.Bizhawk.dll \
+		PokeAByte.Integrations.BizHawk.dll \
+		-t "Version $GITHUB_REF" \
+		-F release_notes.md \
+		-d
+fi
