@@ -19,16 +19,16 @@ public struct FreezeInstruction: IEmulatorInstruction
     {
         var result = new byte[Metadata.HEADER_LENGTH + Data.Length];
         Metadata.CopyTo(result);
-        BitConverter.GetBytes(Address).CopyTo(result, 0x08);
-        BitConverter.GetBytes(Length).CopyTo(result, 0x0F);
+        BitConverter.GetBytes(Address).CopyTo(result, Metadata.LENGTH);
+        BitConverter.GetBytes(Length).CopyTo(result, Metadata.LENGTH + sizeof(long));
         Data.CopyTo(result, Metadata.HEADER_LENGTH);
         return result;
     }
 
     public static FreezeInstruction FromByteArray(byte[] bytes)
     {
-        var startingAddress = BitConverter.ToInt64(bytes, 0x08);
-        var dataLength = BitConverter.ToInt32(bytes, 0x0F);
+        var startingAddress = BitConverter.ToInt64(bytes, Metadata.LENGTH);
+        var dataLength = BitConverter.ToInt32(bytes, Metadata.LENGTH + sizeof(long));
         var instruction = new FreezeInstruction
         {
             Address = startingAddress,

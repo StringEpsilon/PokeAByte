@@ -96,24 +96,21 @@ internal class GameDataProcessor : IDisposable
     /// <param name="domains"> The BizHawk memory domains to be used for memory access. </param>
     private void WriteToGameMemory(WriteInstruction instruction, IMemoryDomains domains)
     {
-        DomainLayout? layout = _platform.Domains
+        DomainLayout layout = _platform.Domains
             .Where(x => x.Start <= instruction.Address)
             .FirstOrDefault(x => x.End >= instruction.Address + instruction.Data.Length -1);
-        if (layout == null)
-        {
-            return;
-        }
-        var domain = domains[layout.Value.DomainId];
+
+        var domain = domains[layout.DomainId];
         if (domain == null)
         {
             return;
         }
-        if (instruction.Data.Length != 0 && layout != null)
+        if (instruction.Data.Length != 0)
         {
             domain.Enter();
             for (int i = 0; i < instruction.Data.Length; i++)
             {
-                domain.PokeByte(instruction.Address + i - layout.Value.Start, instruction.Data[i]);
+                domain.PokeByte(instruction.Address + i - layout.Start, instruction.Data[i]);
             }
             domain.Exit();
         }
@@ -121,15 +118,11 @@ internal class GameDataProcessor : IDisposable
 
     private void WriteFreeze(FreezeInstruction instruction, IMemoryDomains domains)
     {
-        DomainLayout? layout = _platform.Domains
+        DomainLayout layout = _platform.Domains
             .Where(x => x.Start <= instruction.Address)
             .FirstOrDefault(x => x.End >= instruction.Address + instruction.Data.Length -1);
-        if (layout == null || instruction.Data.Length == 0)
-        {
-            return;
-        }
-        var domain = domains[layout.Value.DomainId];
-        if (domain == null)
+        var domain = domains[layout.DomainId];
+        if (domain == null || instruction.Data.Length == 0)
         {
             return;
         }
@@ -137,7 +130,7 @@ internal class GameDataProcessor : IDisposable
         domain.Enter();
         for (int i = 0; i < instruction.Data.Length; i++)
         {
-            domain.PokeByte(instruction.Address + i - layout.Value.Start, instruction.Data[i]);
+            domain.PokeByte(instruction.Address + i - layout.Start, instruction.Data[i]);
         }
         domain.Exit();
     }
@@ -246,7 +239,6 @@ internal class GameDataProcessor : IDisposable
             {
                 _freezes.Add(instruction);            
             }
-            _mainLabel.Text = _freezes.Count + " freezes";
         }
     }
 
@@ -259,7 +251,6 @@ internal class GameDataProcessor : IDisposable
             {
                 this._freezes.RemoveAt(index);
             }
-            _mainLabel.Text = _freezes.Count + " freezes";
         }
     }
 
