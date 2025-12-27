@@ -21,6 +21,8 @@
 
 ## Bugfixes
 
+- UI: Tab and escape now work properly in dropdowns.
+
 ## Other changes
 
 - Minor UI tweaks (phrasing, margins, etc).
